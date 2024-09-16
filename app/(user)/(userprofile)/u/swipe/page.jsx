@@ -9,11 +9,7 @@ import Swipe from "@/components/dating/Swipe";
 import { useSocket } from "@/app/lib/SocketContext";
 
 export default function Page() {
-  const socket = useSocket();
-
-  socket.on("match", (msg) => {
-    console.log(msg);
-  });
+ 
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-3 md:max-w-6xl mx-auto ">

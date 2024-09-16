@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { FaHeart } from "react-icons/fa";
 import { SlDislike, SlArrowLeft, SlArrowRight } from "react-icons/sl";

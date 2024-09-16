@@ -4,7 +4,7 @@ import { useSocket } from "@/app/lib/SocketContext";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 const NotificationItem = ({ type, message, image, username }) => {
   let icon;

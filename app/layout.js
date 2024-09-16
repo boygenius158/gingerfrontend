@@ -1,3 +1,5 @@
+
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -25,15 +27,12 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <NextAuthProvider>
           <SocketProvider>
-            {/* <UserSessionHandler> */}
-            {/* <AdminSessionHandler> */}
-            {/* <Sidebar/> */}
+           
             <div className="">
               <Navbar></Navbar>
               <EdgeStoreProvider>{children}</EdgeStoreProvider>
             </div>
-            {/* </AdminSessionHandler> */}
-            {/* </UserSessionHandler> */}
+           
           </SocketProvider>
         </NextAuthProvider>
       </body>

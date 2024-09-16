@@ -12,30 +12,29 @@ export default function Posts() {
   const [feedPosts, setFeedPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [isSaved, setIsSaved] = useState(false);
   const limit = 2;
-
 
   const fetchPosts = useCallback(async (email) => {
     try {
       const response = await instance.post(`/api/user/fetchfeed`, {
         email: email,
-        offset: offset,
+        offset: 0,  // Always start from 0 for the initial fetch
         limit: limit,
       });
 
       console.log("response", response.data.feed);
       setFeedPosts(response.data.feed || []);
-      setOffset((prevOffset) => prevOffset + limit); // Increment offset for pagination
+      setOffset(limit);  // Set offset after initial fetch
     } catch (error) {
       console.error("Failed to fetch posts", error);
     }
-  }, [offset, limit]);
+  }, [limit]);
+
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
       fetchPosts(session.user.email);
     }
-  }, [session?.user?.email,fetchPosts,status]);
+  }, [session?.user?.email, status, fetchPosts]);
 
   const fetchMorePosts = async () => {
     try {
@@ -51,14 +50,13 @@ export default function Posts() {
           ...prevPosts,
           ...(response.data.feed || []),
         ]);
-        setOffset((prevState) => prevState + limit);
+        setOffset((prevOffset) => prevOffset + limit);
         setHasMore(response.data.feed.length > 0);
       }
     } catch (error) {
       console.error("Failed to fetch more posts", error);
     }
   };
-  console.log(feedPosts);
 
   if (status === "loading") {
     return (
@@ -78,7 +76,6 @@ export default function Posts() {
         Feed
       </h1>
       <div className="">
-        {" "}
         {/* Add padding to prevent content from being hidden behind the fixed heading */}
         <Stories />
         <InfiniteScroll

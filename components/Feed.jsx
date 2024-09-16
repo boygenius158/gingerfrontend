@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import MiniProfile from "./MiniProfile";
 import Posts from "./Posts";
-import instance from "@/axiosInstance";
-import useUserStore from "@/app/store/user/userStore";
-import Sidebar from "./sidebar";
+
 export default function Feed() {
   
   return (

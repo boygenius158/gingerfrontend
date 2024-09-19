@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import instance from "@/axiosInstance";
-import jwt from "jsonwebtoken"; // or any other library you prefer for token generation
+import jwt from "jsonwebtoken"; 
 
 export const authOptions = {
   providers: [

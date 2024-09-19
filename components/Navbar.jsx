@@ -96,34 +96,7 @@ export default function Navbar() {
   console.log(caller);
 
   const filePickerRef = useRef(null);
-  // const notify = () => {
-  //   toast(
-  //     <div className="flex items-center space-x-3 p-4 shadow-lg rounded-lg  border-gray-200">
-  //       <Image
-  //         src={caller?.profilePicture}
-  //         // src="https://i.pinimg.com/564x/34/16/cf/3416cfaa54b60042a5f354471d841358.jpg"
-  //         alt="Profile"
-  //         width={25}
-  //         height={25}
-  //         className="rounded-full"
-  //       />
-  //       {/* <p>{caller}</p> */}
-  //       <div className="flex-1">
-  //         <p className="text-gray-700 font-semibold">
-  //           {caller.username} is calling you
-  //         </p>
-  //       </div>
-  //     </div>,
-  //     {
-  //       position: "top-center",
-  //       autoClose: false,
-  //       className: "custom-toast",
-  //       bodyClassName: "custom-toast-body",
-  //       progressClassName: "custom-toast-progress",
-  //       hideProgressBar: false,
-  //     }
-  //   );
-  // };
+
   function handleCaptionChange(e) {
     setCaption(e.target.value);
   }
@@ -170,7 +143,7 @@ export default function Navbar() {
     return () => {
       controller.abort(); // Abort the fetch request if the component is unmounted
     };
-  }, [status,session?.id]);
+  }, [status, session?.id]);
 
   async function handleSubmit() {
     setSpin(true);
@@ -317,7 +290,10 @@ export default function Navbar() {
 
                   <span className="sr-only">Ginger</span>
                 </Link>
-                <p className="text-muted-foreground hover:text-foreground">
+                <p
+                  onClick={()=>setIsOpen(true)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
                   upload post
                 </p>
                 <p className="text-muted-foreground hover:text-foreground">

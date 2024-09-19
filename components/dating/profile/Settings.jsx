@@ -50,10 +50,14 @@ export default function Settings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        if (!session) {
+          return;
+        }
         const response = await instance.post("/api/user/settings", {
           userId: session?.id,
         });
-  
+        console.log(response);
+
         if (response.data) {
           setAge(response.data.data.maximumAge || 18);
           setProfileVisibility(response.data.data.profileVisibility || false);
@@ -66,12 +70,11 @@ export default function Settings() {
         setLoading(false);
       }
     };
-  
+
     if (session?.id) {
       fetchSettings();
     }
-  }, [session?.id]);
-  
+  }, [session]);
 
   if (loading) {
     return <div>Loading...</div>; // Optional: Add a loading indicator
@@ -84,7 +87,10 @@ export default function Settings() {
   return (
     <div className="w-[400px] h-screen border rounded-md flex flex-col">
       <div className="p-2">
-        <Switch onClick={() => toggleSave(!toggleStatus)} checked={toggleStatus} />
+        <Switch
+          onClick={() => toggleSave(!toggleStatus)}
+          checked={toggleStatus}
+        />
       </div>
       <div className="border-b"></div>
       <div className="border-b"></div>
@@ -105,7 +111,11 @@ export default function Settings() {
       <div className="flex flex-col mt-4 gap-2">
         <div className="ml-2">Gender Preference</div>
         <div className="text-4xl ml-4">
-          <RadioGroup disabled={isEditing} value={gender} onValueChange={handleGenderChange}>
+          <RadioGroup
+            disabled={isEditing}
+            value={gender}
+            onValueChange={handleGenderChange}
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="male" id="male" />
               <Label htmlFor="male">Male</Label>

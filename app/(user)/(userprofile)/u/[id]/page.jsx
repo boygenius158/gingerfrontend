@@ -37,6 +37,8 @@ export default function Page({ params }) {
           const res = await instance.post("/api/user/fetchprofile", {
             username,
           });
+          console.log(res);
+          
           console.log("Fetched user email:", res.data.user.following);
           setUser(res.data.user); // Store the user data in Zustand
           setPosts(res.data.post); // Store posts data in Zustand

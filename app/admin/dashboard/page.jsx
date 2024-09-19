@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {
   IconArrowLeft,
   IconBrandTabler,
+  IconChartBar,
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
@@ -15,6 +16,7 @@ import DashboardGUI from "@/components/admin/DashboardGUI";
 import { useSession } from "next-auth/react";
 import FilterGUI from "@/components/admin/FilterGUI";
 import PostGUI from "@/components/admin/PostGUI";
+import GraphAdmin from "../GraphAdmin";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -50,10 +52,10 @@ export default function Page() {
       ),
     },
     {
-      label: "Logout",
+      label: "Graph",
       href: "#",
       icon: (
-        <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
@@ -108,8 +110,9 @@ export default function Page() {
         <FilterGUI />
       ) : tab === "Settings" ? (
         <PostGUI/>
-      ) : tab === "Messages" ? (
-        <p>Messages Content</p>
+      ) : tab === "Graph" ? (
+        // <p>Messages Content</p>
+        <GraphAdmin/> 
       ) : (
         <DashboardGUI />
       )}

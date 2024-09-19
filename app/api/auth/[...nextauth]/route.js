@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import instance from "@/axiosInstance";
+import jwt from "jsonwebtoken"; // or any other library you prefer for token generation
 
 export const authOptions = {
   providers: [
@@ -19,7 +20,7 @@ export const authOptions = {
         const { email, password } = credentials;
 
         try {
-          const res = await instance.post("/api/user/custombackend", {
+          const res = await instance.post("/api/user/custom-signin", {
             email,
             password,
           });
@@ -27,7 +28,7 @@ export const authOptions = {
           }
           if (res.status === 200) {
             console.log("User data from custom backend:", res.data);
-            return res.data; // Ensure this contains _id, roles, token, and username
+            return res.data;
           } else {
             console.log("Error in response:", res.statusText);
             return null;
@@ -39,6 +40,9 @@ export const authOptions = {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     async signIn({ user, account }) {
       console.log("User object in signIn callback:", user);
@@ -46,7 +50,7 @@ export const authOptions = {
       // Handle Google sign-in
       if (account.provider === "google") {
         try {
-          const res = await instance.post("/api/user/google", {
+          const res = await instance.post("/api/user/google-auth", {
             email: user.email,
           });
           console.log("Google user data:", res.data);
@@ -55,7 +59,6 @@ export const authOptions = {
             const data = res.data;
             user._id = data._id;
             user.roles = data.roles; // Use correct field name here
-            user.token = data.token;
             user.username = data.username;
             console.log(
               "Updated user object in signIn callback (Google):",
@@ -73,7 +76,7 @@ export const authOptions = {
       // Handle custom login (credentials)
       if (account.provider === "credentials") {
         try {
-          const res = await instance.post("/api/user/custombackendSession", {
+          const res = await instance.post("/api/user/custom-registration", {
             email: user.email,
             password: user.password,
           });
@@ -83,7 +86,6 @@ export const authOptions = {
             const data = res.data.user;
             user._id = data._id;
             user.roles = data.roles; // Use correct field name here
-            user.token = data.token;
             user.username = data.username;
             console.log(
               "Updated user object in signIn callback (custom login):",
@@ -101,23 +103,37 @@ export const authOptions = {
         }
       }
 
-      // Allow sign-in if provider is neither Google nor credentials
       return true;
     },
     async jwt({ token, user }) {
+      // console.log(token);
+
       if (user) {
+        const customToken = jwt.sign(
+          {
+            id: user._id,
+            roles: user.roles,
+            username: user.username,
+          },
+          process.env.NEXTAUTH_SECRET
+        );
+        token.customToken = customToken;
         token.id = user._id;
-        token.roles = user.roles; // Correct field name
+        token.roles = user.roles;
         token.token = user.token;
         token.username = user.username;
       }
+      // console.log(token);
+
       return token;
     },
     async session({ session, token }) {
       session.id = token.id;
-      session.role = token.roles; // Correct field name
-      session.token = token.token;
+      session.role = token.roles;
+      session.token = token.customToken;
       session.username = token.username;
+
+      // console.log(session);
 
       return session;
     },

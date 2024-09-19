@@ -14,21 +14,24 @@ export default function Posts() {
   const [offset, setOffset] = useState(0);
   const limit = 2;
 
-  const fetchPosts = useCallback(async (email) => {
-    try {
-      const response = await instance.post(`/api/user/fetchfeed`, {
-        email: email,
-        offset: 0,  // Always start from 0 for the initial fetch
-        limit: limit,
-      });
+  const fetchPosts = useCallback(
+    async (email) => {
+      try {
+        const response = await instance.post(`/api/user/fetchfeed`, {
+          email: email,
+          offset: 0, // Always start from 0 for the initial fetch
+          limit: limit,
+        });
 
-      console.log("response", response.data.feed);
-      setFeedPosts(response.data.feed || []);
-      setOffset(limit);  // Set offset after initial fetch
-    } catch (error) {
-      console.error("Failed to fetch posts", error);
-    }
-  }, [limit]);
+        console.log("response", response.data.feed);
+        setFeedPosts(response.data.feed || []);
+        setOffset(limit); // Set offset after initial fetch
+      } catch (error) {
+        console.error("Failed to fetch posts", error);
+      }
+    },
+    [limit]
+  );
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
@@ -72,9 +75,9 @@ export default function Posts() {
 
   return (
     <div className="relative ">
-      <h1 className=" text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
-        Feed
-      </h1>
+        <h1 className=" text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
+          Feed
+        </h1>
       <div className="">
         {/* Add padding to prevent content from being hidden behind the fixed heading */}
         <Stories />

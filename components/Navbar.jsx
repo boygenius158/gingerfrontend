@@ -248,7 +248,7 @@ export default function Navbar() {
 
       <div className="">
         <div className="flex justify-between">
-          <Link href="/home">
+          <Link href="/">
             <div className="hidden lg:block w-[170px] cursor-pointer bg-blue-500 text-white">
               {/* <GingerLogo /> */}
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">

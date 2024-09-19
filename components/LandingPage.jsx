@@ -1,11 +1,6 @@
-
 "use client";
 
 import React from "react";
-import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import Image from "next/image";
-import { SparklesCore } from "@/components/ui/sparkles";
-import { WobbleCard } from "@/components/ui/wobble-card";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import Link from "next/link";
 
@@ -13,45 +8,59 @@ export default function LandingPage() {
   const cards = data.map((card, index) => (
     <Card key={card.src} card={card} index={index} />
   ));
-  // return (
-  //   <div className="flex flex-col bg-black">
-  //     <div className=" mx-auto  h-[30rem] overflow-hidden w-full">
-  //       <p
-  //         backgroundColor="black"
-  //         className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full"
-  //       >
-  //         <h1 className="scroll-m-20 text-white text-4xl font-extrabold tracking-tight lg:text-8xl">
-  //           Ginger
-  //         </h1>
-  //         <p className="text-white text-2xl md:text-4xl max-w-xl mt-6 text-center">
-  //           the new social media app
-  //         </p>
-  //         <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
-  //           <Link href='/login'>
-  //             <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 transition duration-200 rounded-lg text-white shadow-[0px_2px_0px_0px_#FFFFFF40_inset]">
-  //               Login
-  //             </button>
-  //           </Link>
-  //           <button className="px-4 py-2  text-white ">About Us</button>
-  //         </div>
-  //       </p>
-  //     </div>
-  //     <div>
-  //       <div className="w-full h-full py-20">
-  //         <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-white dark:text-neutral-200 font-sans">
-  //           What you can do with Ginger
-  //         </h2>
-  //         <Carousel items={cards} />
-  //       </div>
-  //     </div>
-  //     <div className="w-full h-[100px] bg-white"></div>
-  //   </div>
-  // );
+  return (
+    <div className="flex flex-col bg-black">
+      <div className=" mx-auto  h-[30rem] overflow-hidden w-full">
+        <div
+          backgroundColor="black"
+          className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full"
+        >
+          <Link href="/">
+            <h1 className="scroll-m-20 text-white text-4xl font-extrabold tracking-tight lg:text-8xl">
+              Ginger
+            </h1>
+          </Link>
+          <p className="text-white text-2xl md:text-4xl max-w-xl mt-6 text-center">
+            the new social media app
+          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+            <Link href="/login">
+              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 transition duration-200 rounded-lg text-white shadow-[0px_2px_0px_0px_#FFFFFF40_inset]">
+                Login
+              </button>
+            </Link>
+            <Link href="/register">
+              <button className="px-4 py-2  text-white ">Register</button>
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className="w-full h-full py-20">
+          <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-white dark:text-neutral-200 font-sans">
+            What you can do with Ginger
+          </h2>
+          <Carousel items={cards} />
+        </div>
+      </div>
+      <footer className="w-full h-[100px] bg-white flex items-center justify-between px-4 shadow-md">
+        <div className="text-gray-600">© 2024 Ginger. All rights reserved.</div>
 
-  return <h1>hello world</h1>
-
+        <div className="flex space-x-4">
+          <Link href="/" className="text-gray-600 hover:text-blue-500">
+            Privacy Policy
+          </Link>
+          <Link href="/" className="text-gray-600 hover:text-blue-500">
+            Terms of Service
+          </Link>
+          <Link href="/" className="text-gray-600 hover:text-blue-500">
+            Contact Us
+          </Link>
+        </div>
+      </footer>
+    </div>
+  );
 }
-
 
 const data = [
   {

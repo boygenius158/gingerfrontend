@@ -21,6 +21,8 @@ export default function SignInForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(email, password, error);
+
     try {
       console.log("working");
       const res = await signIn("credentials", {
@@ -29,13 +31,12 @@ export default function SignInForm() {
         redirect: false,
       });
       console.log("Response", res);
-      // if (res.error) {
-      //   setError("Invalid Credentials");
-      // } else {
-      //   setEmailInStore(email); // Set the email in the store only after successful sign-in
-      // }
+
       if (res.error === "CredentialsSignin") {
         setError("Unable to Login");
+      }
+      if(res.error === 'AccessDenied'){
+        setError("AccessDenied")
       }
     } catch (error) {
       console.error("Error signing in:", error);
@@ -44,9 +45,6 @@ export default function SignInForm() {
 
   return (
     <div className="py-16">
-      {/* Display userData.email */}
-      {/* <h1>{userEmail}d</h1> */}
-
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
           className="hidden lg:block lg:w-1/2 bg-cover"

@@ -18,7 +18,7 @@ function CheckoutForm() {
     setProcessing(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Access API URL from environment variable
+      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL; // Access API URL from environment variable
 
       const {
         data: { clientSecret },

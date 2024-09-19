@@ -15,6 +15,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function Matches() {
+  const{data:session} = useSession()
+  const[matches,setMatches] = useState([])
   const fetchMatches = useCallback(async () => {
     if (session?.id) {
       try {
@@ -29,7 +31,7 @@ export default function Matches() {
         console.error("Error fetching matches:", error);
       }
     }
-  }, []);
+  }, [session?.id]);
 
   useEffect(() => {
     fetchMatches();
@@ -45,7 +47,7 @@ export default function Matches() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {matches.map((element, index) => (
+          {matches &&  matches.map((element, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium text-center">
                 <div className="flex justify-around ">

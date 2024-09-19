@@ -25,23 +25,23 @@ const MenuItem = ({ onClick, children }) => (
 export default function Settings() {
   const { data: session, status } = useSession();
   const [page, setPage] = useState(null);
+  const [daysLeft, setDaysLeft] = useState("");
 
-  // async function fetchStatus(params) {
-  //   const response = await instance.post("/api/user/premiumStatus", {
-  //     userId: session?.id,
-  //   });
-
-  //   console.log(response.data.role);
-  //   setPage(response.data.role);
-  // }
   const fetchStatus = useCallback(async () => {
     const response = await instance.post("/api/user/premiumStatus", {
       userId: session?.id,
     });
-
+    console.log(session);
+    
     console.log(response.data.role);
     setPage(response.data.role);
-  }, [session?.id]);
+    if (response.data.role === "premium" || response.data.role === "admin") {
+      const response = await instance.post("/api/user/expiry-date", {
+        userId: session?.id,
+      });
+      setDaysLeft(response.data.daysLeft)
+    }
+  }, [session]);
   useEffect(() => {
     if (status === "authenticated") {
       fetchStatus();
@@ -74,7 +74,13 @@ export default function Settings() {
       {page === "premium" && (
         <div>
           {" "}
-          <Subscribed />
+          <Subscribed daysLeft={daysLeft} />
+        </div>
+      )}
+      {page === "admin" && (
+        <div>
+          {" "}
+          <Subscribed daysLeft={daysLeft} />
         </div>
       )}
     </div>

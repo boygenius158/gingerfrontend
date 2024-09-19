@@ -273,10 +273,7 @@ export default function Profile({ username }) {
               <TabsList>
                 <TabsTrigger value="posts">Posts</TabsTrigger>
                 <TabsTrigger value="saved-posts">Saved Post</TabsTrigger>
-                {/* <TabsTrigger value="draft">Draft</TabsTrigger>
-                <TabsTrigger value="archived" className="hidden sm:flex">
-                  Archived
-                </TabsTrigger> */}
+                
               </TabsList>
             </div>
           </div>
@@ -289,9 +286,7 @@ export default function Profile({ username }) {
           </TabsContent>
           <TabsContent value="archived"></TabsContent>
         </Tabs>
-        {/* <h1 className="p-4 text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center ">
-          Feed
-        </h1> */}
+        
       </div>
 
       {isOpen && (

@@ -22,7 +22,7 @@ export default function Profile() {
   const [selectedFileUrls, setSelectedFileUrls] = useState([]);
   const [user, setUser] = useState({});
   const [toggleStatus, setToggleStatus] = useState(true);
-
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: "",
     age: "",

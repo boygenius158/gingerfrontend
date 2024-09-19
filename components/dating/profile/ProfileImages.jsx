@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import instance from "@/axiosInstance";
 import { useEdgeStore } from "@/app/lib/edgestore";
+import { useCallback } from "react";
 
 export default function ProfileImages() {
   const { edgestore } = useEdgeStore();

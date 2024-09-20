@@ -18,6 +18,7 @@ const nextConfig = {
       'assets.aceternity.com'
     ],
   },
+  // output: 'export', // Enable static export
 };
 
 export default nextConfig;

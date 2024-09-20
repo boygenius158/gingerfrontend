@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 
 // Access the server URL from environment variables
 const baseURL = process.env.NEXT_PUBLIC_SERVER_URL;
-
+// const baseURL = 'https://ginger.today'
 const instance = axios.create({
   baseURL: baseURL,
   headers: {

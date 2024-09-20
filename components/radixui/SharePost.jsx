@@ -6,22 +6,51 @@ import { Share2Icon, Link1Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
 export default function SharePost({ post }) {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN; 
+  // const domain = process.env.NEXT_PUBLIC_DOMAIN; 
 
   console.log(post);
+  // function handleShareClick() {
+  //   console.log("handle share click", post._id);
+  //   const postUrl = post._id;
+  //   const text = `Check out this post: ${domain}/post/${postUrl}`; 
+
+  //   const whatsappUrl = `http://wa.me/?text=${encodeURIComponent(text)}`;
+  //   window.open(whatsappUrl, "_blank");
+  // }
+  // function handleCopyLink() {
+  //   const postUrl = post._id;
+  //   const textToCopy = `${process.env.NEXTAUTH_URL}/post/${postUrl}`;
+  //   navigator.clipboard
+  //     .writeText(textToCopy)
+  //     .then(() => {
+  //       console.log("Link copied to clipboard!");
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to copy the link: ", err);
+  //     });
+  // }
+
   function handleShareClick() {
     console.log("handle share click", post._id);
-    const postUrl = post._id;
-    const text = `Check out this post: ${domain}/post/${postUrl}`; 
-
+  
+    // Dynamically get the domain URL
+    const domain = `${window.location.protocol}//${window.location.host}`;
+    const postUrl = `${domain}/post/${post._id}`;
+  
+    const text = `Check out this post: ${postUrl}`;
     const whatsappUrl = `http://wa.me/?text=${encodeURIComponent(text)}`;
+  
+    // Open WhatsApp share in a new tab
     window.open(whatsappUrl, "_blank");
   }
+  
   function handleCopyLink() {
-    const postUrl = post._id;
-    const textToCopy = `${process.env.NEXTAUTH_URL}/post/${postUrl}`;
+    // Dynamically get the domain URL
+    const domain = `${window.location.protocol}//${window.location.host}`;
+    const postUrl = `${domain}/post/${post._id}`;
+  
     navigator.clipboard
-      .writeText(textToCopy)
+      .writeText(postUrl)
       .then(() => {
         console.log("Link copied to clipboard!");
       })
@@ -29,6 +58,8 @@ export default function SharePost({ post }) {
         console.error("Failed to copy the link: ", err);
       });
   }
+  
+
   return (
     <div className="">
       <Popover.Root>

@@ -21,8 +21,8 @@ export const description =
 
 export default function Page() {
   const { data: session, status } = useSession();
-  const [tab, setTab] = useState("otp-registration");
-  // const [tab, setTab] = useState("create-password");
+  // const [tab, setTab] = useState("otp-registration");
+  const [tab, setTab] = useState("create-password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

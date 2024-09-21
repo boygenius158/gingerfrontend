@@ -10,7 +10,7 @@ export default function Stories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchStories = useCallback(async()=>{
+  const fetchStories = useCallback(async () => {
     if (session?.id) {
       try {
         setLoading(true);
@@ -25,13 +25,11 @@ export default function Stories() {
         setLoading(false);
       }
     }
-  },[session?.id,setStories])
+  }, [session?.id, setStories]);
 
   useEffect(() => {
-    if (session?.id) {
-      fetchStories();
-    }
-  }, [session,fetchStories]);
+    fetchStories();
+  }, [fetchStories]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -39,9 +37,7 @@ export default function Stories() {
   return (
     <div className="bg-white z-10 mb-4 space-x-4 flex items-center p-6 w-screen lg:w-1/2 overflow-x-scroll hide-scrollbar">
       {stories.length > 0 ? (
-        stories.map((story, index) => (
-          <Story key={index} story={story} />
-        ))
+        stories.map((story, index) => <Story key={index} story={story} />)
       ) : (
         <div>No stories available</div>
       )}

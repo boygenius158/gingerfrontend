@@ -151,55 +151,67 @@ export default function Profile({ username }) {
   return (
     <div className="pt-16 px-4 sm:px-6 lg:px-8 xl:px-72">
       {isEditProfile ? (
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSaveProfile();
-            }}
-          >
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Name</label>
-              <input
-                type="text"
-                value={profileData.name}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, name: e.target.value })
-                }
-                className="border border-gray-300 p-2 rounded w-full"
+        <div className="flex flex-col lg:flex-row lg:space-x-24">
+          <div className="rounded-full flex items-center justify-center border border-gray-300 mb-6 lg:mb-0">
+            {user.profilePicture ? (
+              <Image
+                src={user.profilePicture}
+                className="rounded-full p-1 w-[145px] h-[145px] object-cover"
+                width={145}
+                height={145}
+                alt={`${user.username}'s profile picture`}
+                onClick={() => setIsOpen(true)}
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Bio</label>
-              <Textarea
-                value={profileData.bio}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, bio: e.target.value })
-                }
-                // className="border border-gray-300 p-2 rounded w-full"
-                rows="4"
-              />
-            </div>
-
-            <div className="flex space-x-4">
-              <button type="submit" className=" py-1 px-4 rounded">
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                  Save
-                </h4>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsEditProfileOpen(false)}
-                className="border border-gray-400 py-1 px-4 rounded"
+            ) : (
+              <div
+                className="rounded-full w-[145px] h-[145px] flex items-center justify-center bg-gray-300 text-white font-bold text-2xl"
+                onClick={() => setIsOpen(true)}
               >
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-                  Cancel
-                </h4>
-              </button>
+                {user.username?.slice(0, 2).toUpperCase() || "N/A"}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
+              <span className="font-bold text-lg">@{user.username}</span>
+              <span>
+                {isSameUser ? (
+                  <Button
+                    onClick={() => setIsEditProfileOpen(true)}
+                    variant="outline"
+                  >
+                    Edit Profile
+                  </Button>
+                ) : (
+                  <button
+                    className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
+                    onClick={handleFollow}
+                  >
+                    {isFollowing ? "Following" : "Follow"}
+                  </button>
+                )}
+              </span>
             </div>
-          </form>
+            <div className="flex justify-between pt-3 text-center lg:text-left">
+              <span className="text-sm font-semibold">
+                {posts.length} posts
+              </span>
+              <span className="text-sm font-semibold">
+                {user.followers.length} followers
+              </span>
+              <span className="text-sm font-semibold">
+                {user.following.length} following
+              </span>
+            </div>
+            <div className="pt-6 grid">
+              <span className="text-lg font-semibold">{profileData.name}</span>
+              <span>
+                <br />
+                {profileData.bio}
+              </span>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col lg:flex-row lg:space-x-24">
@@ -273,20 +285,18 @@ export default function Profile({ username }) {
               <TabsList>
                 <TabsTrigger value="posts">Posts</TabsTrigger>
                 <TabsTrigger value="saved-posts">Saved Post</TabsTrigger>
-                
               </TabsList>
             </div>
           </div>
 
           <TabsContent value="saved-posts">
-            <SavedPosts username={username } />
+            <SavedPosts username={username} />
           </TabsContent>
           <TabsContent value="posts">
             <PostSection posts={posts} />
           </TabsContent>
           <TabsContent value="archived"></TabsContent>
         </Tabs>
-        
       </div>
 
       {isOpen && (

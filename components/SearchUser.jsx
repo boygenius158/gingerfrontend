@@ -7,14 +7,14 @@ import Image from "next/image";
 import debounce from "lodash/debounce";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function SearchUser({ handleClose }) {
   const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
-  const [timeoutId, setTimeoutId] = useState(null);
   const [userProfiles, setUserProfiles] = useState([]);
+  const router = useRouter(); // Initialize useRouter
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -56,6 +56,9 @@ export default function SearchUser({ handleClose }) {
         },
       ]);
     }
+
+    // Use router to navigate to the user's profile
+    router.push(`/u/${search.username}`);
   }
 
   const fetchSearches = useCallback(async () => {
@@ -66,15 +69,16 @@ export default function SearchUser({ handleClose }) {
 
     setRecentSearches(response.data.searches);
   }, [session?.id]);
-  
+
   useEffect(() => {
     fetchSearches();
   }, [fetchSearches]);
+
   console.log(recentSearches);
 
   return (
     <div className="">
-      <div className="bg-white border rounded-lg w-[423px] h-[700px]  relative  ">
+      <div className="bg-white border rounded-lg w-[423px] h-[700px] relative">
         <button
           onClick={handleClose}
           className="absolute text-2xl top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -82,7 +86,7 @@ export default function SearchUser({ handleClose }) {
           &times;
         </button>
         <div className="flex top-0 left-0 mb-4">
-          <h1 className="p-4 text-2xl font-extrabold  tracking-tight lg:text-2xl flex justify-center items-center">
+          <h1 className="p-4 text-2xl font-extrabold tracking-tight lg:text-2xl flex justify-center items-center">
             Search
           </h1>
         </div>
@@ -104,17 +108,16 @@ export default function SearchUser({ handleClose }) {
         {searchTerm.length > 0 && userProfiles.length > 0 ? (
           <div>
             <div className="flex justify-between">
-              <h1 className="p-4 text-sm font-extrabold  tracking-tight cursor-pointer ">
+              <h1 className="p-4 text-sm font-extrabold tracking-tight cursor-pointer">
                 Recent
               </h1>
-              <h1 className="p-4 text-sm text-blue-600 font-extrabold  tracking-tight cursor-pointer "></h1>
             </div>
             <ul className="list-disc list-inside cursor-pointer max-h-[500px] overflow-y-scroll">
               {userProfiles.map((search, index) => (
                 <div
                   key={index}
                   onClick={() => displayProfileInformationHere(search)}
-                  className="flex"
+                  className="flex cursor-pointer"
                 >
                   <div className="p-2">
                     <Image
@@ -131,7 +134,6 @@ export default function SearchUser({ handleClose }) {
                       {search.name}
                     </div>
                   </div>
-                  <div className="ml-auto flex items-center justify-center p-4 "></div>
                 </div>
               ))}
             </ul>
@@ -139,41 +141,37 @@ export default function SearchUser({ handleClose }) {
         ) : (
           <div>
             <div className="flex justify-between">
-              <h1 className="p-4 text-sm font-extrabold  tracking-tight cursor-pointer ">
+              <h1 className="p-4 text-sm font-extrabold tracking-tight cursor-pointer">
                 Recent
               </h1>
-              <h1 className="p-4 text-sm text-blue-600 font-extrabold  tracking-tight cursor-pointer "></h1>
             </div>
             <ul className="list-disc list-inside cursor-pointer max-h-[500px] overflow-y-scroll">
               {recentSearches.map((search, index) => (
-                <Link
+                <div
                   key={index}
-                  href={`/u/${search?.searchedProfileId?.username}`}
+                  onClick={() =>
+                    displayProfileInformationHere(search?.searchedProfileId)
+                  }
+                  className="flex cursor-pointer"
                 >
-                  <div
-                    // key={index}
-                    onClick={() => displayProfileInformationHere(search)}
-                    className="flex"
-                  >
-                    <div className="p-2">
-                      <Image
-                        src={search?.searchedProfileId?.profilePicture}
-                        alt="failed"
-                        height={55}
-                        width={55}
-                        className="rounded-full"
-                      />
+                  <div className="p-2">
+                    <Image
+                      src={search?.searchedProfileId?.profilePicture}
+                      alt="failed"
+                      height={55}
+                      width={55}
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="font-bold">
+                      {search?.searchedProfileId?.username}
                     </div>
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="font-bold">
-                        {search?.searchedProfileId?.username}
-                      </div>
-                      <div className="font-extralight text-gray-500 first-letter:uppercase">
-                        {search?.searchedProfileId?.name}
-                      </div>
+                    <div className="font-extralight text-gray-500 first-letter:uppercase">
+                      {search?.searchedProfileId?.name}
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </ul>
           </div>

@@ -1,9 +1,8 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
-// Access the server URL from environment variables
 const baseURL = process.env.NEXT_PUBLIC_SERVER_URL;
-// const baseURL = 'https://ginger.today'
+
 const instance = axios.create({
   baseURL: baseURL,
   headers: {
@@ -11,24 +10,66 @@ const instance = axios.create({
   },
 });
 
+let isRefreshing = false;
+let newAccessToken = null; 
+
 instance.interceptors.request.use(
   async (config) => {
-    // Get the session
-    const session = await getSession();
-    console.log("hi", session);
+    // Check if there is a new access token and use that instead of session.token
+    if (newAccessToken) {
+      config.headers.Authorization = `Bearer ${newAccessToken}`;
+    } else {
+      const session = await getSession();
 
-    // Check if session exists and has a token
-    if (session && session.token) {
-      console.log(session);
-
-      // Attach the token to the request headers
-      config.headers.Authorization = `Bearer ${session.token}`;
+      if (session && session.token) {
+        config.headers.Authorization = `Bearer ${session.token}`;
+      }
     }
 
     return config;
   },
   (error) => {
-    // Handle request error
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+
+    if ( !originalRequest._retry && !isRefreshing) {
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const session = await getSession();
+
+      if (session && session.refreshToken) {
+        try {
+          // Get the new access token using the refresh token
+          const response = await instance.post("/refresh-token", {
+            refreshToken: session.refreshToken,
+          });
+
+          const { accessToken } = response.data; // Adjust based on your API response format
+          console.log("New Access Token:", accessToken);
+
+          newAccessToken = accessToken; // Store the new access token globally
+
+          
+          
+          isRefreshing = false;
+
+          return instance(originalRequest);
+        } catch (refreshError) {
+          isRefreshing = false;
+          return Promise.reject(refreshError);
+        }
+      }
+    }
+
     return Promise.reject(error);
   }
 );

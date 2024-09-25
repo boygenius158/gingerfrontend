@@ -5,17 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import Modal from "react-modal";
-import { HiCamera, HiPhone } from "react-icons/hi";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import instance from "@/axiosInstance";
-import SearchInput from "./SearchInput";
-import { HiPaperAirplane } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
-import { RiImageAddFill } from "react-icons/ri";
 import { HiPhoto } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,14 +22,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { CircleUser, Search, Package2, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 // import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
-import { EdgeStoreProvider, useEdgeStore } from "@/app/lib/edgestore";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import GingerLogo from "./GingerLogo";
 
 export default function Navbar() {
   const socket = useSocket();
@@ -145,52 +138,127 @@ export default function Navbar() {
     };
   }, [status, session?.id]);
 
-  async function handleSubmit() {
-    setSpin(true);
-    if (selectedFiles.length > 0) {
-      const formData = new FormData();
-      selectedFiles.forEach((file) => {
-        formData.append("files", file);
+  const saveFileDatabase = async (uploadUrls) => {
+    console.log(uploadUrls);
+    
+  };
+  const getPresignedUrls = async () => {
+    const fileData = selectedFiles.map((file) => ({
+      fileName: file.name,
+      fileType: file.type,
+    }));
+
+    try {
+      console.log("hi",session);
+
+      const response = await instance.post("/api/getPresignedUrls", {
+        files: fileData,
+        caption:caption,
+        userId:session?.id 
       });
-      if (caption) {
-        formData.append("caption", caption);
-      } else {
-        formData.append("caption", "*"); // Default empty caption
-      }
-      formData.append("email", session.user.email);
-      console.log("FormData entries:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      console.log(response.data);
 
-      try {
-        const response = await instance.post(
-          "/api/storageMediaInCloud",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        if (response.status === 200) {
-          console.log("Files uploaded successfully.");
-        } else {
-          console.error("File upload failed.");
-        }
-      } catch (error) {
-        console.error("Error uploading files:", error);
-      }
-
-      setIsOpen(false);
-      setSelectedFiles([]);
-      setImageFileUrls([]);
-      setCaption("");
-      setSpin(false);
-    } else {
-      console.error("No files selected.");
+      return response.data.presignedUrls; // This will be an array of upload URLs and keys
+    } catch (error) {
+      console.error("Error getting presigned URLs:", error);
+      setUploadStatus("Error getting presigned URLs");
+      throw error; // Rethrow the error for further handling
     }
-  }
+  };
+  const uploadFiles = async (uploadUrls) => {
+    try {
+      await Promise.all(
+        uploadUrls.map(async (uploadInfo, index) => {
+          console.log(uploadInfo, index);
+
+          const file = selectedFiles[index];
+          try {
+            await axios.put(uploadInfo.uploadUrl, file, {
+              headers: {
+                "Content-Type": file.type,
+              },
+              onUploadProgress: (progressEvent) => {
+                const progress = Math.round(
+                  (progressEvent.loaded * 100) / progressEvent.total
+                );
+                console.log(`File ${file.name} is ${progress}% uploaded`);
+              },
+            });
+            setIsOpen(false);
+            setSelectedFiles([]);
+            setImageFileUrls([]);
+            setCaption("");
+            setSpin(false);
+          } catch (error) {
+            console.error(`Error uploading file: ${file.name}`, error);
+          }
+        })
+      );
+      // setUploadStatus("Files uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      // setUploadStatus("Error uploading files");
+    }
+  };
+  const handleUpload = async () => {
+    try {
+      setSpin(true);
+
+      const uploadUrls = await getPresignedUrls();
+      await uploadFiles(uploadUrls);
+      await saveFileDatabase(uploadUrls)
+    } catch (error) {
+      console.error("Upload failed:", error);
+      // setUploadStatus("Upload failed");
+    }
+  };
+
+  // async function handleSubmit() {
+  //   setSpin(true);
+  //   if (selectedFiles.length > 0) {
+  //     const formData = new FormData();
+  //     selectedFiles.forEach((file) => {
+  //       formData.append("files", file);
+  //     });
+  //     if (caption) {
+  //       formData.append("caption", caption);
+  //     } else {
+  //       formData.append("caption", "*"); // Default empty caption
+  //     }
+  //     formData.append("email", session.user.email);
+  //     console.log("FormData entries:");
+  //     for (let pair of formData.entries()) {
+  //       console.log(pair[0], pair[1]);
+  //     }
+
+  //     try {
+  //       const response = await instance.post(
+  //         "/api/storageMediaInCloud",
+  //         formData,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+  //       if (response.status === 200) {
+  //         console.log("Files uploaded successfully.");
+  //       } else {
+  //         console.error("File upload failed.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error uploading files:", error);
+  //     }
+
+  //     setIsOpen(false);
+  //     setSelectedFiles([]);
+  //     setImageFileUrls([]);
+  //     setCaption("");
+  //     setSpin(false);
+  //   } else {
+  //     console.error("No files selected.");
+  //   }
+  // }
 
   function addImageToPost(e) {
     const files = Array.from(e.target.files);
@@ -291,7 +359,7 @@ export default function Navbar() {
                   <span className="sr-only">Ginger</span>
                 </Link>
                 <p
-                  onClick={()=>setIsOpen(true)}
+                  onClick={() => setIsOpen(true)}
                   className="text-muted-foreground hover:text-foreground"
                 >
                   upload post
@@ -436,7 +504,8 @@ export default function Navbar() {
             />
 
             <Button
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
+              onClick={handleUpload}
               disabled={selectedFiles.length === 0}
               className="w-full  text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
             >

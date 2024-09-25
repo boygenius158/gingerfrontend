@@ -127,7 +127,7 @@ export default function MiniProfile() {
               width={60}
               height={60}
             />
-            <div onClick={() => setIsOpen2(true)} className="text-sm">
+            <div onClick={() => setIsOpen2(true)} className="text-sm cursor-pointer ">
               upload story
             </div>
           </div>

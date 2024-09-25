@@ -15,7 +15,8 @@ const nextConfig = {
       'profilemagazine.com',
       'images.unsplash.com',
       'files.oaiusercontent.com',
-      'assets.aceternity.com'
+      'assets.aceternity.com',
+      'gingerappbucket1.s3.amazonaws.com'
     ],
   },
   // output: 'export', // Enable static export

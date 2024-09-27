@@ -7,14 +7,18 @@ import { HiCamera, HiOutlineDotsVertical } from "react-icons/hi";
 import { HiPaperAirplane } from "react-icons/hi";
 import { Player } from "@lottiefiles/react-lottie-player";
 import Modal from "react-modal";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import MessageStatusCard from "./MessageStatusCard";
 import { useEdgeStore } from "@/app/lib/edgestore";
 import ReactPlayer from "react-player";
 import WaveForm from "./WaveForm";
 import Link from "next/link";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
 export default function Chat({ recipient }) {
+  const router = useRouter();
   const { edgestore } = useEdgeStore();
   const socket = useSocket();
   const [input, setInput] = useState("");
@@ -24,6 +28,7 @@ export default function Chat({ recipient }) {
   const { data: session } = useSession();
   const [imageFileUrls, setImageFileUrls] = useState("");
   const [file, setFile] = useState();
+  const [spin, setSpin] = useState(false);
   const [reachedBottom, setReachedBottom] = useState(false);
   // const [showStatus, setShowStatus] = useState(false);
   const [showStatusFor, setShowStatusFor] = useState(null);
@@ -38,6 +43,11 @@ export default function Chat({ recipient }) {
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
 
+  const createRoom = () => {
+    const roomId = uuidv4();
+    console.log("New Room ID:", roomId);
+    return roomId;
+  };
   useEffect(() => {
     let interval;
     if (isRecording) {
@@ -175,41 +185,55 @@ export default function Chat({ recipient }) {
   }
 
   async function handleSubmit() {
+    setSpin(true)
     if (file) {
+      // Upload the file and track progress
       const res = await edgestore.publicFiles.upload({
         file,
         onProgressChange: (progress) => {
           console.log(progress);
         },
       });
-      if (session) {
-        const response = await instance.post("/api/user/sendImageInChat", {
-          url: res.url,
-          userId: session?.id,
-        });
-      }
 
-      if (response) {
-        setFile(null);
-        setImageFileUrls(null);
-        setIsOpen(false);
-        socket.emit("ImageMessage", {
-          recipientEmail: recipient.email,
-          senderEmail: session?.user?.email,
-          message: res.url,
-          type: "image",
-        });
+      // Check if there is a valid session
+      if (session) {
+        if (session) {
+          setFile(null);
+          setImageFileUrls(null);
+          setIsOpen(false);
+
+          // Emit the socket event for real-time updates
+          socket.emit("ImageMessage", {
+            recipientEmail: recipient.email,
+            senderEmail: session?.user?.email,
+            message: res.url,
+            type: "image",
+          });
+        } else {
+          console.error("Failed to send image:", response?.data?.message);
+        }
       }
+      setSpin(false)
     }
   }
+
   console.log(imageFileUrls);
 
   console.log(session);
 
   console.log(recipient);
   function setCallNotification() {
+    console.log("hello");
+
     console.log("call notification");
-    socket.emit("call_notification", recipient.email);
+    socket.emit("call_button_clicked", {
+      senderEmail: session?.user?.email,
+      recipientEmail: recipient.email,
+    });
+
+    const roomId = createRoom();
+    console.log(roomId);
+    // router.push(`/u/room/${roomId}`)
   }
   const fetchHistoricalData = useCallback(async () => {
     if (session && recipient?._id) {
@@ -261,6 +285,9 @@ export default function Chat({ recipient }) {
         console.log(data);
 
         setRecipientOnline(data);
+      });
+      socket.on("caller_notification", (data) => {
+        console.log(data);
       });
     }
   }, [socket]);
@@ -399,22 +426,22 @@ export default function Chat({ recipient }) {
               <div className="flex items-center justify-center"></div>
               <div className="flex items-center justify-center cursor-pointer">
                 <span onClick={setCallNotification} className="">
-                  <Link href="/u/videocall">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="size-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
-                      />
-                    </svg>
-                  </Link>
+                  {/* <Link href="/u/room"> */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+                    />
+                  </svg>
+                  {/* </Link> */}
                 </span>
               </div>
               <div className="flex items-center justify-center mr-3">
@@ -603,24 +630,28 @@ export default function Chat({ recipient }) {
               overlayClassName="fixed inset-0 bg-black bg-opacity-50"
               ariaHideApp={false}
             >
-              <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
+              <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-white">
                 <h2 className="text-xl font-semibold mb-4">Send Image</h2>
                 {imageFileUrls ? (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center justify-center bg-red-600">
+                    {/* <div className="grid grid-cols-2 gap-4"> */}
                     {/* {imageFileUrls.map((url, index) => ( */}
-                    <Image
-                      // key={index}
-                      onClick={() => {
-                        setImageFileUrls();
-                        setFile();
-                      }}
-                      src={imageFileUrls}
-                      alt={`selected file `}
-                      width={150}
-                      height={150}
-                      className="cursor-pointer"
-                    />
+                    <div className="">
+                      <Image
+                        // key={index}
+                        onClick={() => {
+                          setImageFileUrls();
+                          setFile();
+                        }}
+                        src={imageFileUrls}
+                        alt={`selected file `}
+                        width={150}
+                        height={150}
+                        className="cursor-pointer"
+                      />
+                    </div>
                     {/* ))} */}
+                    {/* </div> */}
                   </div>
                 ) : (
                   <HiCamera
@@ -639,14 +670,17 @@ export default function Chat({ recipient }) {
                   onChange={addImageToPost}
                 />
 
-                <button
+                <Button
                   type="submit"
                   onClick={handleSubmit}
                   disabled={!file}
-                  className="w-full bg-red-600 text-white p-2 shadow-md rounded-lg hover:brightness-105 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
+                  className="w-full mt-4 text-white p-2 shadow-md rounded-lg hover:brightness-105  disabled:cursor-not-allowed disabled:hover:brightness-100"
                 >
-                  Send Image
-                </button>
+                  {!spin && <p>Upload</p>}
+                  {spin && (
+                    <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+                  )}
+                </Button>
                 <AiOutlineClose
                   className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
                   onClick={() => setIsOpen(false)}

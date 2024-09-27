@@ -59,7 +59,9 @@ export default function Matches() {
                     <p>You Matched With @{element.userId.username}</p>
                   </div>
                   <div className="">
-                    <Link href={`/u/${element.userId.username}`}>
+                    <Link 
+                    href={`/u/${element.userId.username}`}
+                    >
                       <Button variant="outline">Visit Profile</Button>
                     </Link>
                   </div>

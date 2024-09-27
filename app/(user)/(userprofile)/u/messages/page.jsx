@@ -20,7 +20,7 @@ export default function Page() {
   // Memoize fetchList to avoid unnecessary re-renders
   const fetchList = useCallback(async () => {
     if (!session?.id) {
-      console.error("Session ID is not available");
+      console.log("Session ID is not available");
       return;
     }
 
@@ -30,8 +30,8 @@ export default function Page() {
       });
 
       if (response) {
-        console.log("response received", response.data.followingUsers);
-        setList(response.data.followingUsers);
+        console.log("response received", response.data.uniqueUsers); 
+        setList(response.data.uniqueUsers); 
       }
     } catch (error) {
       console.error("Error fetching chat list:", error);

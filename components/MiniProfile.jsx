@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { HiPaperAirplane } from "react-icons/hi";
 import { IoIosAddCircle } from "react-icons/io";
 import { useEdgeStore } from "@/app/lib/edgestore";
@@ -34,6 +34,7 @@ export default function MiniProfile() {
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState("");
   const [role, setRole] = useState("");
+  const [spin, setSpin] = useState(false);
   const [notifications, setNotifications] = useState(0);
 
   // console.log(session);
@@ -127,7 +128,10 @@ export default function MiniProfile() {
               width={60}
               height={60}
             />
-            <div onClick={() => setIsOpen2(true)} className="text-sm cursor-pointer ">
+            <div
+              onClick={() => setIsOpen2(true)}
+              className="text-sm cursor-pointer "
+            >
               upload story
             </div>
           </div>
@@ -344,7 +348,7 @@ export default function MiniProfile() {
           contentLabel="Example Modal"
         >
           <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
-            <h4 className=" text-2xl font-extrabold  tracking-tight lg:teFxt-2xl   ">
+            <h4 className=" text-2xl mb-4 font-extrabold  tracking-tight lg:teFxt-2xl   ">
               Upload Story
             </h4>
 
@@ -366,6 +370,7 @@ export default function MiniProfile() {
             />
             <button
               onClick={async () => {
+                setSpin(true);
                 if (file) {
                   const res = await edgestore.publicFiles.upload({
                     file,
@@ -385,19 +390,26 @@ export default function MiniProfile() {
                     }
                   );
                   if (response) {
+                    setSpin(false);
                     setFile(null);
                     setStoryFileUrl(null);
                     setIsOpen2(false);
                   }
                 }
               }}
-              className="w-full bg-red-600
+              className="w-full mt-4 bg-black
              text-white p-2 shadow-md
              rounded-lg hover:brightness-105
               disabled:bg-gray-200 disabled:cursor-not-allowed 
               disabled:hover:brightness-100"
             >
-              upload Story
+              {!spin && <p>Upload Story</p>}
+              {spin && (
+                <div className="flex items-center justify-center">
+                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+
+                </div>
+)}
             </button>
             <AiOutlineClose
               className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"

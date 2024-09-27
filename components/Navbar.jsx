@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
 import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import Modal from "react-modal";
@@ -14,6 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
 import { HiPhoto } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import {
   Carousel,
   CarouselContent,
@@ -22,69 +24,121 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Menu } from "lucide-react";
+import { Menu, Terminal } from "lucide-react";
 // import { Button } from "./ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   const socket = useSocket();
   const [user, setUser] = useState("");
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [caption, setCaption] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [notificationHandled, setNotificationHandled] = useState(false);
   const [imageFileUrls, setImageFileUrls] = useState([]);
   const [caller, setCaller] = useState();
   const [spin, setSpin] = useState(false);
   console.log(session);
+  const handleRoomShift = useCallback(
+    (data) => {
+      router.push(`/u/room/${data}`);
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (socket) {
-      const handleUserCalling = (msg) => {
-        console.log("User calling:", msg);
-        setCaller(msg);
+      const callNotificationHandler = (data) => {
+        console.log(data);
+        setCaller(data);
+        setNotificationHandled(false); // Reset notification status when a new call comes in
       };
 
-      socket.on("user_calling", handleUserCalling);
+      const joinRoomHandler = (data) => {
+        console.log(data);
+        handleRoomShift(data);
+      };
+
+      // Register socket listeners
+      socket.on("call_notification_sent", callNotificationHandler);
+      socket.on("join_room", joinRoomHandler);
 
       return () => {
-        socket.off("user_calling", handleUserCalling);
+        // Unregister socket listeners during cleanup
+        socket.off("call_notification_sent", callNotificationHandler);
+        socket.off("join_room", joinRoomHandler);
       };
     }
-  }, [socket]);
-  // Use useEffect to call notify after the caller state is updated
+  }, [socket, handleRoomShift]);
+
+  const callAccept = useCallback(
+    (caller) => {
+      console.log("call accepted");
+
+      socket.emit("rec_accepted_call", {
+        rec: session?.user?.email,
+        caller: caller.email,
+      });
+
+      // Reset caller state and mark the notification as handled
+      setCaller(null);
+      setNotificationHandled(true);
+    },
+    [socket, session]
+  );
+
+  const callReject = () => {
+    console.log("call rejected");
+
+    // Reset caller state and mark the notification as handled
+    setCaller(null);
+    setNotificationHandled(true);
+  };
+
   useEffect(() => {
-    if (caller) {
+    if (caller && !notificationHandled) {
       toast(
-        <div className="flex items-center space-x-3 p-4 shadow-lg rounded-lg  border-gray-200">
-          <Image
-            src={caller?.profilePicture}
-            // src="https://i.pinimg.com/564x/34/16/cf/3416cfaa54b60042a5f354471d841358.jpg"
-            alt="Profile"
-            width={25}
-            height={25}
-            className="rounded-full"
-          />
-          {/* <p>{caller}</p> */}
-          <div className="flex-1">
-            <p className="text-gray-700 font-semibold">
-              {caller.username} is calling you
-            </p>
+        <Alert>
+          <div>
+            <div className="flex items-center justify-center">
+              <AlertTitle>
+                <span className="tracking-tight text-4xl">
+                  {caller.username}
+                </span>
+              </AlertTitle>
+            </div>
+            <div className="flex items-center justify-center">
+              <Image
+                src={caller?.profilePicture}
+                alt="Profile"
+                width={200}
+                height={200}
+                className="rounded-full"
+              />
+            </div>
+            <div className="flex items-center justify-center mt-2 space-x-4">
+              <Button>
+                <div onClick={() => callAccept(caller)}>Accept</div>
+              </Button>
+              <Button>
+                <div onClick={() => callReject()}>Reject</div>
+              </Button>
+            </div>
           </div>
-        </div>,
+        </Alert>,
         {
           position: "top-center",
           autoClose: false,
-          className: "custom-toast",
-          bodyClassName: "custom-toast-body",
-          progressClassName: "custom-toast-progress",
           hideProgressBar: false,
         }
       );
     }
-  }, [caller]);
+  }, [caller, callAccept,notificationHandled]);
 
   console.log(caller);
 
@@ -140,7 +194,6 @@ export default function Navbar() {
 
   const saveFileDatabase = async (uploadUrls) => {
     console.log(uploadUrls);
-    
   };
   const getPresignedUrls = async () => {
     const fileData = selectedFiles.map((file) => ({
@@ -149,12 +202,12 @@ export default function Navbar() {
     }));
 
     try {
-      console.log("hi",session);
+      console.log("hi", session);
 
       const response = await instance.post("/api/getPresignedUrls", {
         files: fileData,
-        caption:caption,
-        userId:session?.id 
+        caption: caption,
+        userId: session?.id,
       });
       console.log(response.data);
 
@@ -206,7 +259,7 @@ export default function Navbar() {
 
       const uploadUrls = await getPresignedUrls();
       await uploadFiles(uploadUrls);
-      await saveFileDatabase(uploadUrls)
+      await saveFileDatabase(uploadUrls);
     } catch (error) {
       console.error("Upload failed:", error);
       // setUploadStatus("Upload failed");

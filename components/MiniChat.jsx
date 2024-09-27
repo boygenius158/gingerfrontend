@@ -24,13 +24,7 @@ export default function MiniChat({ userSelected, list }) {
   }
   console.log(session);
 
-  // socket.on("user_calling", (msg) => {
-  //   console.log(msg, "pooo");
-  //   setCaller(msg)
-  // });
-  // socket.on("caller_notification", (msg) => {
-  //   console.log(msg);
-  // });
+  
   return (
     <div className=" bg-gray-100 p-4 mt-8 rounded-lg shadow-md">
       <div className="text-center  font-semibold mb-4">
@@ -56,7 +50,7 @@ export default function MiniChat({ userSelected, list }) {
                 />
                 <p className="text-md font-medium">{user.username}</p>
               </div>
-              <div
+              {/* <div
                 className=" flex items-center justify-end mr-8 cursor-pointer"
                 onClick={() => handleVedioCall(user)}
               >
@@ -74,7 +68,7 @@ export default function MiniChat({ userSelected, list }) {
                     d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
                   />
                 </svg>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

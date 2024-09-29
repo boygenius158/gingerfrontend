@@ -28,18 +28,22 @@ export default function Settings() {
   const [daysLeft, setDaysLeft] = useState("");
 
   const fetchStatus = useCallback(async () => {
-    const response = await instance.post("/api/user/premiumStatus", {
-      userId: session?.id,
-    });
-    console.log(session);
-    
-    console.log(response.data.role);
-    setPage(response.data.role);
-    if (response.data.role === "premium" || response.data.role === "admin") {
-      const response = await instance.post("/api/user/expiry-date", {
+    if (session) {
+      const response = await instance.post("/api/user/premiumStatus", {
         userId: session?.id,
       });
-      setDaysLeft(response.data.daysLeft)
+      console.log(session);
+
+      console.log(response.data.role);
+      setPage(response.data.role);
+      if (response.data.role === "premium" ) {
+        console.log("worked");
+        
+        const response = await instance.post("/api/user/expiry-date", {
+          userId: session?.id,
+        });
+        setDaysLeft(response.data.daysLeft);
+      }
     }
   }, [session]);
   useEffect(() => {
@@ -80,7 +84,7 @@ export default function Settings() {
       {page === "admin" && (
         <div>
           {" "}
-          <Subscribed daysLeft={daysLeft} />
+          {/* <Subscribed daysLeft={daysLeft} /> */}
         </div>
       )}
     </div>

@@ -142,11 +142,11 @@ export default function SearchUser({ handleClose }) {
           <div>
             <div className="flex justify-between">
               <h1 className="p-4 text-sm font-extrabold tracking-tight cursor-pointer">
-                Recent
+                {/* Recent */}
               </h1>
             </div>
             <ul className="list-disc list-inside cursor-pointer max-h-[500px] overflow-y-scroll">
-              {recentSearches.map((search, index) => (
+              {/* {recentSearches.map((search, index) => (
                 <div
                   key={index}
                   onClick={() =>
@@ -172,7 +172,7 @@ export default function SearchUser({ handleClose }) {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))} */}
             </ul>
           </div>
         )}

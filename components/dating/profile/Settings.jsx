@@ -33,7 +33,7 @@ export default function Settings() {
         const data = {
           profileVisibility,
           maximumAge: age,
-          genderPreference: gender,
+          interestedGender: gender,
           userId: session?.id,
         };
 

@@ -15,8 +15,10 @@ import { useEdgeStore } from "@/app/lib/edgestore";
 import Link from "next/link";
 import PostSection from "./profile/PostSection";
 import SavedPosts from "./profile/SavedPosts";
+import { useSocket } from "@/app/lib/SocketContext";
 
 export default function Profile({ username }) {
+  const socket = useSocket();
   const { edgestore } = useEdgeStore();
   const filePickerRef = useRef(null);
   const { data: session, status } = useSession();
@@ -103,12 +105,18 @@ export default function Profile({ username }) {
   }
   async function handleFollow() {
     // Optimistic UI Update
+    if(!session){
+      return
+    }
     setIsFollowing((prev) => !prev);
-
+      // socket.emit("person_follows", {
+      //   followUser: user.email,
+      //   orginalUser: session?.user?.email,
+      // });
     try {
       const res = await instance.post("/api/user/followprofile", {
         followUser: user.email,
-        orginalUser: session.user.email,
+        orginalUser: session?.user?.email,
       });
       console.log(res);
     } catch (error) {

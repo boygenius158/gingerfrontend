@@ -18,6 +18,9 @@ const NotificationItem = ({ type, message, image, username }) => {
     case "follow":
       icon = "🤵";
       break;
+    case "unfollow":
+      icon = "🤵";
+      break;
     default:
       icon = "🔔";
   }
@@ -63,28 +66,27 @@ export default function Notification() {
   }, [session?.id]);
 
   useEffect(() => {
-    if (!socket) {   
+    if (!socket) {
       console.log("socket is missing");
-      return
+      return;
     }
     // socket.emit("register", session?.user?.email);
 
     socket.on("notification_stack", (msg) => {
       console.log(msg);
-      setNotifications((prev)=>[...prev,msg])
-      
+      setNotifications((prev) => [...prev, msg]);
     });
-  }, [session,socket]); 
+  }, [session, socket]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (session?.id) {
       fetchData();
-    } 
-  }, [session?.id,fetchData]);
-  
-  console.log(notifications)
-    
-  return (   
+    }
+  }, [session?.id, fetchData]);
+
+  console.log(notifications);
+
+  return (
     <div className="flex flex-col">
       <div className="p-4">
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl flex justify-center items-center">

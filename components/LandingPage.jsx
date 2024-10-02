@@ -17,7 +17,7 @@ export default function LandingPage() {
         >
           <Link href="/">
             <h1 className="scroll-m-20 text-white text-4xl font-extrabold tracking-tight lg:text-8xl">
-              Ginger..
+              Ginger.
             </h1>
           </Link>
           <p className="text-white text-2xl md:text-4xl max-w-xl mt-6 text-center">

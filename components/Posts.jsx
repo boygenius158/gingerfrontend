@@ -98,7 +98,10 @@ export default function Posts() {
                 <Post key={post._id} post={post} isSaved={post.isSaved} />
               ))
             ) : feedPosts.length === 0 ? (
-              <div>No posts to see. </div>
+              <div>
+                {" "}
+                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+              </div>
             ) : (
               <div>
                 {" "}

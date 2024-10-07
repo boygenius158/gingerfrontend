@@ -26,7 +26,7 @@ export default function Profile({ username }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isEditProfile, setIsEditProfileOpen] = useState(false);
+  const [isEditProfile, setIsEditProfileOpen] = useState(true);
   console.log(session);
 
   const [profileData, setProfileData] = useState({

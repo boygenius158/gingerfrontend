@@ -5,6 +5,7 @@ import instance from "@/axiosInstance";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Stories from "./Stories";
 import { Spinner } from "@radix-ui/themes";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function Posts() {
   const { data: session, status } = useSession();
@@ -75,9 +76,9 @@ export default function Posts() {
 
   return (
     <div className="relative ">
-        <h1 className=" text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
-          Feed
-        </h1>
+      <h1 className=" text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
+        Feed
+      </h1>
       <div className="">
         {/* Add padding to prevent content from being hidden behind the fixed heading */}
         <Stories />
@@ -96,8 +97,13 @@ export default function Posts() {
               feedPosts.map((post) => (
                 <Post key={post._id} post={post} isSaved={post.isSaved} />
               ))
+            ) : feedPosts.length === 0 ? (
+              <div>No posts to see. </div>
             ) : (
-              <div>No posts available.</div>
+              <div>
+                {" "}
+                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+              </div>
             )}
           </div>
         </InfiniteScroll>

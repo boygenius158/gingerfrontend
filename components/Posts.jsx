@@ -97,17 +97,17 @@ export default function Posts() {
               // feedPosts.map((post) => (
               //   <Post key={post._id} post={post} isSaved={post.isSaved} />
               // ))
-              <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+              <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
 
             ) : feedPosts.length === 0 ? (
               <div>
                 {" "}
-                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+                <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
               </div>
             ) : (
               <div>
                 {" "}
-                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+                <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
               </div>
             )}
           </div>

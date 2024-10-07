@@ -92,9 +92,9 @@ export default function Profile({ username }) {
   }, [user]);
   console.log(posts);
 
-  if (!user || !user.email) {
-    return <NotFound />; // Render nothing if user data is not available yet
-  }
+  // if (!user || !user.email) {
+  //   return <NotFound />; // Render nothing if user data is not available yet
+  // }
 
   const isSameUser = session?.user?.email === user.email;
   function handleModalClose() {

@@ -94,16 +94,11 @@ export default function Posts() {
         >
           <div className="container">
             {feedPosts.length > 0 ? (
-              // feedPosts.map((post) => (
-              //   <Post key={post._id} post={post} isSaved={post.isSaved} />
-              // ))
-              <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
-
+              feedPosts.map((post) => (
+                <Post key={post._id} post={post} isSaved={post.isSaved} />
+              ))
             ) : feedPosts.length === 0 ? (
-              <div>
-                {" "}
-                <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
-              </div>
+              <div>No posts to see. </div>
             ) : (
               <div>
                 {" "}

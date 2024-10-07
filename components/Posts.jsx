@@ -13,22 +13,27 @@ export default function Posts() {
   const [feedPosts, setFeedPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(true); // New loading state
   const limit = 2;
 
   const fetchPosts = useCallback(
     async (email) => {
       try {
+        setLoading(true); // Set loading to true when fetching
         const response = await instance.post(`/api/user/fetchfeed`, {
           email: email,
-          offset: 0, // Always start from 0 for the initial fetch
+          offset: 0,
           limit: limit,
         });
 
         console.log("response", response.data.feed);
         setFeedPosts(response.data.feed || []);
-        setOffset(limit); // Set offset after initial fetch
+        setOffset(limit);
+        setHasMore(response.data.feed.length > 0);
       } catch (error) {
         console.error("Failed to fetch posts", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     },
     [limit]
@@ -80,7 +85,6 @@ export default function Posts() {
         Feed
       </h1>
       <div className="">
-        {/* Add padding to prevent content from being hidden behind the fixed heading */}
         <Stories />
         <InfiniteScroll
           dataLength={feedPosts.length}
@@ -93,17 +97,14 @@ export default function Posts() {
           }
         >
           <div className="container">
-            {feedPosts.length > 0 ? (
+            {loading ? (
+              <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
+            ) : feedPosts.length > 0 ? (
               feedPosts.map((post) => (
                 <Post key={post._id} post={post} isSaved={post.isSaved} />
               ))
-            ) : feedPosts.length === 0 ? (
-              <div>No posts to see. </div>
             ) : (
-              <div>
-                {" "}
-                <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
-              </div>
+              <div>No posts to see.</div>
             )}
           </div>
         </InfiniteScroll>

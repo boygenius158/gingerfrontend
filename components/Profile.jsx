@@ -207,7 +207,7 @@ export default function Profile({ username }) {
                 {posts.length} posts
               </span>
               <span className="text-sm font-semibold">
-                {user.followers.length} followersdsgi
+                {user.followers.length} followers
               </span>
               <span className="text-sm font-semibold">
                 {user.following.length} following

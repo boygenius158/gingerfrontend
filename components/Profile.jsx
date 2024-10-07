@@ -93,7 +93,8 @@ export default function Profile({ username }) {
   console.log(posts);
 
   if (!user || !user.email) {
-    return <NotFound />; // Render nothing if user data is not available yet
+    return <div></div>;
+    // return <NotFound />; // Render nothing if user data is not available yet
   }
 
   const isSameUser = session?.user?.email === user.email;
@@ -105,14 +106,14 @@ export default function Profile({ username }) {
   }
   async function handleFollow() {
     // Optimistic UI Update
-    if(!session){
-      return
+    if (!session) {
+      return;
     }
     setIsFollowing((prev) => !prev);
-      // socket.emit("person_follows", {
-      //   followUser: user.email,
-      //   orginalUser: session?.user?.email,
-      // });
+    // socket.emit("person_follows", {
+    //   followUser: user.email,
+    //   orginalUser: session?.user?.email,
+    // });
     try {
       const res = await instance.post("/api/user/followprofile", {
         followUser: user.email,

@@ -344,35 +344,22 @@ export default function Chat({ recipient }) {
   console.log(messages);
   if (!recipient) {
     return (
-      <div>
-        <div className="lg:mt-8 h-16 bg-white border rounded flex justify-between ">
+      <div className="h-screen ">
+        <div className="lg:mt-8 h-16 bg-black  rounded flex justify-between ">
           <div className="flex justify-center items-center">
             <div>{recipient.username}</div>
           </div>
           <div className="flex gap-4  ">
             <div className="flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
-                />
-              </svg>
+              
             </div>
             <div className="flex items-center justify-center"></div>
             <div className="flex items-center justify-center mr-3">
-              <HiOutlineDotsVertical className="h-5 cursor-pointer" />
+              {/* <HiOutlineDotsVertical className="h-5 cursor-pointer" /> */}
             </div>
           </div>
         </div>
-        <div className=" h-96 bg-gray-50 flex items-center justify-center">
+        <div className=" h-96  bg-black flex items-center justify-center">
           <div className="">
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ">
               Start Messaging!
@@ -392,9 +379,9 @@ export default function Chat({ recipient }) {
     );
   } else {
     return (
-      <div className="lg:mt-8 bg-gray-50">
+      <div className="lg:mt-8 bg-black h-screen border-gray-800">
         <div className="">
-          <div className="h-16 bg-white border rounded flex justify-between ">
+          <div className="h-16 bg-gray-300 text-black border border-gray-700 rounded flex justify-between ">
             <div className="flex justify-center items-center">
               <div className="p-4">
                 <Image
@@ -433,7 +420,7 @@ export default function Chat({ recipient }) {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="size-6"
+                    className="size-6 text-purple-700 hover:scale-125 transition-transform 300"
                   >
                     <path
                       stroke-linecap="round"
@@ -445,14 +432,14 @@ export default function Chat({ recipient }) {
                 </span>
               </div>
               <div className="flex items-center justify-center mr-3">
-                <HiOutlineDotsVertical className="h-5 cursor-pointer" />
+                <HiOutlineDotsVertical className="h-5 cursor-pointer text-purple-700" />
               </div>
             </div>
           </div>
         </div>
 
         <div
-          className="h-96 overflow-y-scroll border p-4 space-y-2"
+          className="h-96 overflow-y-scroll border p-4 space-y-2 border-gray-800"
           onScroll={handleScroll}
         >
           {messages.map((msg, index) => {
@@ -472,8 +459,8 @@ export default function Chat({ recipient }) {
                   onMouseLeave={() => handleMouseLeaveMessage()}
                   className={`inline-block cursor-pointer p-2 max-w-xs ${
                     isSender
-                      ? "bg-blue-500 text-white rounded-tl-2xl rounded-bl-2xl rounded-tr-md"
-                      : "bg-gray-200 text-black rounded-tr-2xl rounded-br-2xl rounded-tl-md"
+                      ? "bg-purple-600 text-white rounded-tl-2xl rounded-bl-2xl rounded-tr-md transition-transform duration-300 hover:scale-125"
+                      : "bg-gray-200 text-black rounded-tr-2xl rounded-br-2xl rounded-tl-md transition-transform duration-300 hover:scale-125"
                   }`}
                 >
                   {msg.type === "image" ? (
@@ -516,10 +503,10 @@ export default function Chat({ recipient }) {
 
         {!audioMessage && (
           <form action="" onSubmit={handleMesssageSent}>
-            <div className="bg-white p-3 border-t flex items-center space-x-3">
+            <div className="bg-gray-300 p-3 border-t  flex items-center space-x-3">
               <div
                 onClick={handleAudioStart}
-                className="inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
+                className="text-purple-700 inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-purple-700 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -538,7 +525,7 @@ export default function Chat({ recipient }) {
               </div>
               <div
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
+                className="text-purple-600 border-purple-700 inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -546,7 +533,7 @@ export default function Chat({ recipient }) {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-6 h-6 text-gray-700"
+                  className="w-6 h-6 text-purple-700"
                 >
                   <path
                     stroke-linecap="round"
@@ -561,11 +548,11 @@ export default function Chat({ recipient }) {
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
                 placeholder="Type a message..."
-                className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="text-black flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700"
               />
               <button
                 type="submit"
-                className="bg-blue-500 p-2 rounded-full text-white hover:bg-blue-600 focus:outline-none"
+                className="bg-black p-2 rounded-full text-white hover:bg-purple-600 focus:outline-none"
               >
                 <HiPaperAirplane className="h-5 w-5 transform rotate-45" />
               </button>
@@ -573,7 +560,7 @@ export default function Chat({ recipient }) {
           </form>
         )}
         {audioMessage && (
-          <div className="bg-white p-3 border-t flex items-center space-x-3">
+          <div className="bg-gray-300 p-3 border-t flex items-center space-x-3">
             <div className="flex gap-2 items-center">
               <div>{timer} seconds</div>
               <button className="text-red-800" onClick={CancelRecording}>
@@ -630,7 +617,7 @@ export default function Chat({ recipient }) {
               overlayClassName="fixed inset-0 bg-black bg-opacity-50"
               ariaHideApp={false}
             >
-              <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-white">
+              <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-gray-300">
                 <h2 className="text-xl font-semibold mb-4">Send Image</h2>
                 {imageFileUrls ? (
                   <div className="flex items-center justify-center bg-red-600">

@@ -323,7 +323,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="shadow-sm  sticky lg:static  top-0 bg-white p-4 border-blue-500 z-20">
+    <div className="shadow-sm  sticky lg:static  top-0 bg-black p-4 border-gray-700 border-b z-20">
       <div>
         <Toaster />
       </div>
@@ -343,7 +343,7 @@ export default function Navbar() {
       <div className="">
         <div className="flex justify-between">
           <Link href="/">
-            <div className="hidden lg:block w-[170px] cursor-pointer bg-blue-500 text-white">
+            <div className="hidden lg:block w-[170px] cursor-pointer bg-purple-600 text-white">
               {/* <GingerLogo /> */}
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                 Ginger
@@ -367,7 +367,7 @@ export default function Navbar() {
                 />
                 <div className="flex">
                   <IoIosAddCircle
-                    className="text-2xl cursor-pointer transform hover:scale-150 transition duration-300 hover:text-blue-600"
+                    className="text-white text-2xl cursor-pointer transform hover:scale-150 transition duration-300 hover:text-purple-600"
                     onClick={() => setIsOpen(true)}
                   />
                 </div>

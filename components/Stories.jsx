@@ -35,7 +35,7 @@ export default function Stories() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="bg-white z-10 mb-4 space-x-4 flex items-center p-6 w-screen lg:w-1/2 overflow-x-scroll hide-scrollbar">
+    <div className="bg-black text-white z-10 mb-4 space-x-4 flex items-center p-6 w-screen lg:w-1/2 overflow-x-scroll hide-scrollbar">
       {stories.length > 0 ? (
         stories.map((story, index) => <Story key={index} story={story} />)
       ) : (

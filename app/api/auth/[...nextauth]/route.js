@@ -23,7 +23,10 @@ export const authOptions = {
 
         try {
           // Request to custom sign-in API
-          const res = await instance.post("/api/user/custom-signin", { email, password });
+          const res = await instance.post("/api/user/custom-signin", {
+            email,
+            password,
+          });
 
           if (res.status === 200 && res.data) {
             console.log("User data from custom backend:", res.data);
@@ -40,7 +43,7 @@ export const authOptions = {
     }),
   ],
   session: {
-    strategy: "jwt", // Use JWT strategy to manage sessions
+    strategy: "jwt",
   },
   callbacks: {
     // Sign-in callback to handle Google and custom credential sign-ins
@@ -48,11 +51,16 @@ export const authOptions = {
       // Handle Google sign-in
       if (account.provider === "google") {
         try {
-          const res = await instance.post("/api/user/google-auth", { email: user.email });
+          const res = await instance.post("/api/user/google-auth", {
+            email: user.email,
+          });
+          console.log(res.data.profilePicture);
+
           if (res.status === 200) {
             const data = res.data;
             user._id = data._id;
             user.roles = data.roles;
+            user.profilePicture = res.data.profilePicture;
             user.username = data.username;
 
             console.log("Updated user object for Google sign-in:", user);
@@ -78,6 +86,7 @@ export const authOptions = {
             const data = res.data.user;
             user._id = data._id;
             user.roles = data.roles;
+            user.profilePicture = data.profilePicture;
             user.username = data.username;
 
             console.log("Updated user object for custom login:", user);
@@ -114,6 +123,7 @@ export const authOptions = {
         token.refreshToken = refreshToken;
         token.id = user._id;
         token.roles = user.roles;
+        token.profilePicture = user.profilePicture;
         token.username = user.username;
       }
 
@@ -125,6 +135,7 @@ export const authOptions = {
       session.role = token.roles;
       session.token = token.customToken;
       session.username = token.username;
+      session.profilePicture = token.profilePicture;
       session.refreshToken = token.refreshToken;
 
       return session; // Return updated session object

@@ -64,7 +64,7 @@ export default function SharePost({ post }) {
     <div className="">
       <Popover.Root>
         <Popover.Trigger asChild>
-          <button className="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md">
+          <button className="flex items-center border-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md">
             <Share2Icon className="w-6 h-6" aria-hidden="true" />
           </button>
         </Popover.Trigger>
@@ -91,7 +91,7 @@ export default function SharePost({ post }) {
                 <Popover.Close asChild>
                   <button
                     onClick={handleCopyLink}
-                    className="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+                    className="flex items-center bg-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
                   >
                     <Link1Icon className="w-4 h-4 mr-2" aria-hidden="true" />
                     Copy link
@@ -100,7 +100,7 @@ export default function SharePost({ post }) {
                 <Popover.Close asChild>
                   <button
                     onClick={handleShareClick}
-                    className="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+                    className="flex items-center bg-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
                   >
                     <Share2Icon className="w-4 h-4 mr-2" aria-hidden="true" />
                     Whatsapp

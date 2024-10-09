@@ -83,7 +83,7 @@ export default function Password() {
           <CardTitle>Password</CardTitle>
           <CardDescription>
             {hasPassword
-              ? "Change your password here. After saving, you'll be logged out."
+              ? "Change your password here."
               : "Set a new password here."}
           </CardDescription>
         </CardHeader>
@@ -126,9 +126,11 @@ export default function Password() {
                   />
                 </div>
                 <CardFooter>
-                  <Button type="submit" disabled={isSubmitting}>
-                    Save password
-                  </Button>
+                  <div className="mt-2">
+                    <Button type="submit" disabled={isSubmitting}>
+                      Save password
+                    </Button>
+                  </div>
                 </CardFooter>
               </Form>
             )}

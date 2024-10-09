@@ -61,20 +61,20 @@ export default function SearchUser({ handleClose }) {
     router.push(`/u/${search.username}`);
   }
 
-  const fetchSearches = useCallback(async () => {
-    const response = await instance.post("/api/user/get-recent-searches", {
-      userId: session?.id,
-    });
-    console.log(response);
+  // const fetchSearches = useCallback(async () => {
+  //   const response = await instance.post("/api/user/get-recent-searches", {
+  //     userId: session?.id,
+  //   });
+  //   console.log(response);
 
-    setRecentSearches(response.data.searches);
-  }, [session?.id]);
+  //   setRecentSearches(response.data.searches);
+  // }, [session?.id]);
 
-  useEffect(() => {
-    fetchSearches();
-  }, [fetchSearches]);
+  // useEffect(() => {
+  //   fetchSearches();
+  // }, [fetchSearches]);
 
-  console.log(recentSearches);
+  // console.log(recentSearches);
 
   return (
     <div className="">

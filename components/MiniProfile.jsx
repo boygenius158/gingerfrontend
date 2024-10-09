@@ -117,10 +117,10 @@ export default function MiniProfile() {
   }, [socket]);
 
   return (
-    <div className="">
-      <div className="scroll-m-20 text-2xl font-semibold tracking-tight h-screen w-180 bg-gray-25  text-gray-700 ml-20 mt-8 rounded border-2 ">
-        <div className="flex items-center justify-between p-6">
-          <div className="flex flex-col">
+    <div className="text-white">
+      <div className="scroll-m-20 text-2xl  tracking-tight h-screen w-180 bg-gray-25   rounded border-2 border-gray-700 mt-4">
+        {/* <div className="flex items-center justify-between p-6">
+          <div className="flex flex-col ">
             <Image
               src={user?.profilePicture}
               alt="empty"
@@ -136,10 +136,6 @@ export default function MiniProfile() {
             </div>
           </div>
 
-          {/* <IoIosAddCircle
-            className="text-2xl cursor-pointer transform hover:scale-150 transition duration-300 hover:text-blue-600"
-            onClick={() => setIsOpen2(true)}
-          /> */}
           <div className="">
             <p className=" first-letter:uppercase">{user?.name}</p>
             <Link href={`/u/${user?.username}`}>
@@ -157,11 +153,11 @@ export default function MiniProfile() {
               signin
             </button>
           )}
-        </div>
-        <hr class="border-t border-gray-300" />
+        </div> */}
+        {/* <hr class="border-tc border-gray-300" /> */}
 
         <nav className="mt-10 ">
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -176,14 +172,11 @@ export default function MiniProfile() {
                 d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-            <Link
-              href="/home"
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200  hover:text-blue-500"
-            >
+            <Link href="/home" className="">
               Feed
             </Link>
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -205,12 +198,13 @@ export default function MiniProfile() {
             </svg>
             <Link
               href="/u/settings"
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500"
+
+              // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
             >
               Settings
             </Link>
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -228,7 +222,7 @@ export default function MiniProfile() {
             {role === "user" ? (
               <HoverCard>
                 <HoverCardTrigger>
-                  <p className="font-semibold text-gray-500 block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500">
+                  <p className="">
                     Swipe!
                   </p>
                 </HoverCardTrigger>
@@ -239,13 +233,22 @@ export default function MiniProfile() {
             ) : role === "premium" || role === "admin" ? (
               <Link
                 href="/u/swipe"
-                className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500"
+                // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
               >
                 Swipe!
               </Link>
-            ) : null}
+            ) : (
+              <div>
+                <Link
+                  href="/u/swipe"
+                  // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
+                >
+                  Swipe!
+                </Link>
+              </div>
+            )}
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -262,12 +265,12 @@ export default function MiniProfile() {
             </svg>
             <Link
               href="/u/premium"
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500"
+              // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
             >
               Premium
             </Link>
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -285,12 +288,12 @@ export default function MiniProfile() {
 
             <Link
               href="/u/notifications"
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500"
+              // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
             >
               Notifications
             </Link>
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -308,12 +311,12 @@ export default function MiniProfile() {
 
             <Link
               href="/u/messages"
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500"
+              // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
             >
               Messages
             </Link>
           </div>
-          <div className="flex items-center justify-start ml-6">
+          <div className="flex items-center justify-start ml-4  transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center gap-2  p-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -331,7 +334,7 @@ export default function MiniProfile() {
 
             <span
               onClick={() => setSearchOpen(true)}
-              className="font-semibold block py-2.5 px-4 rounded transition duration-200 hover:text-blue-500 cursor-pointer"
+              // className="flex transition-transform duration-300 hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white rounded hover:items-center  p-2"
             >
               Search
             </span>
@@ -406,10 +409,9 @@ export default function MiniProfile() {
               {!spin && <p>Upload Story</p>}
               {spin && (
                 <div className="flex items-center justify-center">
-                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
-
+                  <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
                 </div>
-)}
+              )}
             </button>
             <AiOutlineClose
               className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"

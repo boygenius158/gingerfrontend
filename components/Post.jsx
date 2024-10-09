@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageSection from "./ImageSection";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import CommentSectionPost from "./CommentSectionPost";
 
 export default function Post({ post, isSaved }) {
   const notify = () => {
@@ -30,12 +32,16 @@ export default function Post({ post, isSaved }) {
       autoClose: 5000,
     });
   };
-
+  const [CommentSectionVisible, setCommentSectionVisible] = useState(true);
   console.log(post);
   const [isOpen, setIsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { data: session, status } = useSession();
   console.log(session);
+
+  function HandleCommentVisible() {
+    setCommentSectionVisible(!CommentSectionVisible);
+  }
   async function handleReportSubmit(e) {
     console.log("handle report s");
     e.preventDefault();
@@ -53,19 +59,7 @@ export default function Post({ post, isSaved }) {
   }
   // Debugging
   return (
-    <div className="bg-white my-7 border-2  rounded-md">
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      /> */}
+    <div className="bg-black border  border-gray-600 text-white  my-7     rounded-md">
       {isOpen && (
         <Modal
           isOpen={isOpen}
@@ -74,14 +68,19 @@ export default function Post({ post, isSaved }) {
           overlayClassName="fixed inset-0 bg-black bg-opacity-50"
           ariaHideApp={false}
         >
-          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
-            <h2 className="text-xl font-semibold mb-4">Action</h2>
+          <div className="relative border-2 border-white bg-black rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
+            <h2 className="text-xl font-semibold mb-4 text-white">Action</h2>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline">Report Post</Button>
+                <Button
+                  variant="outline"
+                  className="text-purple-700 bg-gray-300"
+                >
+                  Report Post
+                </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="text-white bg-black">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -90,7 +89,9 @@ export default function Post({ post, isSaved }) {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel className="text-purple-700">
+                    Cancel
+                  </AlertDialogCancel>
                   <AlertDialogAction>
                     <span onClick={handleReportSubmit}>Yes</span>
                   </AlertDialogAction>
@@ -99,24 +100,26 @@ export default function Post({ post, isSaved }) {
             </AlertDialog>
 
             <AiOutlineClose
-              className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
+              className="cursor-pointer text-white absolute top-4 right-4 hover:text-purple-600 transition duration-300"
               onClick={() => setIsOpen(false)}
             />
           </div>
         </Modal>
       )}
-      <div className="flex items-center p-5 border-b border-gray-100 gap-x-1">
+      <div className="flex items-center p-5  border-gray-100 gap-x-3">
         <div className="relative w-12 h-12">
           <Image
             src={post?.userDetails?.profilePicture}
             alt="hell world"
             layout="fill"
-            className="rounded-full object-cover border p-1"
+            className="rounded-full object-cover  border-purple-800 border-2 p-1"
           />
         </div>
 
-        <div className="flex-1">
-          <p className="font-bold">{post.userDetails.username}</p>
+        <div className="flex-1 ">
+          <p className="font-bold first-letter:uppercase">
+            {post.userDetails.username}
+          </p>
           {/* <p className="text-gray-500 first-letter:uppercase">
             Asheville, North Carolina
           </p> */}
@@ -124,7 +127,7 @@ export default function Post({ post, isSaved }) {
 
         <div className="flex justify-end items-center">
           <HiOutlineDotsVertical
-            className="h-5 cursor-pointer"
+            className="text-2xl cursor-pointer"
             onClick={() => setIsOpen((prev) => !prev)}
           ></HiOutlineDotsVertical>
         </div>
@@ -132,11 +135,22 @@ export default function Post({ post, isSaved }) {
 
       <ImageSection data={post} />
 
-      <LikeSection post={post} isSaved={isSaved} />
+      <LikeSection
+        post={post}
+        HandleCommentVisible={HandleCommentVisible}
+        isSaved={isSaved}
+      />
       <p className="p-5 truncate flex">
         <span className="font-bold mr-2">{post.userDetails.username}</span>
         <div>{post.caption === "*" ? <p></p> : <p>{post.caption}</p>}</div>
       </p>
+      <div>
+        {CommentSectionVisible && (
+          <div>
+            <CommentSectionPost post={post} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

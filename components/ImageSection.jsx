@@ -11,7 +11,7 @@ import {
 
 export default function ImageSection({ data }) {
   console.log(data);
-  
+
   return (
     <div>
       <div>
@@ -27,9 +27,12 @@ export default function ImageSection({ data }) {
                 </CarouselItem>
               ))}
           </CarouselContent>
-
-          <CarouselPrevious className="absolute left-2 top-1/2 transform -translate-y-1/2" />
-          <CarouselNext className="absolute right-2 top-1/2 transform -translate-y-1/2" />
+          {data.imageUrl.length > 1 ? (
+            <div>
+              <CarouselPrevious className="absolute left-2 top-1/2 transform -translate-y-1/2 text-purple-700 text-2xl" />
+              <CarouselNext className="absolute right-2 top-1/2 transform -translate-y-1/2 text-purple-700 text-2xl" />
+            </div>
+          ) : null}
         </Carousel>
       </div>
     </div>

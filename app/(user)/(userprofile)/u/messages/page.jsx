@@ -4,6 +4,7 @@ import useComponentsStore from "@/app/store/user/componentsStore";
 import instance from "@/axiosInstance";
 import Chat from "@/components/Chat";
 import MiniChat from "@/components/MiniChat";
+import MiniProfile from "@/components/MiniProfile";
 import MobileViewMiniChat from "@/components/ui/MobileViewMiniChat";
 import VideoCallUser from "@/components/VideoCallUser";
 import { useSession } from "next-auth/react";
@@ -30,8 +31,8 @@ export default function Page() {
       });
 
       if (response) {
-        console.log("response received", response.data.uniqueUsers); 
-        setList(response.data.uniqueUsers); 
+        console.log("response received", response.data.uniqueUsers);
+        setList(response.data.uniqueUsers);
       }
     } catch (error) {
       console.error("Error fetching chat list:", error);
@@ -58,7 +59,7 @@ export default function Page() {
   );
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-3 md:max-w-6xl mx-auto gap-4">
+    <main className="bg-black text-white grid  md:grid-cols-4  mx-auto z-30">
       <ReactModal
         isOpen={incomingCall}
         onRequestClose={closeModal}
@@ -84,7 +85,12 @@ export default function Page() {
       </ReactModal>
 
       <MobileViewMiniChat userSelected={handleUser} list={list} />
-
+      <section className="hidden md:inline-grid  md:col-span-1">
+          <div className="fixed w-[280px]  ">
+            {/* <LeftSideBar/> */}
+            <MiniProfile />
+          </div>
+        </section>
       <section className="md:col-span-2">
         {isVedioCallActive ? (
           <VideoCallUser
@@ -97,7 +103,7 @@ export default function Page() {
       </section>
 
       <section className="hidden md:inline-grid md:col-span-1">
-        <div className="fixed w-[380px]">
+        <div className="fixed w-[350px] ml-5">
           {/* <Sidebar /> */}
           <MiniChat userSelected={handleUser} list={list} />
         </div>

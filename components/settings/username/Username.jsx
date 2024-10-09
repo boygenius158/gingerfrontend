@@ -13,12 +13,14 @@ import { Label } from "@/components/ui/label";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Username() {
   const { data: session } = useSession();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState(""); // State for error message
+  const [bio, setBio] = useState("");
 
   // Fetch user data on mount
   useEffect(() => {
@@ -35,6 +37,7 @@ export default function Username() {
 
           setName(response.data.user.name);
           setUsername(response.data.user.username);
+          setBio(response.data.user.bio);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -47,6 +50,7 @@ export default function Username() {
   // Handle form input changes
   const handleNameChange = (e) => setName(e.target.value);
   const handleUsernameChange = (e) => setUsername(e.target.value);
+  const handleBioChange = (e) => setBio(e.target.value);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -54,25 +58,25 @@ export default function Username() {
     setError(""); // Clear any existing errors
     try {
       const response = await instance.post("/api/user/update-user", {
-        id:session?.id,
+        id: session?.id,
         name,
         username,
+        bio,
       }); // Adjust the endpoint as needed
       console.log(response);
-      
+
       if (response.data.success) {
         // alert("Profile updated successfully!");
         toast.success("profile updated successfully!");
-
       } else {
         console.log(response);
-        
+
         // Set error message if response indicates an issue
         setError(response.data.error || "Username is not available.");
       }
     } catch (error) {
       console.log(error);
-      
+
       console.error("Error updating user data:", error);
       // setError(error);
     }
@@ -90,10 +94,6 @@ export default function Username() {
         <CardContent className="space-y-2">
           <form onSubmit={handleSubmit} className="space-y-2">
             <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" value={name} onChange={handleNameChange} />
-            </div>
-            <div className="space-y-1">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
@@ -101,6 +101,16 @@ export default function Username() {
                 onChange={handleUsernameChange}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" value={name} onChange={handleNameChange} />
+            </div>
+
+            <div>
+              <Label htmlFor="name">Bio</Label>
+
+              <Textarea value={bio} onChange={handleBioChange} />
             </div>
             <CardFooter>
               <Button type="submit">Save changes</Button>

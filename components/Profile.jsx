@@ -26,7 +26,7 @@ export default function Profile({ username }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isEditProfile, setIsEditProfileOpen] = useState(true);
+  const [isEditProfile, setIsEditProfileOpen] = useState(false);
   console.log(session);
 
   const [profileData, setProfileData] = useState({
@@ -94,7 +94,6 @@ export default function Profile({ username }) {
 
   if (!user || !user.email) {
     return <div></div>;
-    // return <NotFound />; // Render nothing if user data is not available yet
   }
 
   const isSameUser = session?.user?.email === user.email;
@@ -155,10 +154,22 @@ export default function Profile({ username }) {
       setImageFileUrl(URL.createObjectURL(file));
     }
   }
-  console.log();
+  console.log(isEditProfile);
 
   return (
     <div className="pt-16 px-4 sm:px-6 lg:px-8 xl:px-72">
+      {isEditProfile && (
+        <div>
+          <Modal
+            // isOpen={modalIsOpen}
+            // onRequestClose={closeModal}
+            contentLabel="Example Modal"
+          >
+            <h2>Hello Modal</h2>
+            {/* <button onClick={closeModal}>Close Modal</button> */}
+          </Modal>
+        </div>
+      )}
       {isEditProfile ? (
         <div className="flex flex-col lg:flex-row lg:space-x-24">
           <div className="rounded-full flex items-center justify-center border border-gray-300 mb-6 lg:mb-0">
@@ -186,12 +197,12 @@ export default function Profile({ username }) {
               <span className="font-bold text-lg">@{user.username}</span>
               <span>
                 {isSameUser ? (
-                  <Button
-                    onClick={() => setIsEditProfileOpen(true)}
+                  <button
+                    onClick={() => setIsEditProfileOpen(false)}
                     variant="outline"
                   >
-                    Edit Profile
-                  </Button>
+                    {/* Edit Profile1 */}
+                  </button>
                 ) : (
                   <button
                     className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
@@ -244,12 +255,12 @@ export default function Profile({ username }) {
                     {/* <button onClick={() => setIsEditProfileOpen(true)}>
                         Edit Profile
                       </button> */}
-                    <Button
+                    <button
                       onClick={() => setIsEditProfileOpen(true)}
                       variant="outline"
                     >
-                      Edit Profile
-                    </Button>
+                      {/* Edit Profile2 */}
+                    </button>
                   </span>
                 ) : (
                   <button
@@ -263,7 +274,7 @@ export default function Profile({ username }) {
 
               <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
             </div>
-            <div className="flex justify-between pt-3 text-center lg:text-left">
+            <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
               <span className="text-sm font-semibold">
                 {posts.length} posts
               </span>

@@ -81,7 +81,7 @@ export default function Posts() {
 
   return (
     <div className="relative ">
-      <h1 className=" text-4xl font-extrabold  tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
+      <h1 className=" text-4xl text-white   tracking-tight lg:text-5xl flex justify-center items-center mt-4 ">
         Feed
       </h1>
       <div className="">

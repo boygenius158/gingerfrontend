@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageSection from "./ImageSection";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import CommentSectionPost from "./CommentSectionPost";
+import HoverCardPost from "./HoverCardPost";
 
 export default function Post({ post, isSaved }) {
   const notify = () => {
@@ -118,7 +118,7 @@ export default function Post({ post, isSaved }) {
 
         <div className="flex-1 ">
           <p className="font-bold first-letter:uppercase">
-            {post.userDetails.username}
+            <HoverCardPost username={post.userDetails.username}></HoverCardPost>
           </p>
           {/* <p className="text-gray-500 first-letter:uppercase">
             Asheville, North Carolina

@@ -362,7 +362,7 @@ export default function Navbar() {
                   alt={user?.name}
                   width={60}
                   height={60}
-                  className="rounded-full cursor-pointer transform hover:scale-110 transition duration-300 w-[60px] h-[60px] object-cover border"
+                  className="rounded-full cursor-pointer transform hover:scale-110 transition duration-300 w-[60px] h-[60px] object-cover border-2 border-purple-700"
                   onClick={signOut}
                 />
                 <div className="flex">

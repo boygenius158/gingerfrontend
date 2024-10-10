@@ -13,7 +13,6 @@ export default function Home() {
       router.replace("/home");
     }
   }, [session, router]);
-  // displayes userinfo page
   return (
     <>
       <UserInfo />

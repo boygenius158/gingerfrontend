@@ -109,7 +109,7 @@ export const authOptions = {
         const customToken = jwt.sign(
           { id: user._id, roles: user.roles, username: user.username },
           process.env.NEXTAUTH_SECRET,
-          { expiresIn: "30min" } // Access token valid for 10 seconds
+          { expiresIn: "7d" } 
         );
 
         // Create refresh token

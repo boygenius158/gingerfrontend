@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import CommentSectionPost from "./CommentSectionPost";
 import HoverCardPost from "./HoverCardPost";
+import LikedList from "./modals/LikedList";
 
 export default function Post({ post, isSaved }) {
   const notify = () => {
@@ -59,98 +60,107 @@ export default function Post({ post, isSaved }) {
   }
   // Debugging
   return (
-    <div className="bg-black border  border-gray-600 text-white  my-7     rounded-md">
-      {isOpen && (
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={() => setIsOpen(false)}
-          className="fixed inset-0 flex items-center justify-center p-4"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-          ariaHideApp={false}
-        >
-          <div className="relative border-2 border-white bg-black rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
-            <h2 className="text-xl font-semibold mb-4 text-white">Action</h2>
+    <>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="text-purple-700 bg-gray-300"
-                >
-                  Report Post
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="text-white bg-black">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. Are you sure you want to
-                    report this post?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="text-purple-700">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction>
-                    <span onClick={handleReportSubmit}>Yes</span>
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+      <div className="bg-black border  border-gray-600 text-white  my-7     rounded-md">
+        {isOpen && (
+          <Modal
+            isOpen={isOpen}
+            onRequestClose={() => setIsOpen(false)}
+            className="fixed inset-0 flex items-center justify-center p-4"
+            overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+            ariaHideApp={false}
+          >
+            <div className="relative border-2 border-white bg-black rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
+              <h2 className="text-xl font-semibold mb-4 text-white">Action</h2>
 
-            <AiOutlineClose
-              className="cursor-pointer text-white absolute top-4 right-4 hover:text-purple-600 transition duration-300"
-              onClick={() => setIsOpen(false)}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="text-purple-700 bg-gray-300"
+                  >
+                    Report Post
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="text-white bg-black">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. Are you sure you want to
+                      report this post?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="text-purple-700">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction>
+                      <span onClick={handleReportSubmit}>Yes</span>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <AiOutlineClose
+                className="cursor-pointer text-white absolute top-4 right-4 hover:text-purple-600 transition duration-300"
+                onClick={() => setIsOpen(false)}
+              />
+            </div>
+          </Modal>
+        )}
+        <div className="flex items-center p-5  border-gray-100 gap-x-3">
+          <div className="relative w-12 h-12">
+            <Image
+              src={post?.userDetails?.profilePicture}
+              alt="hell world"
+              layout="fill"
+              className="rounded-full object-cover  border-purple-800 border-2 p-1"
             />
           </div>
-        </Modal>
-      )}
-      <div className="flex items-center p-5  border-gray-100 gap-x-3">
-        <div className="relative w-12 h-12">
-          <Image
-            src={post?.userDetails?.profilePicture}
-            alt="hell world"
-            layout="fill"
-            className="rounded-full object-cover  border-purple-800 border-2 p-1"
-          />
-        </div>
 
-        <div className="flex-1 ">
-          <p className="font-bold first-letter:uppercase">
-            <HoverCardPost username={post.userDetails.username}></HoverCardPost>
-          </p>
-          {/* <p className="text-gray-500 first-letter:uppercase">
+          <div className="flex-1 ">
+            <p className="font-bold first-letter:uppercase">
+              <HoverCardPost
+                username={post.userDetails.username}
+              ></HoverCardPost>
+            </p>
+            {/* <p className="text-gray-500 first-letter:uppercase">
             Asheville, North Carolina
           </p> */}
-        </div>
-
-        <div className="flex justify-end items-center">
-          <HiOutlineDotsVertical
-            className="text-2xl cursor-pointer"
-            onClick={() => setIsOpen((prev) => !prev)}
-          ></HiOutlineDotsVertical>
-        </div>
-      </div>
-
-      <ImageSection data={post} />
-
-      <LikeSection
-        post={post}
-        HandleCommentVisible={HandleCommentVisible}
-        isSaved={isSaved}
-      />
-      <p className="p-5 truncate flex">
-        <span className="font-bold mr-2">{post.userDetails.username}</span>
-        <div>{post.caption === "*" ? <p></p> : <p>{post.caption}</p>}</div>
-      </p>
-      <div>
-        {CommentSectionVisible && (
-          <div>
-            <CommentSectionPost post={post} />
           </div>
-        )}
+
+          {session.username !== post.userDetails.username && (
+            <div className="flex justify-end items-center">
+              <HiOutlineDotsVertical
+                className="text-2xl cursor-pointer"
+                onClick={() => setIsOpen((prev) => !prev)}
+              ></HiOutlineDotsVertical>
+            </div>
+          )}
+        </div>
+
+        <ImageSection data={post} />
+
+        <LikeSection
+          post={post}
+          HandleCommentVisible={HandleCommentVisible}
+          isSaved={isSaved}
+        />
+        <p className="p-5 truncate flex">
+          <span className="font-bold mr-2">{post.userDetails.username}</span>
+          <div>{post.caption === "*" ? <p></p> : <p>{post.caption}</p>}</div>
+        </p>
+        <div>
+          {CommentSectionVisible && (
+            <div>
+              <CommentSectionPost post={post} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,11 +1,9 @@
 import useProfileStore from "@/app/store/user/profileStore";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Image from "next/image";
-import NotFound from "./NotFound";
 import instance from "@/axiosInstance";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -26,7 +24,7 @@ export default function Profile({ username }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isEditProfile, setIsEditProfileOpen] = useState(false);
+  const [currentConnection, setCurrentConnection] = useState(false);
   console.log(session);
 
   const [profileData, setProfileData] = useState({
@@ -38,6 +36,13 @@ export default function Profile({ username }) {
     user: state.user,
     posts: state.posts,
   }));
+  // const [followingList, setFollowingList] = useState(
+  //   user.followingDetails || []
+  // );
+  // const [followersList, setFollowersList] = useState(
+  //   user.followersDetails || []
+  // );
+
   async function handleSubmit() {
     if (selectedFile) {
       const res = await edgestore.publicFiles.upload({
@@ -61,35 +66,35 @@ export default function Profile({ username }) {
       }
     }
   }
-  useEffect(() => {
-    const checkFollowingStatus = async () => {
-      if (user && session) {
-        try {
-          const res = await instance.post("/api/user/checkFollowingStatus", {
-            followUser: user.email,
-            orginalUser: session.user.email,
-          });
-          setIsFollowing(res.data.followThatUser);
-        } catch (error) {
-          console.error("Failed to check following status", error);
-        }
-      }
-    };
-    checkFollowingStatus();
-  }, [user, session]);
+  // useEffect(() => {
+  //   const checkFollowingStatus = async () => {
+  //     if (user && session) {
+  //       try {
+  //         const res = await instance.post("/api/user/checkFollowingStatus", {
+  //           followUser: user.email,
+  //           orginalUser: session.user.email,
+  //         });
+  //         setIsFollowing(res.data.followThatUser);
+  //       } catch (error) {
+  //         console.error("Failed to check following status", error);
+  //       }
+  //     }
+  //   };
+  //   checkFollowingStatus();
+  // }, [user, session]);
 
   useEffect(() => {
     console.log(posts);
   }, [posts]);
 
-  useEffect(() => {
-    if (user) {
-      setProfileData({
-        name: user.name,
-        bio: user.bio,
-      });
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setProfileData({
+  //       name: user.name,
+  //       bio: user.bio,
+  //     });
+  //   }
+  // }, [user]);
   console.log(posts);
 
   if (!user || !user.email) {
@@ -126,27 +131,6 @@ export default function Profile({ username }) {
     }
   }
 
-  async function handleSaveProfile() {
-    try {
-      console.log("invoked");
-      setIsEditProfileOpen(false);
-
-      const res = await instance.post("/api/user/updateProfile", {
-        ...profileData,
-        email: user.email, // Assuming email is required for the update
-      });
-
-      if (res.data.success) {
-        // Update profile data in Zustand store or any other state management
-        console.log("Profile updated successfully");
-        setIsEditProfileOpen(false);
-      } else {
-        console.error("Profile update failed:", res.data.message);
-      }
-    } catch (error) {
-      console.error("Failed to update profile", error);
-    }
-  }
   function addImageToPost(e) {
     const file = e.target.files[0];
     if (file) {
@@ -154,147 +138,67 @@ export default function Profile({ username }) {
       setImageFileUrl(URL.createObjectURL(file));
     }
   }
-  console.log(isEditProfile);
+  console.log(user.followerDetails);
 
   return (
-    <div className="pt-16 px-4 sm:px-6 lg:px-8 xl:px-72">
-      {isEditProfile && (
+    <div className=" sm:px-6 pt-6 ">
+      {
+        currentConnection && (
+          <div>hello world</div>
+        )
+      }
+      <div className="flex flex-col lg:flex-row lg:space-x-24">
+        <div className="rounded-full flex items-center justify-center  mb-6 lg:mb-0">
+          <Image
+            src={user.profilePicture}
+            className="rounded-full p-1 w-[145px] h-[145px] object-cover border-2 border-purple-700 hover:scale-105 transform duration-300 cursor-pointer"
+            width={145}
+            height={145}
+            alt=""
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
+
         <div>
-          <Modal
-            // isOpen={modalIsOpen}
-            // onRequestClose={closeModal}
-            contentLabel="Example Modal"
-          >
-            <h2>Hello Modal</h2>
-            {/* <button onClick={closeModal}>Close Modal</button> */}
-          </Modal>
-        </div>
-      )}
-      {isEditProfile ? (
-        <div className="flex flex-col lg:flex-row lg:space-x-24">
-          <div className="rounded-full flex items-center justify-center border border-gray-300 mb-6 lg:mb-0">
-            {user.profilePicture ? (
-              <Image
-                src={user.profilePicture}
-                className="rounded-full p-1 w-[145px] h-[145px] object-cover"
-                width={145}
-                height={145}
-                alt={`${user.username}'s profile picture`}
-                onClick={() => setIsOpen(true)}
-              />
-            ) : (
-              <div
-                className="rounded-full w-[145px] h-[145px] flex items-center justify-center bg-gray-300 text-white font-bold text-2xl"
-                onClick={() => setIsOpen(true)}
-              >
-                {user.username?.slice(0, 2).toUpperCase() || "N/A"}
-              </div>
-            )}
-          </div>
+          <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
+            <span className="font-bold text-lg">@{user.username}</span>
+            <span>
+              {!isSameUser && (
+                <button
+                  className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
+                  onClick={handleFollow}
+                >
+                  {isFollowing ? "Following" : "Follow"}
+                </button>
+              )}
+            </span>
 
-          <div>
-            <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
-              <span className="font-bold text-lg">@{user.username}</span>
-              <span>
-                {isSameUser ? (
-                  <button
-                    onClick={() => setIsEditProfileOpen(false)}
-                    variant="outline"
-                  >
-                    {/* Edit Profile1 */}
-                  </button>
-                ) : (
-                  <button
-                    className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
-                    onClick={handleFollow}
-                  >
-                    {isFollowing ? "Following" : "Follow"}
-                  </button>
-                )}
-              </span>
-            </div>
-            <div className="flex justify-between pt-3 text-center lg:text-left">
-              <span className="text-sm font-semibold">
-                {posts.length} posts
-              </span>
-              <span className="text-sm font-semibold">
-                {user.followers.length} followers
-              </span>
-              <span className="text-sm font-semibold">
-                {user.following.length} following
-              </span>
-            </div>
-            <div className="pt-6 grid">
-              <span className="text-lg font-semibold">{profileData.name}</span>
-              <span>
-                <br />
-                {profileData.bio}
-              </span>
-            </div>
+            <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
+          </div>
+          <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
+            <span className="text-sm font-semibold">{posts.length} posts</span>
+            <span
+              onClick={() => setCurrentConnection(true)}
+              className="text-sm font-semibold hover:underline cursor-pointer "
+            >
+              {user.followers.length} followers
+            </span>
+            <span
+              onClick={() => setCurrentConnection(true)}
+              className="text-sm font-semibold hover:underline cursor-pointer"
+            >
+              {user.following.length} following
+            </span>
+          </div>
+          <div className="pt-6 grid">
+            <span className="text-lg font-semibold ">{profileData.name}</span>
+            <span>
+              <br />
+              {profileData.bio}
+            </span>
           </div>
         </div>
-      ) : (
-        <div className="flex flex-col lg:flex-row lg:space-x-24">
-          <div className="rounded-full flex items-center justify-center border-gray-300 mb-6 lg:mb-0">
-            <Image
-              src={user.profilePicture}
-              className="rounded-full p-1 w-[145px] h-[145px] object-cover"
-              width={145}
-              height={145}
-              alt=""
-              onClick={() => setIsOpen(true)}
-            />
-          </div>
-
-          <div>
-            <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
-              <span className="font-bold text-lg">@{user.username}</span>
-              <span>
-                {isSameUser ? (
-                  <span className="">
-                    {/* <button onClick={() => setIsEditProfileOpen(true)}>
-                        Edit Profile
-                      </button> */}
-                    <button
-                      onClick={() => setIsEditProfileOpen(true)}
-                      variant="outline"
-                    >
-                      {/* Edit Profile2 */}
-                    </button>
-                  </span>
-                ) : (
-                  <button
-                    className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
-                    onClick={handleFollow}
-                  >
-                    {isFollowing ? "Following" : "Follow"}
-                  </button>
-                )}
-              </span>
-
-              <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
-            </div>
-            <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
-              <span className="text-sm font-semibold">
-                {posts.length} posts
-              </span>
-              <span className="text-sm font-semibold">
-                {user.followers.length} followers
-              </span>
-              <span className="text-sm font-semibold">
-                {user.following.length} following
-              </span>
-            </div>
-            <div className="pt-6 grid">
-              <span className="text-lg font-semibold">{profileData.name}</span>
-              <span>
-                <br />
-                {profileData.bio}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
       <div className="pt-4"></div>
       <div className="border w-full"></div>
 
@@ -355,12 +259,12 @@ export default function Profile({ username }) {
             <button
               onClick={handleSubmit}
               disabled={!selectedFile}
-              className="w-full bg-red-600 text-white p-2 shadow-md rounded-lg hover:brightness-105 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
+              className="w-full bg-black text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100 mt-4"
             >
               Upload Profile Picture
             </button>
             <AiOutlineClose
-              className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
+              className="cursor-pointer absolute top-4 right-4 hover:text-purple-600 transition duration-300"
               // onClick={() => setIsOpen(false)}
               onClick={handleModalClose}
             />

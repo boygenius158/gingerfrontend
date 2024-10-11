@@ -5,17 +5,16 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import SharePost from "./radixui/SharePost";
+import LikedList from "./modals/LikedList";
 
-export default function LikeSection({
-  post,
-  isSaved,
-  HandleCommentVisible,
-}) {
+export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
   const socket = useSocket();
   const [hasLiked, setHasLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(isSaved);
   const [likeCount, setLikeCount] = useState(post.likeCount);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const [status, setStatus] = useState(false);
+
   useEffect(() => {
     if (post.likes && session?.id) {
       setHasLiked(post.likes.includes(session.id));
@@ -64,12 +63,17 @@ export default function LikeSection({
       userId: session.id,
     });
   }
-
+  function toggleStatusChange(newStatus){
+    setStatus(newStatus)
+  }
+ 
   return (
     <div>
+      <LikedList status={status} onStatusChange={toggleStatusChange} />
+
       <div className="flex items-center justify-between border-t border-gray-100 px-4 pt-4">
         <div className="flex gap-4 cursor-pointer hover:underline">
-          <div className="flex justify-center gap-2">
+          <div onClick={()=>setStatus(!status)} className="flex  justify-center gap-2">
             {hasLiked ? (
               <HiHeart
                 onClick={likePost}

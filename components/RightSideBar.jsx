@@ -86,7 +86,7 @@ export default function RightSideBar() {
           </div>
           <Link href={`u/${user?.username}`}>
             <Button
-              className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white "
+              className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white   border-gray-800"
               variant="default"
             >
               My Profile
@@ -146,3 +146,5 @@ export default function RightSideBar() {
     </>
   );
 }
+
+

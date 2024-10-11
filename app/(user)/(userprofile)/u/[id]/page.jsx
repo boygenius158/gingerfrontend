@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import MiniProfile from "@/components/MiniProfile";
 import SessionHandler from "@/components/SessionHandler";
+import RightSideBar from "@/components/RightSideBar";
 
 export default function Page({ params }) {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Page({ params }) {
           hasFetchedProfile.current = true;
           const res = await instance.post("/api/user/fetchprofile", {
             username,
-          });
+          }); 
           console.log(res);
           
           console.log("Fetched user email:", res.data.user.following);
@@ -72,8 +73,22 @@ export default function Page({ params }) {
   }, [id, setSavedPosts]);
 
   return (
-    <SessionHandler>
-      <Profile />
-    </SessionHandler>
+      <div className="bg-black text-white">
+      <main className="grid md:grid-cols-4 mx-auto z-30 min-h-screen">
+        <section className="hidden md:inline-grid md:col-span-1">
+          <div className="fixed w-[280px]">
+            <MiniProfile />
+          </div>
+        </section>
+        <section className="md:col-span-3 ">
+        <Profile />
+        </section>
+        {/* <section className="hidden md:inline-grid md:col-span-1">
+          <div className="fixed w-[380px]">
+            <RightSideBar />
+          </div>
+        </section> */}
+      </main>
+    </div>
   );
 }

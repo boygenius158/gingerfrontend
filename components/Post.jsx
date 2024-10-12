@@ -33,7 +33,7 @@ export default function Post({ post, isSaved }) {
       autoClose: 5000,
     });
   };
-  const [CommentSectionVisible, setCommentSectionVisible] = useState(true);
+  const [CommentSectionVisible, setCommentSectionVisible] = useState(false);
   console.log(post);
   const [isOpen, setIsOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);

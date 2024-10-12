@@ -14,17 +14,18 @@ import Link from "next/link";
 import PostSection from "./profile/PostSection";
 import SavedPosts from "./profile/SavedPosts";
 import { useSocket } from "@/app/lib/SocketContext";
+import ConnectionsList from "./modals/ConnectionsList";
 
 export default function Profile({ username }) {
   const socket = useSocket();
   const { edgestore } = useEdgeStore();
   const filePickerRef = useRef(null);
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [currentConnection, setCurrentConnection] = useState(false);
+  const [status, setStatus] = useState(false);
   console.log(session);
 
   const [profileData, setProfileData] = useState({
@@ -140,13 +141,18 @@ export default function Profile({ username }) {
   }
   console.log(user.followerDetails);
 
+  function onStatusChange(status) {
+    setStatus(status);
+  }
   return (
     <div className=" sm:px-6 pt-6 ">
-      {
-        currentConnection && (
-          <div>hello world</div>
-        )
-      }
+      <ConnectionsList
+        status={status}
+        onStatusChange={onStatusChange}
+        followers={user.followerDetails}
+        following={user.followingDetails}
+      />
+
       <div className="flex flex-col lg:flex-row lg:space-x-24">
         <div className="rounded-full flex items-center justify-center  mb-6 lg:mb-0">
           <Image
@@ -165,7 +171,7 @@ export default function Profile({ username }) {
             <span>
               {!isSameUser && (
                 <button
-                  className="border border-gray-400 rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200"
+                  className="border border-gray-700 b rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200 hover:text-purple-800"
                   onClick={handleFollow}
                 >
                   {isFollowing ? "Following" : "Follow"}
@@ -178,13 +184,13 @@ export default function Profile({ username }) {
           <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
             <span className="text-sm font-semibold">{posts.length} posts</span>
             <span
-              onClick={() => setCurrentConnection(true)}
+              onClick={() => setStatus(true)}
               className="text-sm font-semibold hover:underline cursor-pointer "
             >
               {user.followers.length} followers
             </span>
             <span
-              onClick={() => setCurrentConnection(true)}
+              onClick={() => setStatus(true)}
               className="text-sm font-semibold hover:underline cursor-pointer"
             >
               {user.following.length} following
@@ -199,16 +205,26 @@ export default function Profile({ username }) {
           </div>
         </div>
       </div>
-      <div className="pt-4"></div>
-      <div className="border w-full"></div>
+      <div className="pt-4"></div><div className="border w-full mt-4 mb-4 border-purple-800"></div>
+
 
       <div className="mt-2">
-        <Tabs defaultValue="posts">
-          <div className="flex items-center justify-center font-extrabold">
-            <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="posts">Posts</TabsTrigger>
-                <TabsTrigger value="saved-posts">Saved Post</TabsTrigger>
+        <Tabs defaultValue="posts" className="bg-black">
+          <div className="flex items-center justify-center font-extrabold bg-black">
+            <div className="flex items-center bg-black">
+              <TabsList className="bg-black border border-purple-700">
+                <TabsTrigger
+                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-gray-200"
+                  value="posts"
+                >
+                  Posts
+                </TabsTrigger>
+                <TabsTrigger
+                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-gray-200"
+                  value="saved-posts"
+                >
+                  Saved Post
+                </TabsTrigger>
               </TabsList>
             </div>
           </div>

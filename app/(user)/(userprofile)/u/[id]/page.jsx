@@ -11,7 +11,6 @@ import SessionHandler from "@/components/SessionHandler";
 import RightSideBar from "@/components/RightSideBar";
 
 export default function Page({ params }) {
-  const router = useRouter();
 
   const { user, setUser, posts, setPosts, addPost, savedPosts, setSavedPosts } = useProfileStore(
     (state) => ({

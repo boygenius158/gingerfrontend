@@ -5,11 +5,14 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import instance from "@/axiosInstance";
 import { SlUserFollowing } from "react-icons/sl";
+import { Skeleton } from "./ui/skeleton";
 
 export default function RightSideBar() {
   const { data: session, status } = useSession();
   console.log(session);
   const [user, setUser] = useState("");
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -25,6 +28,7 @@ export default function RightSideBar() {
           // setRole(response.data.user.roles);
           if (isMounted) {
             setUser(response.data.user);
+            setLoading(false); // Set loading to false after data is fetched
           }
         } catch (error) {
           console.error("Error fetching profile details:", error);
@@ -38,11 +42,12 @@ export default function RightSideBar() {
       isMounted = false;
     };
   }, [session]);
+  
   console.log(user);
 
   return (
     <>
-      <div className="max-w-sm mx-auto  text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4">
+      <div className="max-w-sm mx-auto text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4">
         <div className="relative h-32 bg-gray-200">
           <Image
             src="https://i.pinimg.com/564x/60/bc/09/60bc090630a52bf823350c0d8a16cb77.jpg"
@@ -53,26 +58,38 @@ export default function RightSideBar() {
         </div>
         <div className="relative px-4 pt-12 pb-4">
           <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-24 h-24">
-            {" "}
-            {/* Fixed width and height */}
-            <Image
-              src={user?.profilePicture}
-              alt="Profile picture"
-              layout="fill" // Use layout fill for absolute positioning
-              objectFit="cover" // Ensure the image covers the area
-              className="rounded-full border-4 border-purple-800"
-            />
+            {loading ? (
+              <Skeleton className="rounded-full w-full h-full " />
+            ) : (
+              <Image
+                src={user?.profilePicture}
+                alt="Profile picture"
+                layout="fill" // Use layout fill for absolute positioning
+                objectFit="cover" // Ensure the image covers the area
+                className="rounded-full border-4 border-purple-800"
+              />
+            )}
           </div>
 
           <div className="text-center">
-            <h2 className="text-xl font-semibold first-letter:uppercase">
-              {user?.name}
-            </h2>
-            <p className="text-gray-600">@{user?.username}</p>
+            {loading ? (
+              <>
+                <Skeleton className="mt-2 mb-1 bg-black w-2/3 h-6" /> {/* Skeleton for name */}
+                <Skeleton className="bg-black w-1/2 h-4" /> {/* Skeleton for username */}
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold first-letter:uppercase">
+                  {user?.name}
+                </h2>
+                <p className="text-gray-600">@{user?.username}</p>
+              </>
+            )}
           </div>
+
           <div className="flex justify-between mt-4 text-center">
             <div>
-              <p className="font-bold">250</p>
+              <p className="font-bold">{user?.postCount || 0}</p>
               <p className="text-white-600 text-sm">Posts</p>
             </div>
             <div>
@@ -86,7 +103,7 @@ export default function RightSideBar() {
           </div>
           <Link href={`u/${user?.username}`}>
             <Button
-              className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white  border  border-gray-800"
+              className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
               variant="default"
             >
               My Profile
@@ -103,7 +120,6 @@ export default function RightSideBar() {
             <div className="">
               <Image
                 src={user?.profilePicture}
-                // src="https://i.pinimg.com/564x/07/33/ba/0733ba760b29378474dea0fdbcb97107.jpg"
                 alt="Profile picture"
                 width={50}
                 height={50}
@@ -124,7 +140,6 @@ export default function RightSideBar() {
             <div className="">
               <Image
                 src={user?.profilePicture}
-                // src="https://i.pinimg.com/564x/07/33/ba/0733ba760b29378474dea0fdbcb97107.jpg"
                 alt="Profile picture"
                 width={50}
                 height={50}
@@ -146,5 +161,3 @@ export default function RightSideBar() {
     </>
   );
 }
-
-

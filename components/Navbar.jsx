@@ -3,7 +3,11 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IoIosAddCircle } from "react-icons/io";
-import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineLoading3Quarters,
+  AiOutlineLogout,
+} from "react-icons/ai";
 import Modal from "react-modal";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +34,12 @@ import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
+import { Lobster } from "next/font/google";
+
+const lobsterFont = Lobster({
+  subsets: ["latin"],
+  weight: ["400"], // Lobster only comes in one weight
+});
 
 export default function Navbar() {
   const router = useRouter();
@@ -43,6 +53,7 @@ export default function Navbar() {
   const [imageFileUrls, setImageFileUrls] = useState([]);
   const [caller, setCaller] = useState();
   const [spin, setSpin] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   console.log(session);
   const handleRoomShift = useCallback(
     (data) => {
@@ -138,7 +149,7 @@ export default function Navbar() {
         }
       );
     }
-  }, [caller, callAccept,notificationHandled]);
+  }, [caller, callAccept, notificationHandled]);
 
   console.log(caller);
 
@@ -343,9 +354,10 @@ export default function Navbar() {
       <div className="">
         <div className="flex justify-between">
           <Link href="/">
-            <div className="hidden lg:block w-[170px] cursor-pointer bg-purple-600 text-white">
-              {/* <GingerLogo /> */}
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            <div className="hidden lg:block w-[170px] cursor-pointer text-white ml-4">
+              <h1
+                className={`scroll-m-20 text-4xl  lg:text-5xl ${lobsterFont.className}`}
+              >
                 Ginger
               </h1>
             </div>
@@ -353,18 +365,31 @@ export default function Navbar() {
           <div className="hidden lg:block">
             {status === "loading" ? (
               <div className="w-[60px] h-[60px] flex items-center justify-center">
-                <AiOutlineLoading3Quarters className="text-2xl animate-spin" />
+                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
               </div>
             ) : session ? (
               <div className="flex gap-2 items-center">
-                <Image
-                  src={user?.profilePicture}
-                  alt={user?.name}
-                  width={60}
-                  height={60}
-                  className="rounded-full cursor-pointer transform hover:scale-110 transition duration-300 w-[60px] h-[60px] object-cover border-2 border-purple-700"
-                  onClick={signOut}
-                />
+                <div
+                  onMouseEnter={() => setIsHovered(true)} // Set hover state
+                  onMouseLeave={() => setIsHovered(false)} // Reset hover state
+                >
+                  {isHovered ? (
+                    <AiOutlineLogout
+                      className="text-white cursor-pointer transform hover:scale-110 transition duration-300"
+                      onClick={signOut} // Click to sign out
+                      size={60} // Set the size of the logout icon
+                    />
+                  ) : (
+                    <Image
+                      src={user?.profilePicture || "/path/to/default-image.jpg"} // Fallback image if no profile picture
+                      alt={user?.name}
+                      width={60}
+                      height={60}
+                      className="rounded-full cursor-pointer transform hover:scale-110 transition duration-300 w-[60px] h-[60px] object-cover border-2 border-purple-700"
+                      onClick={signOut}
+                    />
+                  )}
+                </div>
                 <div className="flex">
                   <IoIosAddCircle
                     className="text-white text-2xl cursor-pointer transform hover:scale-150 transition duration-300 hover:text-purple-600"

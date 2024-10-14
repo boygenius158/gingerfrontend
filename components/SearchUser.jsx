@@ -1,182 +1,92 @@
-"use client";
+"use client"
 
-import React, { useCallback, useEffect, useState } from "react";
-import Modal from "react-modal";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import debounce from "lodash/debounce";
-import instance from "@/axiosInstance";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
+import instance from "@/axiosInstance";
+import { X } from "lucide-react";
 
 export default function SearchUser({ handleClose }) {
   const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
-  const [recentSearches, setRecentSearches] = useState([]);
   const [userProfiles, setUserProfiles] = useState([]);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   const onSearchSubmit = async (e) => {
     e.preventDefault();
     const response = await instance.get("/api/user/searchUser", {
-      params: {
-        searchQuery: searchTerm,
-      },
+      params: { searchQuery: searchTerm },
     });
     if (response) {
-      console.log(response.data.users);
       setUserProfiles(response.data.users);
     }
   };
 
-  async function displayProfileInformationHere(search) {
-    console.log(search);
-
-    const response = await instance.post(
-      "/api/user/save-user-to-search-history",
-      {
-        userId: session?.id,
+  const displayProfileInformationHere = async (search) => {
+    if (status === "authenticated" && session?.id) {
+      await instance.post("/api/user/save-user-to-search-history", {
+        userId: session.id,
         key: search,
-      }
-    );
-
-    if (response) {
-      setRecentSearches((prev) => [
-        ...prev,
-        {
-          searchedProfileId: {
-            name: search.name,
-            username: search.username,
-            profilePicture: search.profilePicture,
-          },
-        },
-      ]);
+      });
     }
-
-    // Use router to navigate to the user's profile
     router.push(`/u/${search.username}`);
-  }
-
-  // const fetchSearches = useCallback(async () => {
-  //   const response = await instance.post("/api/user/get-recent-searches", {
-  //     userId: session?.id,
-  //   });
-  //   console.log(response);
-
-  //   setRecentSearches(response.data.searches);
-  // }, [session?.id]);
-
-  // useEffect(() => {
-  //   fetchSearches();
-  // }, [fetchSearches]);
-
-  // console.log(recentSearches);
+  };
 
   return (
-    <div className="">
-      <div className="bg-white border rounded-lg w-[423px] h-[700px] relative">
-        <button
-          onClick={handleClose}
-          className="absolute text-2xl top-2 right-2 text-gray-500 hover:text-gray-800"
-        >
-          &times;
-        </button>
-        <div className="flex top-0 left-0 mb-4">
-          <h1 className="p-4 text-2xl font-extrabold tracking-tight lg:text-2xl flex justify-center items-center">
+    <Card className="w-[423px] h-[700px] relative bg-background text-foreground bg-black text-white border border-purple-700">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-2xl font-bold">Search</CardTitle>
+        <Button variant="ghost" size="icon" onClick={handleClose}>
+          <X className="h-4 w-4" />
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={onSearchSubmit} className="space-y-4">
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search..."
+            className="w-full text-black"
+          />
+          <Button type="submit" className="w-full">
             Search
-          </h1>
-        </div>
-        <div className="mx-2">
-          <form action="" onSubmit={onSearchSubmit}>
-            <Input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Search..."
-              className="w-full px-3 py-2 border bg-gray-200 border-gray-300 rounded mb-4"
-            />
-            <button onSubmit={onSearchSubmit}>Search</button>
-          </form>
-        </div>
+          </Button>
+        </form>
 
-        <div className="border-t-2"></div>
-
-        {searchTerm.length > 0 && userProfiles.length > 0 ? (
-          <div>
-            <div className="flex justify-between">
-              <h1 className="p-4 text-sm font-extrabold tracking-tight cursor-pointer">
-                Recent
-              </h1>
-            </div>
-            <ul className="list-disc list-inside cursor-pointer max-h-[500px] overflow-y-scroll">
+        {searchTerm.length > 0 && userProfiles.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-sm font-semibold mb-2">Recent</h2>
+            <ScrollArea className="h-[500px]">
               {userProfiles.map((search, index) => (
                 <div
                   key={index}
                   onClick={() => displayProfileInformationHere(search)}
-                  className="flex cursor-pointer"
+                  className="flex items-center space-x-4 py-2 cursor-pointer hover:bg-accent rounded-md px-2"
                 >
-                  <div className="p-2">
-                    <Image
-                      src={search.profilePicture}
-                      alt="failed"
-                      height={55}
-                      width={55}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="font-bold">{search.username}</div>
-                    <div className="font-extralight text-gray-500 first-letter:uppercase">
-                      {search.name}
-                    </div>
+                  <Avatar>
+                    <AvatarImage src={search.profilePicture} alt={search.username} />
+                    <AvatarFallback>{search.username[0]}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">{search.username}</p>
+                    <p className="text-sm text-muted-foreground capitalize">{search.name}</p>
                   </div>
                 </div>
               ))}
-            </ul>
-          </div>
-        ) : (
-          <div>
-            <div className="flex justify-between">
-              <h1 className="p-4 text-sm font-extrabold tracking-tight cursor-pointer">
-                {/* Recent */}
-              </h1>
-            </div>
-            <ul className="list-disc list-inside cursor-pointer max-h-[500px] overflow-y-scroll">
-              {/* {recentSearches.map((search, index) => (
-                <div
-                  key={index}
-                  onClick={() =>
-                    displayProfileInformationHere(search?.searchedProfileId)
-                  }
-                  className="flex cursor-pointer"
-                >
-                  <div className="p-2">
-                    <Image
-                      src={search?.searchedProfileId?.profilePicture}
-                      alt="failed"
-                      height={55}
-                      width={55}
-                      className="rounded-full"
-                    />
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="font-bold">
-                      {search?.searchedProfileId?.username}
-                    </div>
-                    <div className="font-extralight text-gray-500 first-letter:uppercase">
-                      {search?.searchedProfileId?.name}
-                    </div>
-                  </div>
-                </div>
-              ))} */}
-            </ul>
+            </ScrollArea>
           </div>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

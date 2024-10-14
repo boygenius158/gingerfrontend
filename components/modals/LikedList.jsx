@@ -13,39 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 // Mock data for likes
-const likes = [
-  {
-    id: 1,
-    name: "John Doe",
-    username: "johndoe",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    username: "janesmith",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    username: "alicej",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: 4,
-    name: "Bob Wilson",
-    username: "bobwilson",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: 5,
-    name: "Emma Brown",
-    username: "emmab",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  // Add more mock users as needed
-];
+
 
 export default function LikedList({ status, onStatusChange, likes }) {
   function toggleModal() {

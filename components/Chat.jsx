@@ -185,7 +185,7 @@ export default function Chat({ recipient }) {
   }
 
   async function handleSubmit() {
-    setSpin(true)
+    setSpin(true);
     if (file) {
       // Upload the file and track progress
       const res = await edgestore.publicFiles.upload({
@@ -213,7 +213,7 @@ export default function Chat({ recipient }) {
           console.error("Failed to send image:", response?.data?.message);
         }
       }
-      setSpin(false)
+      setSpin(false);
     }
   }
 
@@ -350,9 +350,7 @@ export default function Chat({ recipient }) {
             <div>{recipient.username}</div>
           </div>
           <div className="flex gap-4  ">
-            <div className="flex items-center justify-center">
-              
-            </div>
+            <div className="flex items-center justify-center"></div>
             <div className="flex items-center justify-center"></div>
             <div className="flex items-center justify-center mr-3">
               {/* <HiOutlineDotsVertical className="h-5 cursor-pointer" /> */}
@@ -459,8 +457,8 @@ export default function Chat({ recipient }) {
                   onMouseLeave={() => handleMouseLeaveMessage()}
                   className={`inline-block cursor-pointer p-2 max-w-xs ${
                     isSender
-                      ? "bg-purple-600 text-white rounded-tl-2xl rounded-bl-2xl rounded-tr-md transition-transform duration-300 hover:scale-125"
-                      : "bg-gray-200 text-black rounded-tr-2xl rounded-br-2xl rounded-tl-md transition-transform duration-300 hover:scale-125"
+                      ? "bg-purple-600 text-white rounded-tl-2xl rounded-bl-2xl rounded-tr-md transition-transform duration-300 hover:bg-purple-800"
+                      : "bg-gray-200 text-black rounded-tr-2xl rounded-br-2xl rounded-tl-md transition-transform duration-300 hover:bg-gray-300"
                   }`}
                 >
                   {msg.type === "image" ? (
@@ -488,7 +486,7 @@ export default function Chat({ recipient }) {
                     <span>{msg.message}</span>
                   )}
                 </div>
-                {showStatusFor === index && (
+                {showStatusFor === index && isSender && (
                   <div className="absolute bottom-0 right-0 mb-2 mr-2">
                     <MessageStatusCard
                       isSeen={msg.isRead}

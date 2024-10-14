@@ -25,8 +25,10 @@ import { Button } from "@/components/ui/button";
 import CommentSectionPost from "./CommentSectionPost";
 import HoverCardPost from "./HoverCardPost";
 import LikedList from "./modals/LikedList";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton"; // Import the Skeleton
 
-export default function Post({ post, isSaved }) {
+export default function Post({ post, isSaved, loading }) {
   const notify = () => {
     toast.success("Post Has Been Reported!", {
       position: <toast className="POSITION TOP_CENTER"></toast>,
@@ -34,35 +36,28 @@ export default function Post({ post, isSaved }) {
     });
   };
   const [CommentSectionVisible, setCommentSectionVisible] = useState(false);
-  console.log(post);
   const [isOpen, setIsOpen] = useState(false);
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const { data: session, status } = useSession();
-  console.log(session);
-
+  const { data: session } = useSession();
   function HandleCommentVisible() {
     setCommentSectionVisible(!CommentSectionVisible);
   }
+
   async function handleReportSubmit(e) {
-    console.log("handle report s");
     e.preventDefault();
     const response = await instance.post("/api/user/reportPost", {
       postId: post._id,
       victimUser: session.id,
     });
-    console.log(response);
 
     if (response) {
       setIsOpen(false);
-      setIsReportOpen(false);
       notify();
     }
   }
-  // Debugging
+
   return (
     <>
-
-      <div className="bg-black border  border-gray-600 text-white  my-7     rounded-md">
+      <div className="bg-black border border-gray-600 text-white my-7 rounded-md">
         {isOpen && (
           <Modal
             isOpen={isOpen}
@@ -111,25 +106,31 @@ export default function Post({ post, isSaved }) {
             </div>
           </Modal>
         )}
-        <div className="flex items-center p-5  border-gray-100 gap-x-3">
+
+        <div className="flex items-center p-5 border-gray-100 gap-x-3">
           <div className="relative w-12 h-12">
-            <Image
-              src={post?.userDetails?.profilePicture}
-              alt="hell world"
-              layout="fill"
-              className="rounded-full object-cover  border-purple-800 border-2 p-1"
-            />
+            {loading ? ( // Check if loading
+              <Skeleton className="rounded-full w-full h-full" /> // Use Skeleton here
+            ) : (
+              <Image
+                src={post?.userDetails?.profilePicture}
+                alt="Profile Picture"
+                layout="fill"
+                className="rounded-full object-cover border-purple-800 border-2 p-1"
+              />
+            )}
           </div>
 
           <div className="flex-1 ">
-            <p className="font-bold first-letter:uppercase">
-              <HoverCardPost
-                username={post.userDetails.username}
-              ></HoverCardPost>
-            </p>
-            {/* <p className="text-gray-500 first-letter:uppercase">
-            Asheville, North Carolina
-          </p> */}
+            {loading ? ( // Check if loading
+              <Skeleton className="w-24 h-4 mb-2" /> // Skeleton for username
+            ) : (
+              <Link href={`/u/${post?.userDetails?.username}`}>
+                <p className="font-bold first-letter:uppercase">
+                  <HoverCardPost user={post.userDetails}></HoverCardPost>
+                </p>
+              </Link>
+            )}
           </div>
 
           {session.username !== post.userDetails.username && (
@@ -137,7 +138,7 @@ export default function Post({ post, isSaved }) {
               <HiOutlineDotsVertical
                 className="text-2xl cursor-pointer"
                 onClick={() => setIsOpen((prev) => !prev)}
-              ></HiOutlineDotsVertical>
+              />
             </div>
           )}
         </div>
@@ -149,10 +150,22 @@ export default function Post({ post, isSaved }) {
           HandleCommentVisible={HandleCommentVisible}
           isSaved={isSaved}
         />
+
         <p className="p-5 truncate flex">
-          <span className="font-bold mr-2">{post.userDetails.username}</span>
-          <div>{post.caption === "*" ? <p></p> : <p>{post.caption}</p>}</div>
+          {loading ? ( // Check if loading
+            <Skeleton className="w-3/4 h-4" /> // Skeleton for caption
+          ) : (
+            <>
+              <span className="font-bold mr-2">
+                {post.userDetails.username}
+              </span>
+              <div>
+                {post.caption === "*" ? <p></p> : <p>{post.caption}</p>}
+              </div>
+            </>
+          )}
         </p>
+
         <div>
           {CommentSectionVisible && (
             <div>

@@ -13,74 +13,72 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const users = [
-  {
-    id: "1",
-    name: "Olivia Martin",
-    email: "m@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "2",
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "3",
-    name: "Emma Wilson",
-    email: "emma@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "4",
-    name: "Jackson Lee",
-    email: "lee@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "5",
-    name: "William Kim",
-    email: "will@email.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "1",
-    name: "Olivia Martin",
-    email: "m@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "2",
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "3",
-    name: "Emma Wilson",
-    email: "emma@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "4",
-    name: "Jackson Lee",
-    email: "lee@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "5",
-    name: "William Kim",
-    email: "will@email.com",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-];
-
-export default function Component() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function SearchUserModal({ isOpen, changeStatus }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
 
+  const users = [
+    {
+      id: "1",
+      name: "Olivia Martin",
+      email: "m@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "2",
+      name: "Isabella Nguyen",
+      email: "isabella.nguyen@email.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "3",
+      name: "Emma Wilson",
+      email: "emma@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "4",
+      name: "Jackson Lee",
+      email: "lee@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "5",
+      name: "William Kim",
+      email: "will@email.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "1",
+      name: "Olivia Martin",
+      email: "m@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "2",
+      name: "Isabella Nguyen",
+      email: "isabella.nguyen@email.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "3",
+      name: "Emma Wilson",
+      email: "emma@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "4",
+      name: "Jackson Lee",
+      email: "lee@example.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    {
+      id: "5",
+      name: "William Kim",
+      email: "will@email.com",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+  ];
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,10 +93,12 @@ export default function Component() {
     );
   };
 
+  function updateStatus() {
+    changeStatus();
+  }
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>New Message</Button>
-      <Dialog  open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={updateStatus}>
         <DialogContent className="sm:max-w-[425px] border border-purple-700 bg-black text-gray-400">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">
@@ -114,7 +114,7 @@ export default function Component() {
           </button>
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-               select a user to start a conversation with.
+              select a user to start a conversation with.
             </p>
             <Input
               type="text"
@@ -127,7 +127,7 @@ export default function Component() {
               {filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center space-x-4 cursor-pointer mb-2"
+                  className="flex items-center space-x-4 cursor-pointer mb-2 hover:bg-gray-400 p-2 text-purple-700 hover:text-white rounded "
                   onClick={() => toggleUserSelection(user.id)}
                 >
                   <Avatar className="h-8 w-8 border border-purple-700">

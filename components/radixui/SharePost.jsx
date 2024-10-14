@@ -64,11 +64,11 @@ export default function SharePost({ post }) {
     <div className="">
       <Popover.Root>
         <Popover.Trigger asChild>
-          <button className="flex items-center border-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md">
+          <button className="flex rounded  items-center border-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 ">
             <Share2Icon className="w-6 h-6" aria-hidden="true" />
           </button>
         </Popover.Trigger>
-        <Popover.Content className="w-[360px] p-4 bg-white shadow-lg rounded-md">
+        <Popover.Content className="w-[360px] p-4 bg-black border border-purple-700 shadow-lg rounded-md z-20">
           <div className="grid grid-cols-[130px_1fr] gap-4">
             <div className="pr-2">
               <Image
@@ -82,7 +82,7 @@ export default function SharePost({ post }) {
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold mb-2">Share this image</h2>
+              <h2 className="text-lg font-semibold mb-2 text-gray-400">Share this image</h2>
               <p className="text-gray-600 mb-4">
                 {/* Minimalistic 3D rendering wallpaper. */}
               </p>
@@ -91,7 +91,7 @@ export default function SharePost({ post }) {
                 <Popover.Close asChild>
                   <button
                     onClick={handleCopyLink}
-                    className="flex items-center bg-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
+                    className="flex items-center border border-purple-700  hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
                   >
                     <Link1Icon className="w-4 h-4 mr-2" aria-hidden="true" />
                     Copy link
@@ -100,7 +100,7 @@ export default function SharePost({ post }) {
                 <Popover.Close asChild>
                   <button
                     onClick={handleShareClick}
-                    className="flex items-center bg-gray-300 hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
+                    className="flex items-center border border-purple-700  hover:bg-gray-300 text-purple-700 px-4 py-2 rounded-md"
                   >
                     <Share2Icon className="w-4 h-4 mr-2" aria-hidden="true" />
                     Whatsapp

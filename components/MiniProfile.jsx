@@ -122,7 +122,7 @@ export default function MiniProfile() {
   }, [socket]);
 
   return (
-    <div className="text-white">
+    <div className="text-white z-10">
       <div className="scroll-m-20   tracking-tight h-screen w-180 bg-gray-25   rounded border-2 border-gray-700 mt-4">
         {/* <div className="flex items-center justify-between p-6">
           <div className="flex flex-col ">

@@ -13,6 +13,8 @@ export default function Posts() {
   const [feedPosts, setFeedPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [loading2, setLoading2] = useState(true);
+
   const [loading, setLoading] = useState(true); // New loading state
   const limit = 2;
 
@@ -30,6 +32,8 @@ export default function Posts() {
         setFeedPosts(response.data.feed || []);
         setOffset(limit);
         setHasMore(response.data.feed.length > 0);
+        setLoading2(false)
+
       } catch (error) {
         console.error("Failed to fetch posts", error);
       } finally {
@@ -61,6 +65,7 @@ export default function Posts() {
         ]);
         setOffset((prevOffset) => prevOffset + limit);
         setHasMore(response.data.feed.length > 0);
+        setLoading2(false)
       }
     } catch (error) {
       console.error("Failed to fetch more posts", error);
@@ -101,7 +106,12 @@ export default function Posts() {
               <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
             ) : feedPosts.length > 0 ? (
               feedPosts.map((post) => (
-                <Post key={post._id} post={post} isSaved={post.isSaved} />
+                <Post
+                  key={post._id}
+                  post={post}
+                  isSaved={post.isSaved}
+                  loading={loading2}
+                />
               ))
             ) : (
               <div>No posts to see.</div>

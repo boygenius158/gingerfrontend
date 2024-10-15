@@ -64,7 +64,7 @@ export default function Password() {
       if (response.data.success) {
         toast.success("Password changed successfully!");
       } else {
-        toast.error("Password could not be changed");
+        toast.error("your old password seem to be incorrect");
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -78,7 +78,7 @@ export default function Password() {
 
   return (
     <div>
-      <Card>
+      <Card className="bg-black text-white">
         <CardHeader>
           <CardTitle>Password</CardTitle>
           <CardDescription>

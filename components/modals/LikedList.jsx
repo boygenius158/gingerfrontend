@@ -38,19 +38,19 @@ export default function LikedList({ status, onStatusChange, likes }) {
           <ScrollArea className="mt-4 max-h-[60vh]">
             <div className="space-y-4">
               {likedby.map((user, index) => (
-                <Link key={index} href={`/u/${user.username}`}>
+                <Link key={index} href={`/u/${user?.username}`}>
                   <div className="flex items-center space-x-4 hover:bg-gray-400 cursor-pointer p-2 rounded">
                     <Avatar>
                       <AvatarImage
-                        src={user.profilePicture}
-                        alt={user.username}
+                        src={user?.profilePicture}
+                        alt={user?.username}
                       />
-                      <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      {/* Uncomment this if you want to display the user's name */}
-                      {/* <p className="text-sm font-medium leading-none">{user.name}</p> */}
-                      <p className="text-sm text-gray-500">@{user.username}</p>
+                      {/* Uncomment this if you want to display the user?'s name */}
+                      {/* <p className="text-sm font-medium leading-none">{user?.name}</p> */}
+                      <p className="text-sm text-gray-500">@{user?.username}</p>
                     </div>
                   </div>
                 </Link>

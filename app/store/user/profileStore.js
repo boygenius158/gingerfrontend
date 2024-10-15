@@ -1,31 +1,25 @@
 import { create } from "zustand";
 
-
 const useProfileStore = create((set) => ({
-  user: null, 
-  posts: [], 
+  user: null,
+  posts: [],
   savedPosts: [],
+  feed: [], // Initial feed state
 
-  setUser: (user) => set({ user }), 
+  setUser: (user) => set({ user }),
   setPosts: (posts) => set({ posts }),
-  setSavedPosts: (savedPosts) => set({ savedPosts }), 
+  setSavedPosts: (savedPosts) => set({ savedPosts }),
 
-  addPost: (post) =>
-    set((state) => ({
-      posts: [...state.posts, post],
-    })),
-
-  updatePost: (postId, updatedPost) =>
-    set((state) => ({
-      posts: state.posts.map((post) =>
-        post._id === postId ? { ...post, ...updatedPost } : post
-      ),
-    })),
-
-  removePost: (postId) =>
-    set((state) => ({
-      posts: state.posts.filter((post) => post._id !== postId),
-    })),
+  // Correctly update the feed state
+  setFeed: (newFeed) =>
+    set((state) => {
+      console.log("Updating feed with:", newFeed); // Debug log
+      return {
+        feed: Array.isArray(newFeed)
+          ? [...state.feed, ...newFeed]
+          : [...state.feed, newFeed],
+      };
+    }),
 }));
 
 export default useProfileStore;

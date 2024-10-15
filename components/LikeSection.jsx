@@ -11,7 +11,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
   const socket = useSocket();
   const [hasLiked, setHasLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(isSaved);
-  const [likeCount, setLikeCount] = useState(post.likeCount);
+  // const [likeCount, setLikeCount] = useState(post.likeCount);
   const { data: session } = useSession();
   const [status, setStatus] = useState(false);
 
@@ -38,7 +38,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
       console.log("clicked");
 
       setHasLiked((prev) => !prev);
-      setLikeCount((prev) => prev + (hasLiked ? -1 : 1));
+      // setLikeCount((prev) => prev + (hasLiked ? -1 : 1));
 
       console.log(session?.id, "sessionid");
 
@@ -90,14 +90,14 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
                 className="cursor-pointer text-3xl hover:scale-125 transition-transform duration-200 ease-out"
               />
             )}
-            <div onClick={() => setStatus(true)}>
+            {/* <div onClick={() => setStatus(true)}>
               {likeCount.length > 0 && (
                 <p className="text-gray-500 ">
                   {likeCount} {likeCount === 1 ? "like" : "likes"}
                 </p>
               )}
               {likeCount} {likeCount === 1 ? "like" : "likes"}
-            </div>
+            </div> */}
           </div>
           <div
             onClick={HandleCommentVisible}

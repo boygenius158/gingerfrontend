@@ -216,6 +216,7 @@ export default function ConnectionsList({
               </div>
             </ScrollArea>
           )}
+          
           {selectedOption === "Following" && (
             <ScrollArea className="mt-4 max-h-[60vh]">
               <div className="space-y-4">

@@ -17,9 +17,9 @@ import Password from "./settings/password/Password";
 
 export default function Settings() {
   return (
-    <div className="flex items-center justify-center mt-8 border p-4">
+    <div className="flex items-center justify-center mt-8  p-4 mr-4">
       <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 bg-black ">
           <TabsTrigger value="account">Account</TabsTrigger>
           <TabsTrigger value="password">Password</TabsTrigger>
           {/* <TabsTrigger value="password">Password</TabsTrigger> */}

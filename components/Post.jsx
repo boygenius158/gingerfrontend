@@ -54,10 +54,11 @@ export default function Post({ post, isSaved, loading }) {
       notify();
     }
   }
+  console.log(post); 
 
   return (
     <>
-      <div className="bg-black border border-gray-600 text-white my-7 rounded-md">
+      <div className="bg-black border  border-gray-600 text-white my-7 rounded-md">
         {isOpen && (
           <Modal
             isOpen={isOpen}
@@ -133,14 +134,13 @@ export default function Post({ post, isSaved, loading }) {
             )}
           </div>
 
-          {session.username !== post.userDetails.username && (
-            <div className="flex justify-end items-center">
-              <HiOutlineDotsVertical
-                className="text-2xl cursor-pointer"
-                onClick={() => setIsOpen((prev) => !prev)}
-              />
-            </div>
-          )}
+          {session?.username &&
+            post?.userDetails?.username &&
+            session.username !== post.userDetails.username && (
+              <div className="flex justify-end items-center">
+                <HiOutlineDotsVertical className="text-2xl cursor-pointer" />
+              </div>
+            )}
         </div>
 
         <ImageSection data={post} />
@@ -157,7 +157,7 @@ export default function Post({ post, isSaved, loading }) {
           ) : (
             <>
               <span className="font-bold mr-2">
-                {post.userDetails.username}
+                {post?.userDetails?.username}
               </span>
               <div>
                 {post.caption === "*" ? <p></p> : <p>{post.caption}</p>}

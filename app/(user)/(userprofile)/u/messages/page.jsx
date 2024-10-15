@@ -57,6 +57,7 @@ export default function Page() {
   const isVedioCallActive = useComponentsStore(
     (state) => state.isVedioCallActive
   );
+console.log(user);
 
   return (
     <main className="bg-black text-white grid  md:grid-cols-4  mx-auto z-30">

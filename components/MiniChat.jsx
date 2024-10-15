@@ -24,14 +24,22 @@ export default function MiniChat({ userSelected, list }) {
     console.log("call clicked", params);
     socket.emit("call", params.email, session.user.email);
   }
-  
+
   function changeStatus() {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   }
 
+  console.log(userSelected);
+  
+
   return (
     <>
-      <SearchUserModal isOpen={isOpen} changeStatus={changeStatus} />
+      <SearchUserModal
+        isOpen={isOpen}
+        changeStatus={changeStatus}
+        list={list}
+        userSelected={userSelected}
+      />
       <div className=" bg-black border text-black  border-gray-700 p-4 mt-8 rounded-lg shadow-md">
         <div className="text-center  font-semibold mb-4 flex items-center justify-center">
           {" "}

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect } from "react";
 import MiniProfile from "./MiniProfile";
 import Posts from "./Posts";

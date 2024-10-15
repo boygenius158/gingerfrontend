@@ -35,6 +35,7 @@ import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { Lobster } from "next/font/google";
+import useProfileStore from "@/app/store/user/profileStore";
 
 const lobsterFont = Lobster({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function Navbar() {
   const [caller, setCaller] = useState();
   const [spin, setSpin] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
   console.log(session);
   const handleRoomShift = useCallback(
     (data) => {
@@ -61,6 +63,12 @@ export default function Navbar() {
     },
     [router]
   );
+  const { feed, setFeed } = useProfileStore((state) => ({
+    feed: state.feed,
+    setFeed: state.setFeed,
+  }));
+
+  console.log(feed[0]);
 
   useEffect(() => {
     if (socket) {
@@ -208,27 +216,47 @@ export default function Navbar() {
   };
   const getPresignedUrls = async () => {
     const fileData = selectedFiles.map((file) => ({
-      fileName: file.name,
-      fileType: file.type,
+        fileName: file.name,
+        fileType: file.type,
     }));
 
     try {
-      console.log("hi", session);
+        console.log("hi", session);
 
-      const response = await instance.post("/api/getPresignedUrls", {
-        files: fileData,
-        caption: caption,
-        userId: session?.id,
-      });
-      console.log(response.data);
+        const response = await instance.post("/api/getPresignedUrls", {
+            files: fileData,
+            caption: caption,
+            userId: session?.id,
+        });
 
-      return response.data.presignedUrls; // This will be an array of upload URLs and keys
+        console.log("Presigned URLs:", response.data.presignedUrls);
+        console.log("Post data:", response.data.post); // Check this output
+
+        if (response.data?.post) {
+            // Log current feed state before updating
+            console.log("Current feed before update:", feed);
+
+            setFeed(response.data.post); // Append the new post object
+
+            // Log feed state after updating
+            console.log("Updated feed after setFeed:", feed);
+        }
+
+        return response.data.presignedUrls;
     } catch (error) {
-      console.error("Error getting presigned URLs:", error);
-      setUploadStatus("Error getting presigned URLs");
-      throw error; // Rethrow the error for further handling
+        console.error("Error getting presigned URLs:", error);
+        // Handle error accordingly
     }
-  };
+};
+
+
+  useEffect(() => {
+    console.log(feed);
+    console.log("hi ja");
+  }, [feed]);
+
+  console.log(feed);
+
   const uploadFiles = async (uploadUrls) => {
     try {
       await Promise.all(
@@ -270,59 +298,13 @@ export default function Navbar() {
 
       const uploadUrls = await getPresignedUrls();
       await uploadFiles(uploadUrls);
-      await saveFileDatabase(uploadUrls);
+      const place = await saveFileDatabase(uploadUrls);
+      console.log(place);
     } catch (error) {
       console.error("Upload failed:", error);
       // setUploadStatus("Upload failed");
     }
   };
-
-  // async function handleSubmit() {
-  //   setSpin(true);
-  //   if (selectedFiles.length > 0) {
-  //     const formData = new FormData();
-  //     selectedFiles.forEach((file) => {
-  //       formData.append("files", file);
-  //     });
-  //     if (caption) {
-  //       formData.append("caption", caption);
-  //     } else {
-  //       formData.append("caption", "*"); // Default empty caption
-  //     }
-  //     formData.append("email", session.user.email);
-  //     console.log("FormData entries:");
-  //     for (let pair of formData.entries()) {
-  //       console.log(pair[0], pair[1]);
-  //     }
-
-  //     try {
-  //       const response = await instance.post(
-  //         "/api/storageMediaInCloud",
-  //         formData,
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-  //       if (response.status === 200) {
-  //         console.log("Files uploaded successfully.");
-  //       } else {
-  //         console.error("File upload failed.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error uploading files:", error);
-  //     }
-
-  //     setIsOpen(false);
-  //     setSelectedFiles([]);
-  //     setImageFileUrls([]);
-  //     setCaption("");
-  //     setSpin(false);
-  //   } else {
-  //     console.error("No files selected.");
-  //   }
-  // }
 
   function addImageToPost(e) {
     const files = Array.from(e.target.files);
@@ -332,9 +314,12 @@ export default function Navbar() {
       setImageFileUrls(files.map((file) => URL.createObjectURL(file)));
     }
   }
-
+  function showList() {
+    console.log(feed);
+  }
   return (
     <div className="shadow-sm  sticky lg:static  top-0 bg-black p-4 border-gray-700 border-b z-20">
+      
       <div>
         <Toaster />
       </div>

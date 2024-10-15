@@ -43,6 +43,7 @@ export default function Profile({ username }) {
   // const [followersList, setFollowersList] = useState(
   //   user.followersDetails || []
   // );
+  console.log(posts, user);
 
   async function handleSubmit() {
     if (selectedFile) {
@@ -205,8 +206,8 @@ export default function Profile({ username }) {
           </div>
         </div>
       </div>
-      <div className="pt-4"></div><div className="border w-full mt-4 mb-4 border-purple-800"></div>
-
+      <div className="pt-4"></div>
+      <div className="border w-full mt-4 mb-4 border-purple-800"></div>
 
       <div className="mt-2">
         <Tabs defaultValue="posts" className="bg-black">
@@ -247,7 +248,10 @@ export default function Profile({ username }) {
           overlayClassName="fixed inset-0 bg-black bg-opacity-50"
           ariaHideApp={false}
         >
-          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center ">
+          <div
+            onClick={() => filePickerRef.current.click()}
+            className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
+          >
             <h2 className="text-xl font-semibold mb-4">Add New Profile</h2>
             {selectedFile ? (
               <Image

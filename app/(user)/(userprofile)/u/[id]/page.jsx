@@ -11,18 +11,27 @@ import SessionHandler from "@/components/SessionHandler";
 import RightSideBar from "@/components/RightSideBar";
 
 export default function Page({ params }) {
-
-  const { user, setUser, posts, setPosts, addPost, savedPosts, setSavedPosts } = useProfileStore(
-    (state) => ({
-      user: state.user,
-      posts: state.posts,
-      savedPosts: state.savedPosts,
-      setUser: state.setUser,
-      setPosts: state.setPosts,
-      addPost: state.addPost,
-      setSavedPosts: state.setSavedPosts,
-    })
-  );
+  const {
+    user,
+    setUser,
+    setFeed,
+    posts,
+    feed,
+    setPosts,
+    addPost,
+    savedPosts,
+    setSavedPosts,
+  } = useProfileStore((state) => ({
+    user: state.user,
+    posts: state.posts,
+    savedPosts: state.savedPosts,
+    setUser: state.setUser,
+    setPosts: state.setPosts,
+    addPost: state.addPost,
+    setSavedPosts: state.setSavedPosts,
+    setFeed: state.setFeed,
+  }));
+  console.log(posts);
 
   const { id } = params;
   const hasFetchedProfile = useRef(false);
@@ -36,12 +45,12 @@ export default function Page({ params }) {
           hasFetchedProfile.current = true;
           const res = await instance.post("/api/user/fetchprofile", {
             username,
-          }); 
-          console.log(res);
-          
+          });
+          console.log(res.data.post);
+
           console.log("Fetched user email:", res.data.user.following);
-          setUser(res.data.user); // Store the user data in Zustand
-          setPosts(res.data.post); // Store posts data in Zustand
+          setUser(res.data.user);
+          setPosts(res.data.post);
         } catch (error) {
           console.error("Error fetching profile data:", error);
         }
@@ -72,7 +81,7 @@ export default function Page({ params }) {
   }, [id, setSavedPosts]);
 
   return (
-      <div className="bg-black text-white">
+    <div className="bg-black text-white">
       <main className="grid md:grid-cols-4 mx-auto z-30 min-h-screen">
         <section className="hidden md:inline-grid md:col-span-1">
           <div className="fixed w-[280px]">
@@ -80,7 +89,7 @@ export default function Page({ params }) {
           </div>
         </section>
         <section className="md:col-span-3 ">
-        <Profile />
+          <Profile />
         </section>
         {/* <section className="hidden md:inline-grid md:col-span-1">
           <div className="fixed w-[380px]">

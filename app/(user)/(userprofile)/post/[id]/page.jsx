@@ -1,26 +1,44 @@
 "use client";
 
-import { useCallback } from "react";
-import instance from "@/axiosInstance";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import instance from "@/axiosInstance";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft } from "lucide-react"
 
 export default function Page({ params }) {
-  const [post, setPosts] = useState(null);
+  const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const { data: session, status } = useSession();
   const { id } = params;
+  const [newComment, setNewComment] = useState("");
 
-  // State to track the current image index
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const getPost = useCallback(async () => {
     const response = await instance.post("/api/user/visitPost", {
       postId: id,
     });
-    setPosts(response.data.result);
+    setPost(response.data.result);
     setComments(response.data.comments);
   }, [id]);
 
@@ -28,7 +46,6 @@ export default function Page({ params }) {
     getPost();
   }, [getPost]);
 
-  // Handlers for navigating through the carousel
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? post.imageUrl.length - 1 : prevIndex - 1
@@ -40,93 +57,156 @@ export default function Page({ params }) {
       prevIndex === post.imageUrl.length - 1 ? 0 : prevIndex + 1
     );
   };
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      // Submit the new comment to the backend
+      const res = await instance.post("/api/user/user-posted-comment", {
+        content: newComment,
+        userId: session?.id,
+        postId: post._id,
+      });
+
+      console.log(res);
+
+      const comment = res.data; // The backend returns the new comment with MongoDB _id
+
+      // Add the new comment to the list of comments
+      setComments([...comments, comment]);
+      setNewComment("");
+      toast.success("Comment posted.");
+    }
+  };
+  if (!post) return null;
 
   return (
-    <div className="flex justify-center items-center p-4">
-      <div className="border relative">
-        {/* Carousel */}
-        {post && post.imageUrl.length > 0 && (
-          <div className="relative w-[538px] h-[430px]">
-            <Image
-              src={post.imageUrl[currentImageIndex]}
-              width={538}
-              height={430}
-              alt="Post Image"
-              className="rounded-lg object-cover w-full h-full"
-            />
-            {/* Navigation buttons */}
-            <button
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2"
-              onClick={prevImage}
-            >
-              Prev
-            </button>
-            <button
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2"
-              onClick={nextImage}
-            >
-              Next
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="ml-4 flex flex-col justify-between">
-        <div className="w-[334px] h-[60px] bg-transparent border flex justify-between">
-          <div className="flex justify-center items-center p-4 gap-2">
-            <Image
-              src={post?.userId?.profilePicture}
-              width={40}
-              height={40}
-              alt="Profile Picture"
-              className="rounded-full"
-            />
-            <div className="text-sm font-semibold">
-              {post?.userId?.username}
-            </div>
-          </div>
-          <div className="flex items-center justify-center p-4">
-            <HiOutlineDotsHorizontal className="h-5 cursor-pointer" />
-          </div>
-        </div>
-
-        <div className="w-[334px] h-[402px] p-4 border overflow-y-scroll">
-          <div className="flex gap-4 items-center">
-            <div className="text-sm font-semibold">
-              {post?.userId?.username}
-            </div>
-            <div className="font-sm text-gray-500">{post?.caption}</div>
-          </div>
-          <div className="border-b mt-2"></div>
-          <div className="mt-2">
-            <div className="flex flex-col">
-              {comments.map((element, index) => (
-                <div key={index} className="flex">
-                  <div className="flex items-center justify-center gap-4 my-2">
+    <div className="flex justify-center items-start gap-4 p-4 bg-background bg-black h-screen">
+      <Card className="w-[538px]">
+        <CardContent className="p-0">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {post.imageUrl.map((url, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative aspect-square">
                     <Image
-                      src={element?.userId?.profilePicture}
-                      width={25}
-                      height={25}
-                      alt="Profile Picture"
-                      className="rounded-full"
+                      src={url}
+                      alt={`Post image ${index + 1} of ${post.imageUrl.length}`}
+                      fill
+                      className="object-cover rounded-t-lg"
                     />
-                    <div className="text-sm font-semibold">
-                      {element?.userId?.username}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {post.imageUrl.length > 1 && (
+              <>
+                <CarouselPrevious />
+                <CarouselNext />
+              </>
+            )}
+          </Carousel>
+        </CardContent>
+      </Card>
+      <Button
+        variant="ghost"
+        className="text-white hover:text-purple-700"
+        onClick={() => window.history.back()}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Go back
+      </Button>
+
+      {/* <Card className="w-[334px]">
+        <CardHeader className="flex-row items-center justify-between py-4">
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage
+                src={post.userId.profilePicture}
+                alt={post.userId.username}
+              />
+              <AvatarFallback>{post.userId.username[0]}</AvatarFallback>
+            </Avatar>
+            <span className="font-semibold">{post.userId.username}</span>
+          </div>
+          <Button variant="ghost" size="icon" aria-label="More options">
+            <MoreHorizontal className="h-5 w-5" />
+          </Button>
+        </CardHeader>
+        <CardContent className="pb-0">
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="space-y-4">
+              <div>
+                <span className="text-muted-foreground">{post.caption}</span>
+              </div>
+              {comments.map((comment, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage
+                        src={comment.userId.profilePicture}
+                        alt={comment.userId.username}
+                      />
+                      <AvatarFallback>
+                        {comment.userId.username[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <span className="font-semibold">
+                        {comment.userId.username}
+                      </span>{" "}
+                      <span className="text-muted-foreground">
+                        {comment.content}
+                      </span>
                     </div>
                   </div>
-                  <div className="ml-2 font-normal text-gray-500 flex items-center justify-center">
-                    {element?.content}
-                  </div>
+                  {comment.replies && (
+                    <div className="ml-8 space-y-2">
+                      {comment.replies.map((reply) => (
+                        <div key={reply._id} className="flex items-start gap-2">
+                          <Avatar className="w-5 h-5 border border-primary">
+                            <AvatarImage
+                              src={reply.userId.profilePicture}
+                              alt={reply.userId.username}
+                            />
+                            <AvatarFallback>
+                              {reply.userId.username[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="font-semibold">
+                              {reply.userId.username}
+                            </span>{" "}
+                            <span className="text-muted-foreground">
+                              {reply.content}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="border flex-grow p-4 flex flex-col items-start">
-          {/* Like Section and other actions */}
-        </div>
-      </div>
+          </ScrollArea>
+        </CardContent>
+        <CardFooter className="flex-col items-start">
+          {session && (
+            // session.username !== post.userDetails.username &&
+            // !hidePostComment &&
+            <form onSubmit={handleCommentSubmit} className="space-y-4 ">
+              <Textarea
+                placeholder="Add a comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className="w-full bg-black text-white  border-purple-700 border-2 focus:border-purple-900"
+              />
+              <Button className="bg-purple-700" type="submit">
+                Post Comment
+              </Button>
+            </form>
+          )}
+        </CardFooter>
+      </Card> */}
     </div>
   );
 }

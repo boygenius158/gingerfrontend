@@ -102,21 +102,17 @@ export const authOptions = {
 
       return true;
     },
-    // JWT callback to manage token creation and refresh
     async jwt({ token, user }) {
       if (user) {
-        // Sign custom JWT with user data
         const customToken = jwt.sign(
           { id: user._id, roles: user.roles, username: user.username },
           process.env.NEXTAUTH_SECRET,
-          { expiresIn: "7d" } 
         );
 
-        // Create refresh token
         const refreshToken = jwt.sign(
           { id: user._id },
           process.env.NEXTAUTH_SECRET,
-          { expiresIn: "7d" } // Refresh token valid for 7 days
+          { expiresIn: "14d" } 
         );
 
         token.customToken = customToken;

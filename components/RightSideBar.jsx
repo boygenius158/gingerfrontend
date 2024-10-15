@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export default function RightSideBar() {
       isMounted = false;
     };
   }, [session]);
-  
+
   console.log(user);
 
   return (
@@ -74,8 +74,10 @@ export default function RightSideBar() {
           <div className="text-center">
             {loading ? (
               <>
-                <Skeleton className="mt-2 mb-1 bg-black w-2/3 h-6" /> {/* Skeleton for name */}
-                <Skeleton className="bg-black w-1/2 h-4" /> {/* Skeleton for username */}
+                <Skeleton className="mt-2 mb-1 bg-black w-2/3 h-6" />{" "}
+                {/* Skeleton for name */}
+                <Skeleton className="bg-black w-1/2 h-4" />{" "}
+                {/* Skeleton for username */}
               </>
             ) : (
               <>
@@ -101,17 +103,30 @@ export default function RightSideBar() {
               <p className="text-white-600 text-sm">Following</p>
             </div>
           </div>
-          <Link href={`u/${user?.username}`}>
-            <Button
-              className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
-              variant="default"
-            >
-              My Profile
-            </Button>
-          </Link>
+          {session && (
+            <Link href={`u/${user?.username}`}>
+              <Button
+                className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
+                variant="default"
+              >
+                My Profile
+              </Button>
+            </Link>
+          )}
+          {session && (
+            <div>
+              <Button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="w-full mt-2 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
+                variant="default"
+              >
+                Signout
+              </Button>
+            </div>
+          )}
         </div>
       </div>
-      <div className="bg-black h-[180px] mt-4 rounded mr-4 border border-gray-700">
+      {/* <div className="bg-black h-[180px] mt-4 rounded mr-4 border border-gray-700">
         <div className="">
           <p className="text-white mt-2 ml-2">Suggestions for you.</p>
         </div>
@@ -157,7 +172,7 @@ export default function RightSideBar() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

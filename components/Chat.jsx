@@ -16,6 +16,7 @@ import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 export default function Chat({ recipient }) {
   const router = useRouter();
@@ -379,7 +380,7 @@ export default function Chat({ recipient }) {
     return (
       <div className="lg:mt-8 bg-black h-screen border-gray-800">
         <div className="">
-          <div className="h-16 bg-gray-300 text-black border border-gray-700 rounded flex justify-between ">
+          <div className="h-16 text-gray-400 border border-gray-700 rounded flex justify-between ">
             <div className="flex justify-center items-center">
               <div className="p-4">
                 <Image
@@ -436,8 +437,8 @@ export default function Chat({ recipient }) {
           </div>
         </div>
 
-        <div
-          className="h-96 overflow-y-scroll border p-4 space-y-2 border-gray-800"
+        <ScrollArea
+          className="h-96 border p-4 space-y-2 border-gray-800"
           onScroll={handleScroll}
         >
           {messages.map((msg, index) => {
@@ -450,7 +451,7 @@ export default function Chat({ recipient }) {
             return (
               <div
                 key={index}
-                className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+                className={`flex ${isSender ? "justify-end" : "justify-start"} mt-2`}
               >
                 <div
                   onMouseEnter={() => handleMouseEnterMessage(index)}
@@ -497,11 +498,11 @@ export default function Chat({ recipient }) {
               </div>
             );
           })}
-        </div>
+        </ScrollArea>
 
         {!audioMessage && (
           <form action="" onSubmit={handleMesssageSent}>
-            <div className="bg-gray-300 p-3 border-t  flex items-center space-x-3">
+            <div className="bg-black p-3 border border-gray-700  flex items-center space-x-3">
               <div
                 onClick={handleAudioStart}
                 className="text-purple-700 inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-purple-700 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
@@ -523,7 +524,7 @@ export default function Chat({ recipient }) {
               </div>
               <div
                 onClick={() => setIsOpen(true)}
-                className="text-purple-600 border-purple-700 inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
+                className="text-purple-600  inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -546,7 +547,7 @@ export default function Chat({ recipient }) {
                 onChange={(e) => setInput(e.target.value)}
                 type="text"
                 placeholder="Type a message..."
-                className="text-black flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700"
+                className="text-white bg-black border border-purple-700 flex-1 p-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-700"
               />
               <button
                 type="submit"
@@ -558,7 +559,7 @@ export default function Chat({ recipient }) {
           </form>
         )}
         {audioMessage && (
-          <div className="bg-gray-300 p-3 border-t flex items-center space-x-3">
+          <div className="bg-black border border-purple-700 p-3 border-t flex items-center space-x-3">
             <div className="flex gap-2 items-center">
               <div>{timer} seconds</div>
               <button className="text-red-800" onClick={CancelRecording}>

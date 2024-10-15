@@ -84,7 +84,7 @@ export default function Username() {
 
   return (
     <div>
-      <Card>
+      <Card className="bg-black text-white">
         <CardHeader>
           <CardTitle>Account</CardTitle>
           <CardDescription>
@@ -93,7 +93,7 @@ export default function Username() {
         </CardHeader>
         <CardContent className="space-y-2">
           <form onSubmit={handleSubmit} className="space-y-2">
-            <div className="space-y-1">
+            <div className="space-y-1 text-black bgbr">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
@@ -102,7 +102,7 @@ export default function Username() {
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 text-black">
               <Label htmlFor="name">Name</Label>
               <Input id="name" value={name} onChange={handleNameChange} />
             </div>

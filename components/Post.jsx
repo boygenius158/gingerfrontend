@@ -65,7 +65,7 @@ export default function Post({ post, isSaved, loading }) {
     });
     console.log(response);
     setIsReported(response.data.alreadyReported);
-  }, []);
+  }, [post._id, session.id]);
 
   useEffect(() => {
     handleAlreadyReported();

@@ -30,7 +30,7 @@ export default function LikedList({ status, onStatusChange, likes }) {
     });
     console.log(res);
     setLikedby(res.data.LikedUsers);
-  }, []);
+  }, [likes]);
 
   useEffect(() => {
     fetchUserDetails();

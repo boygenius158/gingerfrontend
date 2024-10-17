@@ -271,7 +271,7 @@ export default function PostUpload({ onNewPost }) {
             />
             <div className="flex-1  curp">
               <p className="w-full bg-black border-0 text-lg text-gray-700 focus-visible:ring-0">
-                What's happening?
+                Whats happening?
               </p>
               <div className="flex justify-between items-center gap-2 mt-6">
                 <Button

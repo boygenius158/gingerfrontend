@@ -229,7 +229,7 @@ export default function Profile({ username }) {
           ariaHideApp={false}
         >
           <div
-            onClick={() => filePickerRef.current.click()}
+            // onClick={() => filePickerRef.current.click()}
             className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
           >
             <h2 className="text-xl font-semibold mb-4">Add New Profile</h2>
@@ -244,7 +244,7 @@ export default function Profile({ username }) {
             ) : (
               <HiCamera
                 onClick={() => filePickerRef.current.click()}
-                className="text-5xl text-gray-400 cursor-pointer"
+                className="text-5xl text-gray-400 cursor-pointer hover:scale-125"
               />
             )}
 

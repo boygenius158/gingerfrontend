@@ -45,6 +45,9 @@ export default function LandingPage() {
       </div>
       <footer className="w-full h-[100px] bg-white flex items-center justify-between px-4 shadow-md">
         <div className="text-gray-600">© 2024 Ginger. All rights reserved.</div>
+        
+        {/* <div className="text-gray-600">©albins.</div> */}
+
 
         <div className="flex space-x-4">
           <Link href="/" className="text-gray-600 hover:text-blue-500">

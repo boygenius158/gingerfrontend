@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import instance from "@/axiosInstance";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { HiCamera } from "react-icons/hi";
 import { Button } from "./ui/button";
 import { useEdgeStore } from "@/app/lib/edgestore";
@@ -30,6 +30,8 @@ export default function Profile({ username }) {
   const [isFollowing, setIsFollowing] = useState(isAlreadyFollowing);
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [spin, setSpin] = useState(false);
   const [followersCount, setFollowerCount] = useState(
     user?.followers?.length || 0
   );
@@ -50,6 +52,7 @@ export default function Profile({ username }) {
   }, [user?.followers]);
 
   async function handleSubmit() {
+    setSpin(true);
     if (selectedFile) {
       const res = await edgestore.publicFiles.upload({
         file: selectedFile,
@@ -62,12 +65,22 @@ export default function Profile({ username }) {
         url: res.url,
         userId: session?.id,
       });
+      setUploadedImageUrl(res.url);
+
       if (response) {
         console.log(response);
+        useProfileStore.setState((state) => ({
+          user: {
+            ...state.user,
+            profilePicture: res.url, // Update the profile picture in the store
+          },
+        }));
+        toast("Profile Picture Updated Successfully");
+        setSpin(false);
         setSelectedFile(null);
         setImageFileUrl(null);
         setIsOpen(false);
-        session.user.image = response.data.url;
+        // session.user.image = response.data.url;
       }
     }
   }
@@ -94,6 +107,7 @@ export default function Profile({ username }) {
         followUser: user.email,
         orginalUser: session?.user?.email,
       });
+
       console.log(res);
       if (!isFollowing) {
         toast(`You started following ${user.username}`);
@@ -123,6 +137,7 @@ export default function Profile({ username }) {
   if (!user || !user.email) {
     return <div></div>;
   }
+  console.log(user.username === session.username);
 
   return (
     <div className=" sm:px-6 pt-6 ">
@@ -141,7 +156,12 @@ export default function Profile({ username }) {
             width={145}
             height={145}
             alt=""
-            onClick={() => setIsOpen(true)}
+            // onClick={() => setIsOpen(true)}
+            onClick={
+              session.username === user.username
+                ? () => setIsOpen(true)
+                : undefined
+            } // conditionally add onClick
           />
         </div>
 
@@ -178,10 +198,10 @@ export default function Profile({ username }) {
             </span>
           </div>
           <div className="pt-6 grid">
-            <span className="text-lg font-semibold ">{profileData.name}</span>
+            <span className="text-lg font-semibold ">{user.name}</span>
             <span>
               <br />
-              {profileData.bio}
+              {user.bio}
             </span>
           </div>
         </div>
@@ -261,7 +281,10 @@ export default function Profile({ username }) {
               disabled={!selectedFile}
               className="w-full bg-black text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100 mt-4"
             >
-              Upload Profile Picture
+              {!spin && <p>upload new profile</p>}
+              {spin && (
+                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+              )}
             </button>
             <AiOutlineClose
               className="cursor-pointer absolute top-4 right-4 hover:text-purple-600 transition duration-300"

@@ -16,6 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import instance from "@/axiosInstance";
 import { useEdgeStore } from "@/app/lib/edgestore";
 import { useCallback } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 export default function ProfileImages() {
   const { edgestore } = useEdgeStore();
@@ -27,6 +29,7 @@ export default function ProfileImages() {
   const [files, setFiles] = useState([]);
   const [selectedFileUrls, setSelectedFileUrls] = useState([]);
   const [uploadUrls, setUploadUrls] = useState([]);
+  const [spin, setSpin] = useState(false);
 
   function handleUploadClick() {
     if (filePickerRef.current) {
@@ -81,6 +84,7 @@ export default function ProfileImages() {
 
   async function uploadImageDb(toggleStatus) {
     if (toggleStatus) {
+
       const response = await instance.post("/api/user/dating-tab2", {
         url: uploadUrls,
         userId: session?.id,
@@ -95,6 +99,8 @@ export default function ProfileImages() {
   }
 
   async function uploadDatingImages() {
+    setSpin(true);
+
     if (files.length > 0) {
       const edgeUploads = await Promise.all(
         files.map(async (file) => {
@@ -107,6 +113,10 @@ export default function ProfileImages() {
           return res.url;
         })
       );
+      toast('You have successfully added images.Save to keep changes.')
+
+      setSpin(false);
+
       setIsOpen(false);
       setUploadUrls(edgeUploads);
     }
@@ -213,7 +223,10 @@ export default function ProfileImages() {
             <span className="ml-2 text-gray-600">Click to select images</span>
           </div>
           <Button onClick={uploadDatingImages} variant="">
-            Add Image
+            {!spin && <p>Add Images</p>}
+            {spin && (
+              <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
+            )}
           </Button>
         </div>
       </Modal>

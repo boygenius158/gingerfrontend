@@ -85,7 +85,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="w-[400px] h-screen border rounded-md flex flex-col">
+    <div className="w-[400px] h-screen border rounded-md flex flex-col bg-white">
       <div className="p-2">
         <Switch
           onClick={() => toggleSave(!toggleStatus)}

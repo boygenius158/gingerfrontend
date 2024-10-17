@@ -32,12 +32,12 @@ export default function SearchUser({ handleClose }) {
   };
 
   const displayProfileInformationHere = async (search) => {
-    if (status === "authenticated" && session?.id) {
-      await instance.post("/api/user/save-user-to-search-history", {
-        userId: session.id,
-        key: search,
-      });
-    }
+    // if (status === "authenticated" && session?.id) {
+    //   await instance.post("/api/user/save-user-to-search-history", {
+    //     userId: session.id,
+    //     key: search,
+    //   });
+    // }
     router.push(`/u/${search.username}`);
   };
 

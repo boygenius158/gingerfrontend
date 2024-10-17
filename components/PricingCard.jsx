@@ -54,7 +54,7 @@ const handleClick=()=>{
             </ul>
             <span
               // href="javascript:;"
-              className="py-2.5 px-5 bg-blue-400 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-indigo-400 cursor-pointer"
+              className="py-2.5 px-5 bg-purple-400 shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-indigo-400 cursor-pointer"
               onClick={()=>handleClick()}
 
             >

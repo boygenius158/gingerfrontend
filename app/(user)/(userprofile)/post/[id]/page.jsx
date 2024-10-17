@@ -23,12 +23,25 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react";
+import NotFound from "@/components/NotFound";
+import { toast } from "react-hot-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 export default function Page({ params }) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const { data: session, status } = useSession();
+  const [postDeleted, setPostDeleted] = useState(false);
+  const [open, setOpen] = useState(false);
+
   const { id } = params;
   const [newComment, setNewComment] = useState("");
 
@@ -77,8 +90,28 @@ export default function Page({ params }) {
       toast.success("Comment posted.");
     }
   };
-  if (!post) return null;
+  console.log(post);
 
+  async function handleDeletePost() {
+    const response = await instance.post("/api/user/delete-post", {
+      postId: post._id,
+    });
+    if (response.status === 200) {
+      setOpen(false);
+      setPostDeleted(true);
+      toast("Post has been deleted");
+      window.history.back();
+    }
+  }
+  if (!post) return null;
+  // if (postDeleted) {
+  //   // <NotFound />;
+  //   return (
+  //     <div class="bg-red-100 text-red-600 border border-red-300 p-4 rounded-md">
+  //       Post has been removed
+  //     </div>
+  //   );
+  // }
   return (
     <div className="flex justify-center items-start gap-4 p-4 bg-background bg-black h-screen">
       <Card className="w-[538px]">
@@ -115,6 +148,48 @@ export default function Page({ params }) {
         <ArrowLeft className="mr-2 h-4 w-4" />
         Go back
       </Button>
+      <>
+        {/* <Button onClick={() => setOpen(true)} variant="outline">
+          Delete Post
+        </Button> */}
+
+        {/* <Dialog>
+          <DialogDescription open={open} onOpenChange={setOpen}>
+            <DialogContent>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <p>Are you sure you want to delete this post?</p>
+            </DialogContent>
+            <DialogTrigger>
+              <Button onClick={() => setOpen(false)}>Cancel</Button>
+              <Button onClick={handleDeletePost} variant="danger">
+                Delete
+              </Button>
+            </DialogTrigger>
+          </DialogDescription>
+        </Dialog> */}
+        <Dialog>
+          <DialogTrigger className="bg-white rounded">
+            <Button onClick={() => setOpen(true)} variant="outline">
+              Delete Post
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+                <div className="flex gap-4">
+                  <Button onClick={() => setOpen(false)}>Cancel</Button>
+                  <Button onClick={handleDeletePost} variant="danger">
+                    Delete
+                  </Button>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </>
 
       {/* <Card className="w-[334px]">
         <CardHeader className="flex-row items-center justify-between py-4">

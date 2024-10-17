@@ -38,11 +38,11 @@ export default function Settings() {
       setPage(response.data.role);
       if (response.data.role === "premium" ) {
         console.log("worked");
-        
-        const response = await instance.post("/api/user/expiry-date", {
-          userId: session?.id,
-        });
-        setDaysLeft(response.data.daysLeft);
+
+        // const response = await instance.post("/api/user/expiry-date", {
+        //   userId: session?.id,
+        // });
+        // setDaysLeft(response.data.daysLeft);
       }
     }
   }, [session]);
@@ -53,7 +53,7 @@ export default function Settings() {
   }, [fetchStatus, status]);
 
   return (
-    <div className="bg-white border h-screen my-7">
+    <div className="bg-black text-white border h-screen my-7  rounded">
       <div className="p-4">
         <Badge>Premium</Badge>
       </div>
@@ -67,7 +67,7 @@ export default function Settings() {
         <div className="p-4 flex">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Unlock Premium: A better way to use{" "}
-            <span className="bg-blue-500 text-white rounded">Ginger!</span>
+            <span className="bg-purple-700 text-white rounded">Ginger!</span>
           </h1>
           <div className="">
             <PricingCard setPage={setPage} />
@@ -82,10 +82,7 @@ export default function Settings() {
         </div>
       )}
       {page === "admin" && (
-        <div>
-          {" "}
-          {/* <Subscribed daysLeft={daysLeft} /> */}
-        </div>
+        <div> {/* <Subscribed daysLeft={daysLeft} /> */}</div>
       )}
     </div>
   );

@@ -122,7 +122,7 @@ export default function MiniProfile() {
   }, [socket]);
 
   return (
-    <div className="text-white z-10">
+    <div className="text-white z-10 bg-black h-screen">
       <div className="scroll-m-20   tracking-tight h-screen w-180 bg-gray-25   rounded border-2 border-gray-700 mt-4">
         {/* <div className="flex items-center justify-between p-6">
           <div className="flex flex-col ">
@@ -389,9 +389,8 @@ export default function MiniProfile() {
               Search
             </span>
           </div>
-          <div
-                        onClick={() => setIsOpen2(true)}
-
+          {/* <div
+            onClick={() => setIsOpen2(true)}
             className={`flex items-center justify-start ml-4 transition-transform duration-300 p-2 cursor-pointer rounded gap-2
     
     hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white`}
@@ -417,7 +416,7 @@ export default function MiniProfile() {
               />
             </svg>
             Upload Story
-          </div>
+          </div> */}
         </nav>
       </div>
       {isOpen2 && (
@@ -429,12 +428,10 @@ export default function MiniProfile() {
           ariaHideApp={false}
           contentLabel="Example Modal"
         >
-          <div
-            className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center"
-          >
-            <h4 className=" text-2xl mb-4 font-extrabold  tracking-tight lg:teFxt-2xl   ">
+          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
+            {/* <h4 className=" text-2xl mb-4 font-extrabold  tracking-tight lg:teFxt-2xl   ">
               Upload Story
-            </h4>
+            </h4> */}
 
             {file ? (
               <Image src={storyFileUrl} alt="story" height={120} width={120} />

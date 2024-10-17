@@ -17,6 +17,10 @@ export default function Feed() {
         </section>
         <section className="md:col-span-2">
           <Posts />
+          {/* <DatingHome /> */}
+
+          {/* <Premium/> */}
+
         </section>
         <section className="hidden md:inline-grid md:col-span-1">
           <div className="fixed w-[380px]">

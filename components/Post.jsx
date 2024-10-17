@@ -2,7 +2,7 @@ import Image from "next/image";
 import { HiCamera, HiOutlineDotsVertical } from "react-icons/hi";
 import LikeSection from "./LikeSection";
 import CommentSection from "./CommentSection";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { AiOutlineClose } from "react-icons/ai";
 import instance from "@/axiosInstance";
@@ -38,6 +38,8 @@ export default function Post({ post, isSaved, loading }) {
   const [CommentSectionVisible, setCommentSectionVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
+
+  const [isReported, setIsReported] = useState(false);
   function HandleCommentVisible() {
     setCommentSectionVisible(!CommentSectionVisible);
   }
@@ -48,13 +50,28 @@ export default function Post({ post, isSaved, loading }) {
       postId: post._id,
       victimUser: session.id,
     });
+    setIsReported(true);
 
     if (response) {
       setIsOpen(false);
       notify();
     }
   }
-  console.log(post); 
+
+  const handleAlreadyReported = useCallback(async () => {
+    const response = await instance.post("/api/user/post-already-reported", {
+      postId: post._id,
+      victimUser: session.id,
+    });
+    console.log(response);
+    setIsReported(response.data.alreadyReported);
+  }, []);
+
+  useEffect(() => {
+    handleAlreadyReported();
+  }, [handleAlreadyReported]);
+
+  console.log(post);
 
   return (
     <>
@@ -67,37 +84,46 @@ export default function Post({ post, isSaved, loading }) {
             overlayClassName="fixed inset-0 bg-black bg-opacity-50"
             ariaHideApp={false}
           >
-            <div className="relative border-2 border-white bg-black rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
+            <div className="relative border-2 border-gray-700 bg-black rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
               <h2 className="text-xl font-semibold mb-4 text-white">Action</h2>
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="text-purple-700 bg-gray-300"
-                  >
-                    Report Post
-                  </Button>
+                  {isReported ? (
+                    <div className="text-white border p-4 rounded border-gray-700 bg-purple-700">
+                      Already Reported
+                    </div>
+                  ) : (
+                    <div>
+                      <AlertDialogContent className="text-white bg-black">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. Are you sure you want
+                            to report this post?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="text-purple-700">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction>
+                            <span onClick={handleReportSubmit}>Yes</span>
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+
+                      <Button
+                        variant="outline"
+                        className="text-purple-700 bg-gray-300"
+                      >
+                        Report Post
+                      </Button>
+                    </div>
+                  )}
                 </AlertDialogTrigger>
-                <AlertDialogContent className="text-white bg-black">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. Are you sure you want to
-                      report this post?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="text-purple-700">
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction>
-                      <span onClick={handleReportSubmit}>Yes</span>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
               </AlertDialog>
 
               <AiOutlineClose
@@ -138,7 +164,10 @@ export default function Post({ post, isSaved, loading }) {
             post?.userDetails?.username &&
             session.username !== post.userDetails.username && (
               <div className="flex justify-end items-center">
-                <HiOutlineDotsVertical className="text-2xl cursor-pointer" />
+                <HiOutlineDotsVertical
+                  onClick={() => setIsOpen(true)}
+                  className="text-2xl cursor-pointer"
+                />
               </div>
             )}
         </div>

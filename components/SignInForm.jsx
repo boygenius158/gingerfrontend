@@ -44,8 +44,8 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="py-16">
-      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
+    <div className="py-16 bg-black">
+      <div className="flex bg-black rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
           className="hidden lg:block lg:w-1/2 bg-cover"
           style={{
@@ -56,14 +56,14 @@ export default function SignInForm() {
         ></div>
         <div className="w-full p-8 lg:w-1/2">
           <div className="flex justify-center">
-            <h1 className="scroll-m-20 text-4xl text-gray-700 font-extrabold tracking-tight lg:text-5xl">
+            <h1 className="scroll-m-20 text-4xl text-white font-extrabold tracking-tight lg:text-5xl">
               Ginger
             </h1>
           </div>
           {/* <p className="text-xl text-gray-600 text-center">Welcome back!</p> */}
           <button
             onClick={() => signIn("google")}
-            className="flex items-center justify-center mt-4 text-white bg-black rounded-lg shadow-md hover:bg-gray-600 w-full py-2"
+            className="flex border-purple-700 border items-center justify-center mt-4 text-white bg-black rounded-lg shadow-md hover:bg-gray-600 w-full py-2"
           >
             <Image
               src="/Google_Icons-09-512.webp"
@@ -71,7 +71,7 @@ export default function SignInForm() {
               width={24}
               alt="Google Icon"
             />
-            <span className="ml-2">Sign-up or Sign-in with Google</span>
+            <span className="ml-2 ">Sign-up or Sign-in with Google</span>
           </button>
           <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 lg:w-1/4"></span>
@@ -135,10 +135,10 @@ export default function SignInForm() {
             </Link>
             <span className="border-b w-1/5 md:w-1/4"></span>
           </div>
-          <p className="text-center mt-2">
+          <p className="text-center mt-2 text-gray-200">
             Dont have an account?{" "}
             <Link href="/register">
-              <span className="cursor-pointer text-blue-500">Register</span>
+              <span className="cursor-pointer text-purple-500">Register</span>
             </Link>
           </p>
         </div>

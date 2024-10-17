@@ -216,39 +216,38 @@ export default function Navbar() {
   };
   const getPresignedUrls = async () => {
     const fileData = selectedFiles.map((file) => ({
-        fileName: file.name,
-        fileType: file.type,
+      fileName: file.name,
+      fileType: file.type,
     }));
 
     try {
-        console.log("hi", session);
+      console.log("hi", session);
 
-        const response = await instance.post("/api/getPresignedUrls", {
-            files: fileData,
-            caption: caption,
-            userId: session?.id,
-        });
+      const response = await instance.post("/api/getPresignedUrls", {
+        files: fileData,
+        caption: caption,
+        userId: session?.id,
+      });
 
-        console.log("Presigned URLs:", response.data.presignedUrls);
-        console.log("Post data:", response.data.post); // Check this output
+      console.log("Presigned URLs:", response.data.presignedUrls);
+      console.log("Post data:", response.data.post); // Check this output
 
-        if (response.data?.post) {
-            // Log current feed state before updating
-            console.log("Current feed before update:", feed);
+      if (response.data?.post) {
+        // Log current feed state before updating
+        console.log("Current feed before update:", feed);
 
-            setFeed(response.data.post); // Append the new post object
+        setFeed(response.data.post); // Append the new post object
 
-            // Log feed state after updating
-            console.log("Updated feed after setFeed:", feed);
-        }
+        // Log feed state after updating
+        console.log("Updated feed after setFeed:", feed);
+      }
 
-        return response.data.presignedUrls;
+      return response.data.presignedUrls;
     } catch (error) {
-        console.error("Error getting presigned URLs:", error);
-        // Handle error accordingly
+      console.error("Error getting presigned URLs:", error);
+      // Handle error accordingly
     }
-};
-
+  };
 
   useEffect(() => {
     console.log(feed);
@@ -319,7 +318,6 @@ export default function Navbar() {
   }
   return (
     <div className="shadow-sm  sticky lg:static  top-0 bg-black p-4 border-gray-700 border-b z-20">
-      
       <div>
         <Toaster />
       </div>
@@ -361,7 +359,9 @@ export default function Navbar() {
                   {isHovered ? (
                     <AiOutlineLogout
                       className="text-white cursor-pointer transform hover:scale-110 transition duration-300"
-                      onClick={signOut} // Click to sign out
+                      // onClick={signOut} // Click to sign out
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+
                       size={60} // Set the size of the logout icon
                     />
                   ) : (
@@ -371,7 +371,8 @@ export default function Navbar() {
                       width={60}
                       height={60}
                       className="rounded-full cursor-pointer transform hover:scale-110 transition duration-300 w-[60px] h-[60px] object-cover border-2 border-purple-700"
-                      onClick={signOut}
+                      // onClick={signOut}
+                      // onClick={() => signOut({ callbackUrl: "/login" })}
                     />
                   )}
                 </div>
@@ -383,16 +384,22 @@ export default function Navbar() {
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() =>
-                  signIn("google", {
-                    callbackUrl: "/home",
-                  })
-                }
-                className="text-sm font-semibold text-blue-500"
+              // <button
+              //   onClick={() =>
+              //     signIn("google", {
+              //       callbackUrl: "/home",
+              //     })
+              //   }
+              //   className="text-sm font-semibold text-blue-500"
+              // >
+              //   Log In
+              // </button>
+              <Link
+                className="text-purple-700 font-semibold text-sm"
+                href="/login"
               >
-                Log In
-              </button>
+                Login
+              </Link>
             )}
           </div>
         </div>

@@ -11,7 +11,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
   const socket = useSocket();
   const [hasLiked, setHasLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(isSaved);
-  // const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [likes, setLikes] = useState(post?.likes?.length || 0);
   const { data: session } = useSession();
   const [status, setStatus] = useState(false);
 
@@ -38,7 +38,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
       console.log("clicked");
 
       setHasLiked((prev) => !prev);
-      // setLikeCount((prev) => prev + (hasLiked ? -1 : 1));
+      setLikes((prev) => prev + (hasLiked ? -1 : 1));
 
       console.log(session?.id, "sessionid");
 
@@ -67,13 +67,14 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
     setStatus(newStatus);
   }
   console.log(post);
+  console.log(likes);
 
   return (
     <div>
       <LikedList
         status={status}
         onStatusChange={toggleStatusChange}
-        likes={post.userDetails}
+        likes={post.likes}
       />
 
       <div className="flex items-center justify-between border-t border-gray-100 px-4 pt-4">
@@ -90,14 +91,14 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
                 className="cursor-pointer text-3xl hover:scale-125 transition-transform duration-200 ease-out"
               />
             )}
-            {/* <div onClick={() => setStatus(true)}>
-              {likeCount.length > 0 && (
+            <div onClick={() => setStatus(true)}>
+              {likes > 0 && (
                 <p className="text-gray-500 ">
-                  {likeCount} {likeCount === 1 ? "like" : "likes"}
+                  {likes} {likes === 1 ? "like" : "likes"}
                 </p>
               )}
-              {likeCount} {likeCount === 1 ? "like" : "likes"}
-            </div> */}
+              {/* {likes} {likes === 1 ? "like" : "likes"} */}
+            </div>
           </div>
           <div
             onClick={HandleCommentVisible}

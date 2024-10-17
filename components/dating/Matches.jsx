@@ -50,7 +50,7 @@ export default function Matches() {
           {matches &&  matches.map((element, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium text-center">
-                <div className="flex justify-around ">
+                <div className="flex justify-around text-white ">
                   <Avatar>
                     <AvatarImage src={element.userId.profilePicture} />
                     <AvatarFallback>CN</AvatarFallback>
@@ -62,7 +62,7 @@ export default function Matches() {
                     <Link 
                     href={`/u/${element.userId.username}`}
                     >
-                      <Button variant="outline">Visit Profile</Button>
+                      <Button className="text-black" variant="outline">Visit Profile</Button>
                     </Link>
                   </div>
                 </div>

@@ -114,7 +114,7 @@ export default function Posts() {
           </Button>
         </div>
         <InfiniteScroll
-          dataLength={feedPosts.length}
+          dataLength={feedPosts?.length}
           next={fetchMorePosts}
           hasMore={hasMore}
           loader={
@@ -126,7 +126,7 @@ export default function Posts() {
           <div className="container">
             {loading ? (
               <AiOutlineLoading3Quarters className="text-2xl text-black animate-spin" />
-            ) : feedPosts.length > 0 ? (
+            ) : feedPosts?.length > 0 ? (
               feedPosts.map((post) => (
                 <Post
                   key={post._id}

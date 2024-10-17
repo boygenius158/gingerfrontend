@@ -63,7 +63,7 @@ export default function SearchUserModal({
           </button>
           <div className="py-4">
             <p className="text-sm text-muted-foreground mb-4">
-              Select a user to start a conversation with.
+              People who you follow will appear here.
             </p>
             <Input
               type="text"
@@ -76,7 +76,7 @@ export default function SearchUserModal({
               {filteredList.map((user) => (
                 <div
                   key={user._id}
-                  className="flex items-center space-x-4 cursor-pointer mb-2 hover:bg-gray-400 p-2 text-purple-700 hover:text-white rounded"
+                  className="flex items-center space-x-4 cursor-pointer mb-2 hover:bg-gray-400 p-2 text-white hover:text-white rounded"
                   onClick={() => toggleUserSelection(user)}
                 >
                   <Avatar className="h-8 w-8 border border-purple-700">

@@ -73,10 +73,10 @@ export default function SharePost({ post }) {
             <div className="pr-2">
               <Image
                 // src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?&auto=format&fit=crop&w=400&q=80"
-                // src={post?.imageUrl[0]}
+                src={post?.imageUrl[0]}
                 width={50}
                 height={50}
-                alt="Minimalistic 3D rendering wallpaper"
+                alt="Failed"
                 className="rounded-md"
               />
             </div>

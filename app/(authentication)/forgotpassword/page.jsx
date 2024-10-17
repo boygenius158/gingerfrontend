@@ -3,7 +3,7 @@
 import instance from "@/axiosInstance";
 import React, { useState } from "react";
 
-export default function ForgotPasswordPage() {
+export default function Page() {
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,14 +16,10 @@ export default function ForgotPasswordPage() {
       const res = await instance.post(
         "/api/user/forgetpassword",
         { email },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        
       );
-      console.log(response);
-      
+      console.log(res);
+       
       if (res.status === 200) {
         setSuccessMessage("Password reset link has been sent to your email.");
         setErrorMessage("");
@@ -45,7 +41,7 @@ export default function ForgotPasswordPage() {
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
       <div className="w-full p-6 bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md dark:bg-gray-800 dark:border-gray-700 sm:p-8">
         <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-          Change Password
+          Change Passwords
         </h2>
         <form
           className="mt-4 space-y-4 lg:mt-5 md:space-y-5"

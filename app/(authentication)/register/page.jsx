@@ -2,9 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Toaster, toast } from "react-hot-toast";
-
+import {  Toaster, toast } from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,17 +13,19 @@ import {
 } from "@/components/ui/input-otp";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import * as yup from "yup";  // Import yup for validation
 
-export const description =
-  "A registration page with two columns. The first column has the registration form with email and password. The second column has a cover image.";
+export const description = "";
 
 export default function Page() {
-  const { data: session, status } = useSession();
-  // const [tab, setTab] = useState("otp-registration");
+  const router = useRouter();
+  const { data: session } = useSession();
   const [tab, setTab] = useState("create-password");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(""); // Password error
   const [otp, setOtp] = useState("");
   const [isOtpGenerated, setOtpGenerated] = useState(false);
   const [resendAvailable, setResendAvailable] = useState(false);
@@ -35,12 +35,12 @@ export default function Page() {
     let timer;
     if (timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft(prevTime => prevTime - 1);
+        setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
     } else {
       setResendAvailable(true);
     }
-    
+
     return () => clearInterval(timer);
   }, [timeLeft]);
 
@@ -49,22 +49,41 @@ export default function Page() {
     setResendAvailable(false);
   };
 
-  if (session) {
-    return (
-      <div className="flex items-center justify-center">
-        <h1>You are registered and verified already</h1>
-      </div>
-    );
-  }
+  // Password validation schema using Yup
+  const passwordSchema = yup.object().shape({
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/\d/, "Password must contain at least one number")
+      .matches(/[@$!%*?&#]/, "Password must contain at least one special character")
+      .required("Password is required"),
+  });
 
-  function handleSubmit(e) {
+  const validatePassword = async () => {
+    try {
+      await passwordSchema.validate({ password });
+      setPasswordError(""); // Clear any errors if validation passes
+      return true;
+    } catch (error) {
+      setPasswordError(error.message); // Set error message
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast("Passwords do not match");
       return;
     }
-    userRegistration();
-  }
+
+    const isValid = await validatePassword(); // Validate password
+    if (isValid) {
+      userRegistration();
+    }
+  };
 
   const showToast = () => {
     toast("User Already Exists!");
@@ -86,7 +105,7 @@ export default function Page() {
 
   async function handleOtp() {
     toast("Otp generated");
-    
+
     await instance.post("/api/user/register/generateotp", {
       email,
     });
@@ -99,11 +118,21 @@ export default function Page() {
       otp,
       email,
     });
+
     if (response.data.success === true) {
-      alert("Successfully registered");
+      toast("Successfully registered");
+      router.push("/login");
     } else {
-      alert("Failed");
+      toast("Failed");
     }
+  }
+
+  if (session) {
+    return (
+      <div className="flex items-center justify-center">
+        <h1>You are registered and verified already</h1>
+      </div>
+    );
   }
 
   return (
@@ -138,6 +167,9 @@ export default function Page() {
                     required
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  {passwordError && (
+                    <p className="text-red-500 text-sm">{passwordError}</p>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -198,7 +230,11 @@ export default function Page() {
                         Verify OTP
                       </Button>
                       <div className="mt-4">
-                        <p>{resendAvailable ? "You can resend OTP now" : `Resend OTP in ${timeLeft}s`}</p>
+                        <p>
+                          {resendAvailable
+                            ? "You can resend OTP now"
+                            : `Resend OTP in ${timeLeft}s`}
+                        </p>
                         {resendAvailable && (
                           <Button
                             onClick={handleOtp}

@@ -22,7 +22,7 @@ export default function Profile() {
   const [selectedFileUrls, setSelectedFileUrls] = useState([]);
   const [user, setUser] = useState({});
   const [toggleStatus, setToggleStatus] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -88,7 +88,7 @@ export default function Profile() {
           console.log(response.data.formData);
           setFormData(response.data.formData);
         } catch (error) {
-          console.error("Error fetching profile:", error);
+          console.error("Error updating profile:", error);
           setError("Failed to load profile data.");
         }
       }
@@ -131,11 +131,11 @@ export default function Profile() {
   };
 
   return (
-    <div className="sm:ml-8 lg:ml-0 h-screen overflow-hidden">
+    <div className="sm:ml-8 lg:ml-0 h-screen overflow-hidden bg-black ">
       <Modal
         isOpen={isOpen}
         onRequestClose={closeModal}
-        className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+        className="fixed inset-0 flex items-center justify-center bgbg-opacity-50"
         overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-50"
         contentLabel="Upload Images Modal"
       >
@@ -189,7 +189,7 @@ export default function Profile() {
           </Button>
         </div>
       </Modal>
-      <div className="flex justify-center items-center ">
+      <div className="flex justify-center items-center  ">
         <Tabs defaultValue="profile-details" className="w-[600px]">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="profile-details">Profile Details</TabsTrigger>
@@ -197,13 +197,20 @@ export default function Profile() {
             <TabsTrigger value="Filter">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="profile-details">
-            <div className="flex  items-center justify-center p-4  w-full ">
+            <div className="flex flex-col  items-center justify-center p-4  w-full bg-black text-white ">
+              <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight  text-white ">
+                Create your dating profile.
+              </h1>
+              {/* <p className="leading-7 [&:not(:first-child)]:mt-6 text-white">
+               Create your dating profile.
+              </p> */}
               <div>
-                <form className="">
-                  <div className="border rounded">
+                <form className=" p-4">
+                  <div className=" rounded bg-gray-200 text-black">
                     <div className="mb-4">
                       <div className="p-2">
                         <Switch
+                          className="border border-purple-600"
                           checked={toggleStatus}
                           onCheckedChange={() => toggleSave(!toggleStatus)}
                         />
@@ -214,7 +221,7 @@ export default function Profile() {
                           Name:
                           <input
                             onChange={handleChange}
-                            value={formData.name}
+                            value={formData?.name}
                             type="text"
                             name="name"
                             placeholder="Enter your name"
@@ -227,7 +234,7 @@ export default function Profile() {
                             Age:
                             <input
                               onChange={handleChange}
-                              value={formData.age}
+                              value={formData?.age}
                               type="number"
                               name="age"
                               placeholder="Enter your age"
@@ -243,7 +250,7 @@ export default function Profile() {
                             <textarea
                               onChange={handleChange}
                               name="bio"
-                              value={formData.bio}
+                              value={formData?.bio}
                               placeholder="Write a short bio"
                               disabled={!isEditing}
                               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
@@ -254,7 +261,7 @@ export default function Profile() {
                         <div className="mb-4">
                           <Label>Gender:</Label>
                           <RadioGroup
-                            value={formData.gender}
+                            value={formData?.gender}
                             onValueChange={handleOptionChange}
                             className="flex flex-col mt-2"
                           >

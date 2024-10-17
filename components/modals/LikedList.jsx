@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,18 +11,32 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import instance from "@/axiosInstance";
 
 // Mock data for likes
-
 
 export default function LikedList({ status, onStatusChange, likes }) {
   function toggleModal() {
     let newStats = !status;
     onStatusChange(newStats);
   }
-  const [likedby, setLikedby] = useState([likes]);
+  const [likedby, setLikedby] = useState(null);
   console.log(likedby);
+  console.log(likes);
 
+  const fetchUserDetails = useCallback(async () => {
+    const res = await instance.post("/api/user/likedUserDetails", {
+      likes,
+    });
+    console.log(res);
+    setLikedby(res.data.LikedUsers);
+  }, []);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
+  console.log(likedby);
+  
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
       <Dialog
@@ -37,7 +51,7 @@ export default function LikedList({ status, onStatusChange, likes }) {
           </DialogHeader>
           <ScrollArea className="mt-4 max-h-[60vh]">
             <div className="space-y-4">
-              {likedby.map((user, index) => (
+              {likedby && likedby.map((user, index) => (
                 <Link key={index} href={`/u/${user?.username}`}>
                   <div className="flex items-center space-x-4 hover:bg-gray-400 cursor-pointer p-2 rounded">
                     <Avatar>
@@ -45,7 +59,9 @@ export default function LikedList({ status, onStatusChange, likes }) {
                         src={user?.profilePicture}
                         alt={user?.username}
                       />
-                      <AvatarFallback>{user?.username.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>
+                        {/* {user?.username.charAt(0)} */}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       {/* Uncomment this if you want to display the user?'s name */}

@@ -47,7 +47,7 @@ export default function RightSideBar() {
 
   return (
     <>
-      <div className="max-w-sm mx-auto text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4">
+      <div className="max-w-sm mx-auto text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4 h-screen">
         <div className="relative h-32 bg-gray-200">
           <Image
             src="https://i.pinimg.com/564x/60/bc/09/60bc090630a52bf823350c0d8a16cb77.jpg"
@@ -84,7 +84,10 @@ export default function RightSideBar() {
                 <h2 className="text-xl font-semibold first-letter:uppercase">
                   {user?.name}
                 </h2>
-                <p className="text-gray-600">@{user?.username}</p>
+
+                <Link href={`u/${user?.username}`}>
+                  <p className="text-gray-600">@{user?.username}</p>
+                </Link>
               </>
             )}
           </div>
@@ -104,7 +107,7 @@ export default function RightSideBar() {
             </div>
           </div>
           {session && (
-            <Link href={`u/${user?.username}`}>
+            <Link href={`/u/${user?.username}`}>
               <Button
                 className="w-full mt-6 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
                 variant="default"
@@ -113,10 +116,11 @@ export default function RightSideBar() {
               </Button>
             </Link>
           )}
+
           {session && (
             <div>
               <Button
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => signOut({ callbackUrl: "/login" })}
                 className="w-full mt-2 bg-purple-600 hover:text-purple-700 hover:bg-white border border-gray-800"
                 variant="default"
               >

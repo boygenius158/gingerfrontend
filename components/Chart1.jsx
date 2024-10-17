@@ -45,19 +45,20 @@ export default function Chart1() {
   }, []);
 
   return (
-    <Card>
+    <Card className="w-full ">
       <CardHeader>
         <CardTitle>Most Followers</CardTitle>
-        <CardDescription></CardDescription>
+        <CardDescription>Top 5 users with the most followers</CardDescription>
       </CardHeader>
       <CardContent>
         {chartConfig && chartData.length > 0 ? (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="h-[300px]">
             <BarChart
               data={chartData}
               layout="vertical"
               margin={{
                 left: 0,
+                right: 20,
               }}
             >
               <YAxis
@@ -66,6 +67,7 @@ export default function Chart1() {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
+                width={100}
                 tickFormatter={(value) => chartConfig[value]?.label}
               />
               <XAxis dataKey="followers" type="number" hide />
@@ -77,11 +79,11 @@ export default function Chart1() {
             </BarChart>
           </ChartContainer>
         ) : (
-          <p>Loading data...</p>
+          <p className="text-center py-10">Loading data...</p>
         )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
+        <div className="flex items-center gap-2 font-medium leading-none text-green-600">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">

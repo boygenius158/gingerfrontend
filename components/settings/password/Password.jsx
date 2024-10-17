@@ -15,6 +15,7 @@ import axios from "axios";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 // Custom validation function
 const validate = (values, hasPassword) => {
@@ -114,6 +115,7 @@ export default function Password() {
                 <div className="space-y-1">
                   <Label htmlFor="newPassword">New password</Label>
                   <Field
+                    className="text-black"
                     id="newPassword"
                     name="newPassword"
                     type="password"
@@ -125,13 +127,30 @@ export default function Password() {
                     className="text-red-600 text-sm"
                   />
                 </div>
-                <CardFooter>
-                  <div className="mt-2">
-                    <Button type="submit" disabled={isSubmitting}>
-                      Save password
-                    </Button>
-                  </div>
-                </CardFooter>
+                <div className="flex justify-between flex-col">
+                  <CardFooter>
+                    <div className="mt-2 ">
+                      <Button
+                        type="submit"
+                        className="bg-purple-700"
+                        disabled={isSubmitting}
+                      >
+                        Save password
+                      </Button>
+                    </div>
+                  </CardFooter>
+                  <CardFooter>
+                    <div className="mt-2">
+                      <Link
+                        href="/forgotpassword"
+                        className="text-purple-700 hover:underline"
+                        // type="submit" className="bg-purple-700" disabled={isSubmitting}
+                      >
+                        Forgot password
+                      </Link>
+                    </div>
+                  </CardFooter>
+                </div>
               </Form>
             )}
           </Formik>

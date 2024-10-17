@@ -46,7 +46,7 @@ export const authOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    // Sign-in callback to handle Google and custom credential sign-ins
+   
     async signIn({ user, account }) {
       // Handle Google sign-in
       if (account.provider === "google") {
@@ -66,7 +66,7 @@ export const authOptions = {
             console.log("Updated user object for Google sign-in:", user);
             return user;
           } else {
-            return false; // Return false if Google sign-in fails
+            return false; 
           }
         } catch (error) {
           console.log("Error during Google sign-in:", error);
@@ -123,9 +123,8 @@ export const authOptions = {
         token.username = user.username;
       }
 
-      return token; // Return updated token
+      return token; 
     },
-    // Session callback to pass the token to the client session
     async session({ session, token }) {
       session.id = token.id;
       session.role = token.roles;
@@ -134,13 +133,13 @@ export const authOptions = {
       session.profilePicture = token.profilePicture;
       session.refreshToken = token.refreshToken;
 
-      return session; // Return updated session object
+      return session; 
     },
   },
-  secret: process.env.NEXTAUTH_SECRET, // Secret for signing tokens
+  secret: process.env.NEXTAUTH_SECRET, 
 };
 
-const handler = NextAuth(authOptions); // Initialize NextAuth with options
+const handler = NextAuth(authOptions); 
 
 // Export handler for GET and POST requests
 export { handler as GET, handler as POST };

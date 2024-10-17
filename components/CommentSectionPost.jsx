@@ -64,7 +64,7 @@ export default function CommentSectionPost({ post }) {
         parentId: commentId,
       });
 
-      console.log(res); 
+      console.log(res);
 
       const replyComment = res.data; // The backend returns the new reply with MongoDB _id
 
@@ -87,9 +87,23 @@ export default function CommentSectionPost({ post }) {
     }
   };
 
+  async function handleDeleteComment(comment) {
+    const commentId = comment._id;
+    console.log(comment);
+    const updatedComments = comments.filter((item) => item._id !== commentId);
+    setComments(updatedComments);
+
+    const response = await instance.post("/api/user/delete-comment", {
+      commentId,
+    });
+    if (response.status === 200) {
+      toast("The comment was deleted");
+    }
+  }
+
   console.log(session);
 
-  console.log(comments);
+  console.log(post);
 
   return (
     <div className="w-full mx-auto p-4 bg-background rounded-lg shadow text-white bg-black ">
@@ -113,6 +127,16 @@ export default function CommentSectionPost({ post }) {
               >
                 Reply
               </Button>
+              {session.username === comment.author && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs ml-12"
+                  onClick={() => handleDeleteComment(comment)}
+                >
+                  Delete
+                </Button>
+              )}
             </div>
 
             {/* Render replies if they exist */}
@@ -120,9 +144,14 @@ export default function CommentSectionPost({ post }) {
               comment.replies.map((reply) => (
                 <div key={reply._id} className="flex space-x-4 ml-8 mt-2">
                   <Avatar className="border-2 border-purple-700">
-                    <AvatarImage src={typeof reply.avatar === "string"
-                        ? reply.avatar
-                        : reply.avatar[0]}alt="failed" />
+                    <AvatarImage
+                      src={
+                        typeof reply.avatar === "string"
+                          ? reply.avatar
+                          : reply.avatar[0]
+                      }
+                      alt="failed"
+                    />
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-semibold">
@@ -155,7 +184,7 @@ export default function CommentSectionPost({ post }) {
           </div>
         ))}
       </ScrollArea>
-        {/* <button onClick={()=>setHidePostComment(!hidePostComment)}>div</button> */}
+      {/* <button onClick={()=>setHidePostComment(!hidePostComment)}>div</button> */}
       {session &&
         // session.username !== post.userDetails.username &&
         !hidePostComment && (

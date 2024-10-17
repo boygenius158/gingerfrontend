@@ -57,12 +57,12 @@ function CheckoutForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg"
+      className="max-w-md mx-auto p-6 bg-black shadow-lg rounded-lg"
     >
       <h2 className="text-2xl font-semibold mb-4">Complete Your Payment</h2>
       <div className="mb-4">
         <CardElement
-          className="p-3 border border-gray-300 rounded-md"
+          className="p-3 border border-gray-300 rounded-md text-white"
           options={{
             style: {
               base: {
@@ -82,7 +82,7 @@ function CheckoutForm() {
       <button
         type="submit"
         disabled={!stripe || processing || succeeded}
-        className={`w-full py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors duration-300 ${
+        className={`w-full py-3 px-4 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors duration-300 ${
           processing ? "cursor-not-allowed" : ""
         }`}
       >

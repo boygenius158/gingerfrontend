@@ -15,35 +15,39 @@ import PostSection from "./profile/PostSection";
 import SavedPosts from "./profile/SavedPosts";
 import { useSocket } from "@/app/lib/SocketContext";
 import ConnectionsList from "./modals/ConnectionsList";
+import toast from "react-hot-toast";
 
 export default function Profile({ username }) {
-  const socket = useSocket();
-  const { edgestore } = useEdgeStore();
-  const filePickerRef = useRef(null);
   const { data: session } = useSession();
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [imageFileUrl, setImageFileUrl] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState(false);
-  console.log(session);
-
-  const [profileData, setProfileData] = useState({
-    name: "",
-    bio: "",
-    // profilePicture: ''
-  });
   const { user, posts } = useProfileStore((state) => ({
     user: state.user,
     posts: state.posts,
   }));
-  // const [followingList, setFollowingList] = useState(
-  //   user.followingDetails || []
-  // );
-  // const [followersList, setFollowersList] = useState(
-  //   user.followersDetails || []
-  // );
-  console.log(posts, user);
+  const isAlreadyFollowing = user?.followers?.includes(session?.id);
+  const socket = useSocket();
+  const { edgestore } = useEdgeStore();
+  const filePickerRef = useRef(null);
+  const [isFollowing, setIsFollowing] = useState(isAlreadyFollowing);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageFileUrl, setImageFileUrl] = useState(null);
+  const [followersCount, setFollowerCount] = useState(
+    user?.followers?.length || 0
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState(false);
+
+  const [profileData, setProfileData] = useState({
+    name: "",
+    bio: "",
+  });
+
+  useEffect(() => {
+    setIsFollowing(isAlreadyFollowing);
+  }, [isAlreadyFollowing]);
+
+  useEffect(() => {
+    setFollowerCount(user?.followers?.length || 0);
+  }, [user?.followers]);
 
   async function handleSubmit() {
     if (selectedFile) {
@@ -60,7 +64,6 @@ export default function Profile({ username }) {
       });
       if (response) {
         console.log(response);
-
         setSelectedFile(null);
         setImageFileUrl(null);
         setIsOpen(false);
@@ -68,68 +71,40 @@ export default function Profile({ username }) {
       }
     }
   }
-  // useEffect(() => {
-  //   const checkFollowingStatus = async () => {
-  //     if (user && session) {
-  //       try {
-  //         const res = await instance.post("/api/user/checkFollowingStatus", {
-  //           followUser: user.email,
-  //           orginalUser: session.user.email,
-  //         });
-  //         setIsFollowing(res.data.followThatUser);
-  //       } catch (error) {
-  //         console.error("Failed to check following status", error);
-  //       }
-  //     }
-  //   };
-  //   checkFollowingStatus();
-  // }, [user, session]);
 
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
+  const isSameUser = session?.user?.email === user?.email;
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setProfileData({
-  //       name: user.name,
-  //       bio: user.bio,
-  //     });
-  //   }
-  // }, [user]);
-  console.log(posts);
-
-  if (!user || !user.email) {
-    return <div></div>;
-  }
-
-  const isSameUser = session?.user?.email === user.email;
   function handleModalClose() {
-    // onClick={() => setIsOpen(false)}
     setIsOpen(false);
     setImageFileUrl(null);
     setSelectedFile(null);
   }
+
   async function handleFollow() {
-    // Optimistic UI Update
-    if (!session) {
-      return;
-    }
-    setIsFollowing((prev) => !prev);
-    // socket.emit("person_follows", {
-    //   followUser: user.email,
-    //   orginalUser: session?.user?.email,
-    // });
+    if (!session) return;
+
+    // Optimistic UI update
+    setFollowerCount((prevCount) =>
+      isFollowing ? prevCount - 1 : prevCount + 1
+    );
+    setIsFollowing(!isFollowing);
+
     try {
       const res = await instance.post("/api/user/followprofile", {
         followUser: user.email,
         orginalUser: session?.user?.email,
       });
       console.log(res);
+      if (!isFollowing) {
+        toast(`You started following ${user.username}`);
+      }
     } catch (error) {
       console.error("Failed to follow/unfollow profile", error);
-      // Revert UI Update if API call fails
-      setIsFollowing((prev) => !prev);
+      // Revert UI update if the API call fails
+      setFollowerCount((prevCount) =>
+        isFollowing ? prevCount + 1 : prevCount - 1
+      );
+      setIsFollowing(!isFollowing);
     }
   }
 
@@ -140,11 +115,15 @@ export default function Profile({ username }) {
       setImageFileUrl(URL.createObjectURL(file));
     }
   }
-  console.log(user.followerDetails);
 
   function onStatusChange(status) {
     setStatus(status);
   }
+
+  if (!user || !user.email) {
+    return <div></div>;
+  }
+
   return (
     <div className=" sm:px-6 pt-6 ">
       <ConnectionsList
@@ -188,7 +167,8 @@ export default function Profile({ username }) {
               onClick={() => setStatus(true)}
               className="text-sm font-semibold hover:underline cursor-pointer "
             >
-              {user.followers.length} followers
+              {followersCount} {/* {user.followers.length} */}
+              followers
             </span>
             <span
               onClick={() => setStatus(true)}

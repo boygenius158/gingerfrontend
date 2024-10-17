@@ -21,6 +21,7 @@ export default function Username() {
   const [username, setUsername] = useState("");
   const [error, setError] = useState(""); // State for error message
   const [bio, setBio] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   // Fetch user data on mount
   useEffect(() => {
@@ -48,8 +49,21 @@ export default function Username() {
   }, [session]);
 
   // Handle form input changes
+
+  const handleUsernameChange = (e) => {
+    const value = e.target.value;
+    if (/\s/.test(value)) {
+      toast("Username should not contain spaces.");
+      setDisabled(true);
+    } else {
+      // toast("");
+      setDisabled(false);
+
+    }
+    setUsername(value);
+  };
   const handleNameChange = (e) => setName(e.target.value);
-  const handleUsernameChange = (e) => setUsername(e.target.value);
+  // const handleUsernameChange = (e) => setUsername(e.target.value);
   const handleBioChange = (e) => setBio(e.target.value);
 
   // Handle form submission
@@ -93,27 +107,39 @@ export default function Username() {
         </CardHeader>
         <CardContent className="space-y-2">
           <form onSubmit={handleSubmit} className="space-y-2">
-            <div className="space-y-1 text-black bgbr">
+            <div className="space-y-1 text-white bgbr">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 value={username}
+                className="text-black"
                 onChange={handleUsernameChange}
               />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             </div>
-            <div className="space-y-1 text-black">
+            <div className="space-y-1 text-white">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" value={name} onChange={handleNameChange} />
+              <Input
+                className="text-black"
+                id="name"
+                value={name}
+                onChange={handleNameChange}
+              />
             </div>
 
             <div>
               <Label htmlFor="name">Bio</Label>
 
-              <Textarea value={bio} onChange={handleBioChange} />
+              <Textarea
+                className="text-black"
+                value={bio}
+                onChange={handleBioChange}
+              />
             </div>
             <CardFooter>
-              <Button type="submit">Save changes</Button>
+              <Button 
+              disabled={disabled}
+               type="submit">Save changes</Button>
             </CardFooter>
           </form>
         </CardContent>

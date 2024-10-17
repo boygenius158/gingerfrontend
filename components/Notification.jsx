@@ -5,6 +5,7 @@ import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
+import { ScrollArea } from "./ui/scroll-area";
 
 const NotificationItem = ({ type, message, image, username }) => {
   let icon;
@@ -26,7 +27,7 @@ const NotificationItem = ({ type, message, image, username }) => {
   }
 
   return (
-    <div className="border-b">
+    <div className="border-b border-b-gray-700 text-white">
       <div className="flex items-center p-2 gap-2">
         <Image
           src={image}
@@ -35,12 +36,12 @@ const NotificationItem = ({ type, message, image, username }) => {
           height={40}
           width={40}
         />
-        <p className="font-semibold cursor-pointer">@{username}</p>
-        <p className="font-light text-gray-700">{message}</p>
+        <p className="font-semibold cursor-pointer text-gray-300">@{username}</p>
+        <p className="font-light text-white">{message}</p>
         <span className="text-xl mr-2">{icon}</span>
       </div>
       <div className="flex justify-end mb-2">
-        <p className="font-extralight text-xs">a few moments ago</p>
+        {/* <p className="font-extralight text-xs">a few moments ago</p> */}
       </div>
     </div>
   );
@@ -89,21 +90,22 @@ export default function Notification() {
   return (
     <div className="flex flex-col">
       <div className="p-4">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl flex justify-center items-center">
+        <h1 className="text-4xl text-white font-extrabold tracking-tight lg:text-5xl flex justify-center items-center">
           Notifications
         </h1>
       </div>
-      <div className="max-h-[500px] overflow-y-scroll">
+      <ScrollArea className="h-[400px] text-white">
         {notifications.map((notification, index) => (
           <NotificationItem
+          className="text-white"
             key={index}
             type={notification.type}
             message={notification.message}
-            username={notification?.interactorId?.username}
+            username={notification.username}
             image={notification?.interactorId?.profilePicture}
           />
         ))}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

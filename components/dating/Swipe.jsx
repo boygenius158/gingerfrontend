@@ -11,6 +11,11 @@ import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
 import { useSocket } from "@/app/lib/SocketContext";
 import FlyingHeart from "@/app/utils/Animations/FlyingHeart";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronLeft, ChevronRight, RefreshCcw } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { X, Heart } from "lucide-react";
+import ReachedEnd from "./ReachedEnd";
+import toast from "react-hot-toast";
 
 export default function Swipe() {
   const { data: session } = useSession();
@@ -23,6 +28,7 @@ export default function Swipe() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progressValue, setProgressValue] = useState(33);
   const [myProfileImage, setMyProfileImage] = useState(null);
+  const [hasReachedEnd, setHasReachedEnd] = useState(false);
 
   // Fetch profiles from the server
   const fetchProfiles = useCallback(async () => {
@@ -31,10 +37,15 @@ export default function Swipe() {
         const response = await instance.post("/api/user/swipe-profiles", {
           userId: session.id,
         });
+        console.log(response);
+
         if (response.data) {
           setSwipeProfiles(response.data.profiles);
           setCurrentProfileIndex(0); // Start from the first profile
+          setHasReachedEnd(false);
         }
+
+        console.log(swipeProfiles);
       } catch (error) {
         console.error("Error fetching profiles:", error);
       }
@@ -42,15 +53,14 @@ export default function Swipe() {
   }, [session]);
 
   // Handle "match" event
-  const handleMatch = useCallback((msg) => {
-    console.log(msg);
-    setIsMatch(true);
-    socket.emit("match_owner", { userId: session?.id });
-    socket.on("profile-image", (msg) => {
+  const handleMatch = useCallback(
+    (msg) => {
       console.log(msg);
-      setMyProfileImage(msg);
-    });
-  }, [session, socket]);
+      setIsMatch(true);
+      socket.emit("match_owner", { userId: session?.id });
+    },
+    [session, socket]
+  );
 
   // Handle image click for like/dislike
   const handleImageClick = (event) => {
@@ -58,47 +68,43 @@ export default function Swipe() {
     const imageWidth = event.target.clientWidth;
 
     if (clickX < imageWidth / 2) {
-      // Click on the left side (Dislike)
       handleDislike();
-      console.log("dislike");
     } else {
-      // Click on the right side (Like)
       handleLike();
-      console.log("like", swipeProfiles[currentProfileIndex]);
-      socket.emit("swipe", {
-        profile: swipeProfiles[currentProfileIndex],
-        userId: session?.id,
-      });
-      console.log(session?.id);
     }
   };
 
-  // Handle like action
   const handleLike = () => {
-    console.log("Profile liked");
     setSwipeDirection("right");
-    setTimeout(() => {
-      setSwipeDirection(null);
-      if (currentProfileIndex < swipeProfiles.length - 1) {
-        setCurrentProfileIndex(currentProfileIndex + 1);
-      } else {
-        console.log("No more profiles");
-      }
-    }, 500); // Match duration with the CSS animation
+    socket.emit("swipe", {
+      profile: swipeProfiles[currentProfileIndex],
+      userId: session?.id,
+    });
+    toast("You sent a like to the profile.")
+
+    if (currentProfileIndex < swipeProfiles.length - 1) {
+      setTimeout(() => {
+        setSwipeDirection(null);
+        setCurrentProfileIndex((prev) => prev + 1);
+      }, 500);
+    } else {
+      // User has reached the end
+      setHasReachedEnd(true);
+    }
   };
 
-  // Handle dislike action
   const handleDislike = () => {
-    console.log("Profile disliked");
     setSwipeDirection("left");
-    setTimeout(() => {
-      setSwipeDirection(null);
-      if (currentProfileIndex < swipeProfiles.length - 1) {
-        setCurrentProfileIndex(currentProfileIndex + 1);
-      } else {
-        console.log("No more profiles");
-      }
-    }, 500); // Match duration with the CSS animation
+
+    if (currentProfileIndex < swipeProfiles.length - 1) {
+      setTimeout(() => {
+        setSwipeDirection(null);
+        setCurrentProfileIndex((prev) => prev + 1);
+      }, 500);
+    } else {
+      // User has reached the end
+      setHasReachedEnd(true);
+    }
   };
 
   // Fetch profiles and set up socket event listeners
@@ -109,24 +115,22 @@ export default function Swipe() {
 
     if (socket) {
       socket.emit("register", session?.user?.email);
-
       socket.on("match", handleMatch);
     }
 
     // Cleanup the socket event listener on component unmount or when socket changes
     return () => {
-      if (socket) {
-        socket.off("match", handleMatch);
-      }
+      socket?.off("match", handleMatch);
     };
   }, [session, socket, fetchProfiles, handleMatch]);
 
   const currentProfile = swipeProfiles[currentProfileIndex] || {};
-  console.log(myProfileImage);
 
   return (
-    <div className="">
-      {isMatch ? (
+    <div className="bg-black h-screen">
+      {hasReachedEnd ? (
+        <ReachedEnd />
+      ) : isMatch ? (
         <div className="flex items-center justify-center">
           <div className="w-[700px] h-[600px] overflow-hidden mt-4 animate-fade-in relative">
             <div className="flex items-center justify-center mt-4 animate-fade-up flex-col">
@@ -141,41 +145,39 @@ export default function Swipe() {
                       height="300"
                       width="200"
                       className="w-full object-fit aspect-square rounded-xl border-red-700 border-4 pulse-effect"
-                      alt="thumbnail"
+                      alt="Your profile image"
                     />
                   )}
                 </div>
 
-                <div className="relative group  ml-6">
-                  {currentProfile?.images[currentIndex] && (
+                <div className="relative group ml-6">
+                  {currentProfile?.images?.[currentIndex] && (
                     <Image
-                      src={currentProfile?.images[currentIndex]}
+                      src={currentProfile.images[currentIndex]}
                       height="200"
                       width="200"
                       className="w-full object-cover aspect-square rounded-xl border-red-700 border-4 glow-effect"
-                      alt="thumbnail"
+                      alt={`${
+                        currentProfile?.name ?? "Profile"
+                      }'s profile image`}
                     />
                   )}
                 </div>
               </div>
               <div className="flex mt-4 gap-1">
-                <div className="">
-                  <Button
-                    className="text-red-600 font-semibold hover:text-white hover:bg-red-600 "
-                    variant="outline"
-                  >
-                    Visit Profile
-                  </Button>
-                </div>
-                <div className="">
-                  <Button
-                    onClick={() => setIsMatch(false)}
-                    variant="outline"
-                    className="text-red-600 font-semibold hover:text-white hover:bg-red-600"
-                  >
-                    Keep Swiping
-                  </Button>
-                </div>
+                {/* <Button
+                  className="text-red-600 font-semibold hover:text-white hover:bg-red-600"
+                  variant="outline"
+                >
+                  Visit Profile
+                </Button>
+                <Button
+                  onClick={() => setIsMatch(false)}
+                  variant="outline"
+                  className="text-red-600 font-semibold hover:text-white hover:bg-red-600"
+                >
+                  Keep Swiping
+                </Button> */}
               </div>
             </div>
             <div
@@ -187,83 +189,123 @@ export default function Swipe() {
         </div>
       ) : (
         <div>
-          {currentProfile?.images ? (
-            <div>
-              <CardContainer className="">
-                <CardBody
-                  className={`bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] rounded-xl ${
-                    swipeDirection ? `swipe-${swipeDirection}` : ""
-                  }`}
-                >
-                  <CardItem translateZ="100" className="w-full">
+          {currentProfile?.images?.length > 0 ? (
+            <div className=" max-w-md mx-auto w-[300px] bg-black mt-6">
+              <div className="flex items-center justify-center mb-2">
+              <p className="text-white text-sm font-semibold">Swipe across profiles.</p>
+              </div>
+              <Card
+                className={`overflow-hidden bg-black text-white border-gray-800 ${
+                  swipeDirection ? `swipe-${swipeDirection}` : ""
+                }`}
+              >
+                <CardContent className="p-0 mt-2 bg-black text-white">
+                  <div className="flex items-center justify-center p-2">
                     <Progress
                       value={progressValue * (currentIndex + 1)}
-                      className="mb-4"
+                      className="w-[400px]"
                     />
+                  </div>
+                  <div className="p-4 text-white">
+                    <h1 className="text-2xl font-extrabold  dark:text-gray-200">
+                      {currentProfile.name || "No Name"},
+                      <span className=" dark:text-gray-400">
+                        {currentProfile.age
+                          ? ` ${currentProfile.age}`
+                          : " Unknown"}
+                      </span>
+                    </h1>
+                    <p className=" dark:text-gray-400 font-medium mt-1">
+                      {currentProfile.bio || "No description"}
+                    </p>
+                  </div>
+                  <div
+                    className="relative aspect-square"
+                    onClick={handleImageClick}
+                  >
+                    <Image
+                      src={currentProfile.images[currentIndex]}
+                      layout="fill"
+                      objectFit="cover"
+                      alt={`${currentProfile.name}'s photo`}
+                      className="transition-opacity duration-300 ease-in-out group-hover:opacity-75"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              <div className="flex justify-center items-center gap-4 mt-2 mb-2 ">
+                <Button
+                  onClick={handleDislike}
+                  variant="outline"
+                  size="icon"
+                  className="hover:scale-110 transform duration-300"
+                  // className="w-10 h-10 rounded-full border-2 border-red-500 bg-white hover:bg-red-100 transition-colors duration-200"
+                  // onClick={handleCancel}
+                  aria-label="Dislike"
+                >
+                  <X className="h-8 w-8 text-red-500 " />
+                </Button>
 
-                    <div className="relative">
-                      <div className="flex flex-col mt-2 ml-2 mb-2 z-10">
-                        <h1 className="scroll-m-20 text-2xl font-extrabold text-gray-600 lg:text-2xl">
-                          {currentProfile.name || "No Name"},{" "}
-                          <span className="text-gray-600">
-                            {currentProfile.age || "Unknown"}
-                          </span>
-                        </h1>
-                        <div className="text-gray-600 font-semibold">
-                          {currentProfile.bio || "No description"}
-                        </div>
-                        <div></div>
-                      </div>
-                      <div onClick={handleImageClick}>
-                        <Image
-                          src={currentProfile.images[currentIndex]}
-                          height="300"
-                          width="300"
-                          className="w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                          alt="thumbnail"
-                        />
-                      </div>
-                    </div>
-                  </CardItem>
-                </CardBody>
-              </CardContainer>
-              <div className="flex justify-center items-center gap-10 mt-4 cursor-pointer">
-                <div className="flex justify-center items-center w-12 h-12 rounded-full transition-transform transform hover:scale-150">
-                  <Button
-                    onClick={() =>
-                      setCurrentIndex((prev) => Math.max(prev - 1, 0))
-                    }
-                  >
-                    <SlArrowLeft className="text-2xl " />
-                  </Button>
-                </div>
-                <div className="flex justify-center items-center w-12 h-12 rounded-full transition-transform transform hover:scale-150">
-                  <Button
-                    onClick={() =>
-                      setCurrentIndex((prev) =>
-                        Math.min(
-                          prev + 1,
-                          (currentProfile.images || []).length - 1
-                        )
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setCurrentIndex((prev) => Math.max(prev - 1, 0))
+                  }
+                  disabled={currentIndex === 0}
+                  // className="rounded-full"
+                  className="hover:scale-110 transform duration-300 rounded-full"
+
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                {/* <Button variant="outline">
+                  <RefreshCcw size={24} />
+                </Button> */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setCurrentIndex((prev) =>
+                      Math.min(
+                        prev + 1,
+                        (currentProfile.images || []).length - 1
                       )
-                    }
-                  >
-                    <SlArrowRight className="text-2xl " />
-                  </Button>
-                </div>
+                    )
+                  }
+                  disabled={
+                    currentIndex === (currentProfile.images || []).length - 1
+                  }
+                  className="hover:scale-110 transform duration-300 rounded-full"
+
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  onClick={handleLike}
+                  variant="outline"
+                  size="icon"
+                  className="hover:scale-110 transform duration-300 rounded"
+
+                  // className="w-10 h-10 rounded-full border-2 border-purple-700 bg-white hover:bg-green-100 transition-colors duration-200"
+                  // onClick={handleLove}
+                  aria-label="Like"
+                >
+                  <Heart className="h-8 w-8  text-purple-700 " />
+                </Button>
               </div>
             </div>
           ) : (
-            <div className="   flex items-center justify-center">
-              <div>
-                <Skeleton className="w-[500px] h-[600px]  ">
-                  <div className="flex items-center justify-center">
-                    <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-                      
-                    </h2>
-                  </div>
-                </Skeleton>
-              </div>
+            // <div className="flex items-center justify-center">
+            //   <Skeleton className="w-[500px] h-[600px]">
+            //     <div className="flex items-center justify-center">
+            //       <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0"></h2>
+            //     </div>
+            //   </Skeleton>
+            // </div>
+            <div className="flex items-center justify-center mt-10">
+              <ReachedEnd />
             </div>
           )}
         </div>

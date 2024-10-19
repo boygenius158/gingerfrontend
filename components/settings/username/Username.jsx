@@ -98,7 +98,7 @@ export default function Username() {
 
   return (
     <div>
-      <Card className="bg-black text-white">
+      <Card className="bg-black text-white border border-gray-700">
         <CardHeader>
           <CardTitle>Account</CardTitle>
           <CardDescription>
@@ -138,6 +138,7 @@ export default function Username() {
             </div>
             <CardFooter>
               <Button 
+              className="bg-purple-700"
               disabled={disabled}
                type="submit">Save changes</Button>
             </CardFooter>

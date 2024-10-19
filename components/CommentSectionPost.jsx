@@ -55,6 +55,8 @@ export default function CommentSectionPost({ post }) {
 
   const handleReplySubmit = async (e, commentId) => {
     e.preventDefault();
+    console.log("work");
+    
     if (reply.trim()) {
       // Submit the reply to the backend
       const res = await instance.post("/api/user/user-posted-reply", {

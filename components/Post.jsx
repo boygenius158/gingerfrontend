@@ -95,7 +95,7 @@ export default function Post({ post, isSaved, loading }) {
                     </div>
                   ) : (
                     <div>
-                      <AlertDialogContent className="text-white bg-black">
+                      <AlertDialogContent className=" bg-white">
                         <AlertDialogHeader>
                           <AlertDialogTitle>
                             Are you absolutely sure?
@@ -106,9 +106,9 @@ export default function Post({ post, isSaved, loading }) {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel className="text-purple-700">
+                          {/* <AlertDialogCancel className="text-purple-700">
                             Cancel
-                          </AlertDialogCancel>
+                          </AlertDialogCancel> */}
                           <AlertDialogAction>
                             <span onClick={handleReportSubmit}>Yes</span>
                           </AlertDialogAction>

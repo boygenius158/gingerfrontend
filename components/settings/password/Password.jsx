@@ -79,7 +79,7 @@ export default function Password() {
 
   return (
     <div>
-      <Card className="bg-black text-white">
+      <Card className="bg-black text-white border border-gray-700">
         <CardHeader>
           <CardTitle>Password</CardTitle>
           <CardDescription>

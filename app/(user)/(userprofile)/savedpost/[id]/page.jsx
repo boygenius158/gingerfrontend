@@ -24,9 +24,7 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
-  MoreHorizontalIcon,
   MoreVertical,
-  MoreVerticalIcon,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -53,8 +51,6 @@ import toast, { ToastBar } from "react-hot-toast";
 import LikeSection from "@/components/LikeSection";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import { useSocket } from "@/app/lib/SocketContext";
-import { Trash } from "lucide-react";
-import OptionsModal from "@/components/modals/OptionsModal";
 
 export default function Page({ params }) {
   const { data: session } = useSession();
@@ -66,7 +62,7 @@ export default function Page({ params }) {
   const [replyingTo, setReplyingTo] = useState(null);
   const [likes, setLikes] = useState(0);
   const [showButtons, setShowButtons] = useState("");
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(true);
   const socket = useSocket();
 
   const [reply, setReply] = useState("");
@@ -144,7 +140,9 @@ export default function Page({ params }) {
       // setComments(response.data.comments);
 
       console.log(response.data.result.userId.savedPosts, session.id);
-      setBookmarked(response.data.result.userId.savedPosts.includes(id));
+      // setBookmarked(response.data.result.userId.savedPosts.includes(id));
+      // console.log(response.data.result.userId.savedPosts,id);  
+      
       setLikes(response.data.result.likes.length);
       setHasLiked(response.data.result.likes.includes(session?.id));
       console.log(response.data.result.likes.includes(session?.id));
@@ -215,32 +213,26 @@ export default function Page({ params }) {
       setShowButtons("");
     }
   }
-
-  async function handleDeletePost() {
-    const response = await instance.post("/api/user/delete-post", {
-      postId: id,
-    });
-    if (response.status === 200) {
-      setOpen(false);
-      // setPostDeleted(true);
-      toast.success("Post has been deleted");
-      window.history.back();
+  async function handleSavePost() {
+    // setIsSaved((prev) => !prev);
+    setBookmarked((prev) => !prev);
+    if (bookmarked) {
+      toast.success("Removed.");
+    } else {
+      toast.success("Added.");
     }
-  }
-  function onChangeOptionsModal() {
-    setIsOpen(false);
+    console.log("save post");
+    const res = await instance.post("/api/user/savePost", {
+      postId: post._id,
+      userId: session.id,
+    });
   }
   // Avoid rendering certain elements until session is loaded on the client-side
-  console.log(comments);
-  const [isOpen, setIsOpen] = useState(false);
+  if (status === "loading") return null;
+
   return (
     <div className="flex justify-center items-start gap-4 p-4 bg-background bg-black h-screen ">
-      <OptionsModal
-        isOpen={isOpen}
-        onChangeOptionsModal={onChangeOptionsModal}
-        id={id}
-      />
-      <div className="flex flex-col z-10">
+      <div className="flex flex-col">
         <Button
           variant="ghost"
           className="text-white hover:text-purple-700"
@@ -249,6 +241,31 @@ export default function Page({ params }) {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Go back
         </Button>
+        {/* <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" className="text-white">
+              Delete Post
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your
+                post.
+                <div className="flex gap-4">
+                  <Button onClick={() => setOpen(false)}>Cancel</Button>
+                  <Button
+                    className="border border-white "
+                    // Add delete post functionality
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog> */}
       </div>
       <Card className="w-[538px] border border-gray-700 rounded">
         <CardContent className="p-0 ">
@@ -289,44 +306,51 @@ export default function Page({ params }) {
                 {post?.userId?.username?.[0] || "?"}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col justify-start ml-1">
-              <span className="font-semibold">{post?.userId?.username}</span>
-              <span className="font-sm mb-2">{post?.caption}</span>
-            </div>
-
-            {/* <span className="font-semibold">{post?.caption}</span> */}
+            <span className="font-semibold">{post?.userId?.username}</span>
           </div>
-          <div className="flex cursor-pointer">
-            <MoreVerticalIcon onClick={() => setIsOpen(true)} />
-          </div>
-          <>
-            {session?.id === post?.userId._id && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  {/* Use a div here instead of a button */}
-                  <div className="text-black rounded">
-                    {/* <Button variant="outline" b> */}
-                    <Trash className="text-white cursor-pointer hover:scale-75" />
-                    {/* </Button> */}
-                  </div>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your post and remove its data from our servers.
-                      <div className="flex gap-4">
-                        <Button onClick={handleDeletePost} variant="outline">
-                          Delete
-                        </Button>
-                      </div>
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
+          <Button
+            onClick={handleSavePost}
+            variant="ghost"
+            size="icon"
+            aria-label="More options"
+          >
+            {/* <AlertDialog>
+              <AlertDialogTrigger asChild> */}
+            {/* <MoreVertical className="h-5 w-5" /> */}
+            {bookmarked ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 text-purple-700"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9"
+                  // onClick={handleSavePost}
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 text-purple-700"
+                // onClick={handleSavePost}
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                />
+              </svg>
             )}
-          </>
+          </Button>
         </CardHeader>
         <CardContent className="pb-0 bg-black text-white">
           <ScrollArea className="h-[263px]  mb-4">
@@ -341,11 +365,11 @@ export default function Page({ params }) {
                   <Avatar className="border-2 border-purple-700">
                     <AvatarImage src={comment.avatar} alt="failed" />
                   </Avatar>
-                  <p className="text-white">{comment.caption}</p>
+
                   <div>
                     <div className="flex-1">
                       <p className="font-semibold">{comment.author}</p>
-                      <p className="">{comment.content}</p>
+                      <p className="text-white">{comment.content}</p>
                     </div>
                     {showButtons === comment._id && (
                       <div className="flex gap-1">
@@ -403,35 +427,13 @@ export default function Page({ params }) {
                 {replyingTo === comment._id && (
                   <form
                     onSubmit={(e) => handleReplySubmit(e, comment._id)}
-                    className="mt-2 relative"
+                    className="mt-2"
                   >
-                    {/* Close Button */}
-                    <button
-                      type="button"
-                      onClick={() => setReplyingTo(null)} // Replace with your logic to close the form
-                      className="absolute top-0 right-0 p-1 bg-transparent hover:bg-gray-800 rounded-full"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className="w-4 h-4 text-gray-400"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-
                     <Textarea
                       placeholder="Add a reply..."
                       value={reply}
                       onChange={(e) => setReply(e.target.value)}
-                      className="w-full text-white bg-black border-purple-700 focus:border-purple-900"
+                      className="w-full text-black border-purple-700 border-2 focus:border-purple-900"
                     />
                     <Button className="bg-purple-700 mt-2" type="submit">
                       Post Reply

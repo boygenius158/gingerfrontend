@@ -121,9 +121,12 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
           </div>
         </div>
 
-        <div className="flex gap-4 cursor-pointer" onClick={handleSavePost}>
+        <div className="flex gap-4 cursor-pointer">
           {session.id !== post.userId && (
-            <div className="flex items-center px-4 py-2 hover:bg-gray-300 rounded-md ">
+            <div
+              onClick={handleSavePost}
+              className="flex items-center px-4 py-2 hover:bg-gray-300 rounded-md "
+            >
               {bookmarked ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

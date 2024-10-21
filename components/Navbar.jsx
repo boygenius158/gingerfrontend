@@ -189,7 +189,7 @@ export default function Navbar() {
     const controller = new AbortController(); // Create an AbortController instance
     const { signal } = controller; // Extract the signal from the controller
 
-    const fetchData = useCallback(async () => {
+    async function fetchData() {
       try {
         if (status === "authenticated") {
           const response = await instance.post("/api/user/miniProfile", {
@@ -207,7 +207,7 @@ export default function Navbar() {
           console.error("Error fetching profile details:", error);
         }
       }
-    }, [status, session?.id]); // useCallback dependency array
+    }
 
     fetchData();
 

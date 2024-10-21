@@ -73,7 +73,7 @@ export default function Settings() {
       {page === "user" && (
         <div className="p-4 flex">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Unlock Premium: A better way to use{" "}
+            Unlock Premium: A better way to use2{" "}
             <span className="bg-purple-700 text-white rounded">Ginger!</span>
           </h1>
           <div>

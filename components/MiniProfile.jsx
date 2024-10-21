@@ -162,7 +162,7 @@ export default function MiniProfile() {
         {/* <hr class="border-tc border-gray-300" /> */}
 
         <nav className="mt-10 ">
-          <Link href="/home">
+          <Link href="/u/home">
             <div
               // onClick={() => setActivePage("Home")}
               className={`flex items-center justify-start ml-4 transition-transform duration-300 p-2 cursor-pointer rounded gap-2

@@ -9,7 +9,7 @@ import useUserStore from "../store/user/userStore";
 export default function Page() {
 
   return (
-    <div className="">
+    <div className="bg-black w-full">
       {/* <p>{session?.username}afds</p> */}
       <Feed />
     </div>

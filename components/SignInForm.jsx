@@ -10,7 +10,7 @@ export default function SignInForm() {
   const router = useRouter();
   useEffect(() => {
     if (session) {
-      router.replace("/home");
+      router.replace("/u/home");
     }
   }, [router, session]);
   // const{data:session,status}= useSession()

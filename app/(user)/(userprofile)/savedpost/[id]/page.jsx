@@ -139,7 +139,7 @@ export default function Page({ params }) {
       setPost(response.data.result);
       // setComments(response.data.comments);
 
-      console.log(response.data.result.userId.savedPosts, session.id);
+      console.log(response.data.result.userId, session.id);
       // setBookmarked(response.data.result.userId.savedPosts.includes(id));
       // console.log(response.data.result.userId.savedPosts,id);  
       
@@ -317,6 +317,7 @@ export default function Page({ params }) {
             {/* <AlertDialog>
               <AlertDialogTrigger asChild> */}
             {/* <MoreVertical className="h-5 w-5" /> */}
+            
             {bookmarked ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -36,6 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { Lobster } from "next/font/google";
 import useProfileStore from "@/app/store/user/profileStore";
+import SearchUser from "./SearchUser";
 
 const lobsterFont = Lobster({
   subsets: ["latin"],
@@ -43,6 +44,8 @@ const lobsterFont = Lobster({
 });
 
 export default function Navbar() {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   const router = useRouter();
   const socket = useSocket();
   const [user, setUser] = useState("");
@@ -67,7 +70,9 @@ export default function Navbar() {
     feed: state.feed,
     setFeed: state.setFeed,
   }));
-
+  const handleClose = () => {
+    setSearchOpen(false);
+  };
   console.log(feed[0]);
 
   useEffect(() => {
@@ -291,6 +296,9 @@ export default function Navbar() {
       // setUploadStatus("Error uploading files");
     }
   };
+  const handleLinkClick = () => {
+    setIsOpen(false); // Close the sidebar on link click
+  };
   const handleUpload = async () => {
     try {
       setSpin(true);
@@ -318,6 +326,20 @@ export default function Navbar() {
   }
   return (
     <div className="shadow-sm  sticky lg:static  top-0 bg-black p-4 border-gray-700 border-b z-20">
+      {searchOpen && (
+        <Modal
+          onClose={handleClose}
+          isOpen={searchOpen}
+          className="fixed inset-0 flex top-32 justify-center "
+        >
+          <div>
+            <SearchUser
+              // className="bg-red-500"
+              handleClose={handleClose}
+            />
+          </div>
+        </Modal>
+      )}
       <div>
         <Toaster />
       </div>
@@ -361,7 +383,6 @@ export default function Navbar() {
                       className="text-white cursor-pointer transform hover:scale-110 transition duration-300"
                       // onClick={signOut} // Click to sign out
                       onClick={() => signOut({ callbackUrl: "/login" })}
-
                       size={60} // Set the size of the logout icon
                     />
                   ) : (
@@ -404,69 +425,86 @@ export default function Navbar() {
           </div>
         </div>
         <div className="">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="shrink-0 md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                  href="/home"
-                  className="flex items-center gap-2 text-lg font-semibold"
-                >
-                  <h1 className="scroll-m-20 text-blue-500 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                    Ginger
-                  </h1>
-                  {/* <Package2 className="h-6 w-6" /> */}
+          <>
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0 md:hidden"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
 
-                  <span className="sr-only">Ginger</span>
-                </Link>
-                <p
-                  onClick={() => setIsOpen(true)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  upload post
-                </p>
-                <p className="text-muted-foreground hover:text-foreground">
-                  upload story
-                </p>
-                <Link href="/u/settings" className="hover:text-foreground">
-                  Settings
-                </Link>
-                <Link
-                  href="/u/swipe"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Swipe
-                </Link>
-                <Link
-                  href="/u/premium"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Premium
-                </Link>
-                <Link
-                  href="/u/notifications"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Notifications
-                </Link>
-                <Link
-                  href="/u/messages"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Messages
-                </Link>
-              </nav>
-            </SheetContent>
-          </Sheet>
+            {/* Sidebar */}
+            {isOpen && (
+              <div className="fixed inset-0 z-50 bg-black text-gray-500 w-44 h-[480px] shadow-lg transition-transform transform translate-x-0 md:translate-x-0">
+                <nav className="flex flex-col gap-6 text-lg font-medium p-4">
+                  <Link
+                    href="/u/home"
+                    onClick={handleLinkClick}
+                    className="flex items-center gap-2 text-lg font-semibold"
+                  >
+                    <h1 className="scroll-m-20 text-blue-500 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                      Ginger
+                    </h1>
+                    <span className="sr-only">Ginger</span>
+                  </Link>
+                  <Link
+                    href="/u/home"
+                    onClick={handleLinkClick}
+                    className="hover:text-blue-500 transition-colors"
+                  >
+                    Feed
+                  </Link>
+                  <Link
+                    href="/u/settings"
+                    onClick={handleLinkClick}
+                    className="hover:text-blue-500 transition-colors"
+                  >
+                    Settings
+                  </Link>
+                  <Link
+                    href="/u/swipe"
+                    onClick={handleLinkClick}
+                    className="text-gray-500 hover:text-blue-500 transition-colors"
+                  >
+                    Swipe
+                  </Link>
+                  <Link
+                    href="/u/premium"
+                    onClick={handleLinkClick}
+                    className="text-gray-500 hover:text-blue-500 transition-colors"
+                  >
+                    Premium
+                  </Link>
+                  <Link
+                    href="/u/notifications"
+                    onClick={handleLinkClick}
+                    className="text-gray-500 hover:text-blue-500 transition-colors"
+                  >
+                    Notifications
+                  </Link>
+                  <Link
+                    href="/u/messages"
+                    onClick={handleLinkClick}
+                    className="text-gray-500 hover:text-blue-500 transition-colors"
+                  >
+                    Messages
+                  </Link>
+                  <div
+                    onClick={() => {
+                      setSearchOpen(true);
+                      setIsOpen(false); // Close the sidebar on search click
+                    }}
+                    className="text-gray-500 hover:text-blue-500 transition-colors cursor-pointer"
+                  >
+                    Search
+                  </div>
+                </nav>
+              </div>
+            )}
+          </>
         </div>
       </div>
       {isOpen && (

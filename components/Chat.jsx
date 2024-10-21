@@ -378,7 +378,7 @@ export default function Chat({ recipient }) {
     );
   } else {
     return (
-      <div className="lg:mt-8 bg-black h-screen border-gray-800">
+      <div className="lg:mt-8  bg-black h-screen border-gray-800">
         <div className="">
           <div className="h-16 text-gray-400 border border-gray-700 rounded flex justify-between ">
             <div className="flex justify-center items-center">

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import { handleSignOut } from "./app/utils/auth";
+import toast from "react-hot-toast";
 
 const baseURL = process.env.NEXT_PUBLIC_SERVER_URL;
 
@@ -11,7 +13,7 @@ const instance = axios.create({
 });
 
 let isRefreshing = false;
-let newAccessToken = null; 
+let newAccessToken = null;
 
 instance.interceptors.request.use(
   async (config) => {
@@ -40,7 +42,7 @@ instance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if ( !originalRequest._retry && !isRefreshing) {
+    if (!originalRequest._retry && !isRefreshing) {
       originalRequest._retry = true;
       isRefreshing = true;
 
@@ -53,19 +55,25 @@ instance.interceptors.response.use(
             refreshToken: session.refreshToken,
           });
 
+          console.log(response);
+
           const { accessToken } = response.data; // Adjust based on your API response format
           console.log("New Access Token:", accessToken);
 
           newAccessToken = accessToken; // Store the new access token globally
 
-          
-          
           isRefreshing = false;
 
           return instance(originalRequest);
-        } catch (refreshError) {
+        } catch (error) {
+          toast("token has expired , please relogin");
+
+          console.log(error);
+          if (error.response && error.response.status === 403) {
+            handleSignOut();
+          }
           isRefreshing = false;
-          return Promise.reject(refreshError);
+          return Promise.reject(error);
         }
       }
     }

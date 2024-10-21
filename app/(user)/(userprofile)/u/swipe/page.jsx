@@ -12,21 +12,22 @@ import RightSideBar from "@/components/RightSideBar";
 
 export default function Page() {
   return (
-    <div className="bg-black h-screen">
-      <main className="grid md:grid-cols-4 mx-auto z-30 bg-black h-screen ">
-        <section className="hidden md:inline-grid md:col-span-1 bg-black h-screen">
+    <div className="bg-black min-h-screen">
+      <main className="grid grid-cols-1 md:grid-cols-4 mx-auto z-30 bg-black min-h-screen">
+        {/* MiniProfile Section */}
+        <section className="md:inline-grid md:col-span-1 hidden md:block bg-black">
           <div className="fixed w-[280px]">
             <MiniProfile />
           </div>
         </section>
-        <section className="md:col-span-2 mt-4 border border-gray-600 bg-black h-screen w-full mr-2">
-          {/* <Posts /> */}
+
+        {/* Main Content Section */}
+        <section className="col-span-1 md:col-span-2 mt-4 border border-gray-600 bg-black h-screen w-full md:mr-2">
           <DatingHome className="bg-black h-screen mr-4" />
-
-          {/* <Premium/> */}
-
         </section>
-        <section className="hidden md:inline-grid md:col-span-1 bg-black h-screen ml-4">
+
+        {/* RightSideBar Section */}
+        <section className="md:inline-grid md:col-span-1 hidden md:block bg-black ml-4">
           <div className="fixed w-[380px] bg-black h-screen">
             <RightSideBar />
           </div>

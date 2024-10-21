@@ -98,7 +98,7 @@ const OptionsModal = ({ isOpen = false, onChangeOptionsModal, id }) => {
           <Button
             variant="ghost"
             className="w-full justify-start font-normal hover:bg-accent hover:text-accent-foreground"
-            onClick={() => onOpenChange(false)}
+            onClick={() => onChangeOptionsModal()}
           >
             Cancel
           </Button>

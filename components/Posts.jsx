@@ -23,7 +23,7 @@ export default function Posts() {
   const fetchPosts = useCallback(
     async (email) => {
       try {
-        setLoading(true); // Set loading to true when fetching
+        setLoading(true); 
         const response = await instance.post(`/api/user/fetchfeed`, {
           email: email,
           offset: 0,

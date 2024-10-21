@@ -1,7 +1,7 @@
 import React from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-export default function Subscribed({ daysLeft }) {
+export default function Subscribed() {
   return (
     <div className="">
       <div className="flex items-center justify-center p-2 ml-4 ">

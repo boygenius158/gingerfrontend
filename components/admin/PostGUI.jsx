@@ -111,7 +111,7 @@ function PostGUI() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {format(new Date(post?.postId?.createdAt), "PPpp")}
+                  {/* {format(new Date(post?.postId?.createdAt), "PPpp")} */}
                 </TableCell>
                 <TableCell>
                   <Button

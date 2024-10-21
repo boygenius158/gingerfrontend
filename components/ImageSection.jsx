@@ -23,7 +23,10 @@ export default function ImageSection({ data }) {
                   key={index}
                   className="shrink-0 w-full h-full flex items-center justify-center"
                 >
-                  <Image src={element} alt={index} height={250} width={250} />
+                  <Image src={element} alt={index} height={250} width={250} 
+                    onError={(e) => (e.target.src = 'https://i.pinimg.com/564x/9a/7e/1b/9a7e1b3cd70aaf7811bd5a0ce01ae305.jpg')} // Add a fallback image path here
+
+                  />
                 </CarouselItem>
               ))}
           </CarouselContent>

@@ -1,29 +1,31 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import MiniProfile from "./MiniProfile";
 import Posts from "./Posts";
-import LeftSideBar from "./LeftSideBar";
 import RightSideBar from "./RightSideBar";
 
 export default function Feed() {
   return (
-    <div className="bg-black">
-      <main className="grid md:grid-cols-4 mx-auto z-30 min-h-screen">
-        <section className="hidden md:inline-grid md:col-span-1">
-          <div className="fixed w-[280px]">
+    <div className="bg-black w-full min-h-screen">
+      <main className="grid grid-cols-1 md:grid-cols-4 mx-auto z-30 w-full">
+        {/* Left Sidebar (MiniProfile) */}
+        <section className="hidden md:inline-grid md:col-span-1 w-full">
+          <div className="relative w-full md:w-[280px]">
             <MiniProfile />
           </div>
         </section>
-        <section className="md:col-span-2">
-          <Posts />
-          {/* <DatingHome /> */}
 
-          {/* <Premium/> */}
-
+        {/* Main Content (Posts) */}
+        <section className="col-span-1 md:col-span-2 bg-black w-full">
+          <div className="w-full md:mr-2">
+            <Posts />
+          </div>
         </section>
-        <section className="hidden md:inline-grid md:col-span-1">
-          <div className="fixed w-[380px]">
+
+        {/* Right Sidebar */}
+        <section className="hidden md:inline-grid md:col-span-1 w-full">
+          <div className="relative w-full md:w-[380px]">
             <RightSideBar />
           </div>
         </section>

@@ -46,7 +46,6 @@ export const authOptions = {
     strategy: "jwt",
   },
   callbacks: {
-   
     async signIn({ user, account }) {
       // Handle Google sign-in
       if (account.provider === "google") {
@@ -66,7 +65,7 @@ export const authOptions = {
             console.log("Updated user object for Google sign-in:", user);
             return user;
           } else {
-            return false; 
+            return false;
           }
         } catch (error) {
           console.log("Error during Google sign-in:", error);
@@ -107,12 +106,13 @@ export const authOptions = {
         const customToken = jwt.sign(
           { id: user._id, roles: user.roles, username: user.username },
           process.env.NEXTAUTH_SECRET,
+          { expiresIn: "1h" }
         );
 
         const refreshToken = jwt.sign(
           { id: user._id },
           process.env.NEXTAUTH_SECRET,
-          { expiresIn: "14d" } 
+          { expiresIn: "1d" }
         );
 
         token.customToken = customToken;
@@ -123,7 +123,7 @@ export const authOptions = {
         token.username = user.username;
       }
 
-      return token; 
+      return token;
     },
     async session({ session, token }) {
       session.id = token.id;
@@ -133,13 +133,13 @@ export const authOptions = {
       session.profilePicture = token.profilePicture;
       session.refreshToken = token.refreshToken;
 
-      return session; 
+      return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET, 
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
-const handler = NextAuth(authOptions); 
+const handler = NextAuth(authOptions);
 
 // Export handler for GET and POST requests
 export { handler as GET, handler as POST };

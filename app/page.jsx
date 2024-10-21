@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter();
   useEffect(() => {
     if (session) {
-      router.replace("/home");
+      router.replace("/u/home");
     }
   }, [session, router]);
   return (

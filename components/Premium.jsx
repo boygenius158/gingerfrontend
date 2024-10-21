@@ -78,7 +78,7 @@ export default function Settings() {
       {page === "premium" && (
         <div>
           {" "}
-          <Subscribed daysLeft={daysLeft} />
+          <Subscribed  />
         </div>
       )}
       {page === "admin" && (

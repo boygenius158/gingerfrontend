@@ -15,7 +15,7 @@ export default function page() {
             <MiniProfile />
           </div>
         </section>
-        <section className="md:col-span-2">
+        <section className="md:col-span-2 overflow-hidden">
           <Settings />
         </section>
         <section className="hidden md:inline-grid md:col-span-1 ">

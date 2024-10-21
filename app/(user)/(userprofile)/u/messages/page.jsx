@@ -54,58 +54,27 @@ export default function Page() {
     setIncomingCall(false);
   }
 
-  const isVedioCallActive = useComponentsStore(
-    (state) => state.isVedioCallActive
-  );
-console.log(user);
+  // const isVideoCallActive = useComponentsStore(
+  //   (state) => state.isVideoCallActive
+  // );
+  console.log(user);
 
   return (
-    <main className="bg-black text-white grid  md:grid-cols-4  mx-auto z-30">
-      <ReactModal
-        isOpen={incomingCall}
-        onRequestClose={closeModal}
-        contentLabel="Incoming Call Modal"
-        style={{
-          content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            width: "300px",
-            padding: "20px",
-            borderRadius: "10px",
-          },
-          overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-          },
-        }}
-      >
-        <div>Incoming call modal content</div>
-      </ReactModal>
-
+    <main className="bg-black text-white grid grid-cols-1 md:grid-cols-4 mx-auto z-30">
       <MobileViewMiniChat userSelected={handleUser} list={list} />
-      <section className="hidden md:inline-grid  md:col-span-1">
-          <div className="fixed w-[280px]  ">
-            {/* <LeftSideBar/> */}
-            <MiniProfile />
-          </div>
-        </section>
+
+      <section className="hidden md:inline-grid md:col-span-1">
+        <div className="fixed w-full max-w-[280px]">
+          <MiniProfile />
+        </div>
+      </section>
+
       <section className="md:col-span-2">
-        {isVedioCallActive ? (
-          <VideoCallUser
-            user={user}
-            setIncomingCallFunction={setIncomingCall}
-          />
-        ) : (
-          <Chat recipient={user} />
-        )}
+        <Chat recipient={user} />
       </section>
 
       <section className="hidden md:inline-grid md:col-span-1">
-        <div className="fixed w-[350px] ml-5">
-          {/* <Sidebar /> */}
+        <div className="fixed w-full max-w-[350px] ml-5">
           <MiniChat userSelected={handleUser} list={list} />
         </div>
       </section>

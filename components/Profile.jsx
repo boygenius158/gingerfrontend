@@ -220,18 +220,20 @@ export default function Profile({ username }) {
                 >
                   Posts
                 </TabsTrigger>
-                <TabsTrigger
-                  className="data-[state=active]:bg-gray-700 data-[state=active]:text-gray-200"
-                  value="saved-posts"
-                >
-                  Saved Post
-                </TabsTrigger>
+                {session?.username === user?.username && (
+                  <TabsTrigger
+                    className="data-[state=active]:bg-gray-700 data-[state=active]:text-gray-200"
+                    value="saved-posts"
+                  >
+                    Saved Post
+                  </TabsTrigger>
+                )}
               </TabsList>
             </div>
           </div>
 
           <TabsContent value="saved-posts">
-            <SavedPosts username={username} />
+            <SavedPosts username={user.username} />
           </TabsContent>
           <TabsContent value="posts">
             <PostSection posts={posts} />

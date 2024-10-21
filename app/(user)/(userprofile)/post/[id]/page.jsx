@@ -234,7 +234,7 @@ export default function Page({ params }) {
   console.log(comments);
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex justify-center items-start gap-4 p-4 bg-background bg-black h-screen ">
+    <div className="flex flex-col md:flex-row justify-center items-start gap-4 p-4 bg-background bg-black h-screen ">
       <OptionsModal
         isOpen={isOpen}
         onChangeOptionsModal={onChangeOptionsModal}
@@ -250,7 +250,8 @@ export default function Page({ params }) {
           Go back
         </Button>
       </div>
-      <Card className="w-[538px] border border-gray-700 rounded">
+
+      <Card className="w-full md:w-[538px] border border-gray-700 rounded">
         <CardContent className="p-0 ">
           <Carousel className="w-full">
             <CarouselContent>
@@ -277,7 +278,7 @@ export default function Page({ params }) {
         </CardContent>
       </Card>
 
-      <Card className="w-[334px] bg-black text-white border border-gray-700">
+      <Card className="w-full md:w-[334px] bg-black text-white border border-gray-700">
         <CardHeader className="flex-row items-center justify-between py-4 border-b border-b-gray-700 mb-2">
           <div className="flex items-center gap-2 ">
             <Avatar>
@@ -293,43 +294,38 @@ export default function Page({ params }) {
               <span className="font-semibold">{post?.userId?.username}</span>
               <span className="font-sm mb-2">{post?.caption}</span>
             </div>
-
-            {/* <span className="font-semibold">{post?.caption}</span> */}
           </div>
-          <div className="flex cursor-pointer">
-            <MoreVerticalIcon onClick={() => setIsOpen(true)} />
-          </div>
-          <>
-            {session?.id === post?.userId._id && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  {/* Use a div here instead of a button */}
-                  <div className="text-black rounded">
-                    {/* <Button variant="outline" b> */}
-                    <Trash className="text-white cursor-pointer hover:scale-75" />
-                    {/* </Button> */}
-                  </div>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your post and remove its data from our servers.
-                      <div className="flex gap-4">
-                        <Button onClick={handleDeletePost} variant="outline">
-                          Delete
-                        </Button>
-                      </div>
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-            )}
-          </>
+          {session?.id !== post?.userId._id && (
+            <div className="flex cursor-pointer">
+              <MoreVerticalIcon onClick={() => setIsOpen(true)} />
+            </div>
+          )}
+          {session?.id === post?.userId._id && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <div className="text-black rounded">
+                  <Trash className="text-white cursor-pointer hover:scale-75" />
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Are you absolutely sure?</DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your post and remove its data from our servers.
+                    <div className="flex gap-4">
+                      <Button onClick={handleDeletePost} variant="outline">
+                        Delete
+                      </Button>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          )}
         </CardHeader>
         <CardContent className="pb-0 bg-black text-white">
-          <ScrollArea className="h-[263px]  mb-4">
+          <ScrollArea className="h-[80px] md:h-[263px] mb-4">
             {comments.map((comment) => (
               <div
                 key={comment._id}
@@ -354,7 +350,7 @@ export default function Page({ params }) {
                             variant="ghost"
                             size="sm"
                             className="text-xs ml-12 border border-gray-700 transform duration-300"
-                            onClick={() => setReplyingTo(comment._id)} // Set replyingTo to the current comment's ID
+                            onClick={() => setReplyingTo(comment._id)}
                           >
                             Reply
                           </Button>
@@ -363,7 +359,7 @@ export default function Page({ params }) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-xs  border border-gray-700 "
+                            className="text-xs border border-gray-700 "
                             onClick={() => handleDeleteComment(comment)}
                           >
                             <p> Delete </p>
@@ -374,7 +370,6 @@ export default function Page({ params }) {
                   </div>
                 </div>
 
-                {/* Render replies if they exist */}
                 {comment.replies &&
                   comment.replies.map((reply) => (
                     <div key={reply._id} className="flex space-x-4 ml-8 mt-2">
@@ -399,16 +394,14 @@ export default function Page({ params }) {
                     </div>
                   ))}
 
-                {/* Render reply textarea if replying to the current comment */}
                 {replyingTo === comment._id && (
                   <form
                     onSubmit={(e) => handleReplySubmit(e, comment._id)}
                     className="mt-2 relative"
                   >
-                    {/* Close Button */}
                     <button
                       type="button"
-                      onClick={() => setReplyingTo(null)} // Replace with your logic to close the form
+                      onClick={() => setReplyingTo(null)}
                       className="absolute top-0 right-0 p-1 bg-transparent hover:bg-gray-800 rounded-full"
                     >
                       <svg
@@ -449,12 +442,12 @@ export default function Page({ params }) {
                 placeholder="Add a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="w-[280px] bg-black text-white border-purple-700 border-2 focus:border-purple-900"
+                className="w-full md:w-[280px] bg-black text-white border-purple-700 border-2 focus:border-purple-900"
               />
             </form>
           )}
         </CardFooter>
-        <CardFooter className=" flex   justify-between  border-t h-[70px] border-gray-700">
+        <CardFooter className="flex justify-between border-t h-[70px] border-gray-700">
           <div className="flex items-center justify-center">
             {hasLiked ? (
               <HiHeart
@@ -466,14 +459,13 @@ export default function Page({ params }) {
                 onClick={likePost}
                 className="cursor-pointer text-4xl mt-4 hover:scale-125 transition-transform duration-200 ease-out"
               />
-            )}{" "}
+            )}
             <div className="mt-2" onClick={() => setStatus(true)}>
               {likes > 0 && (
                 <p className="text-gray-500 ">
                   {likes} {likes === 1 ? "like" : "likes"}
                 </p>
               )}
-              {/* {likes} {likes === 1 ? "like" : "likes"} */}
             </div>
           </div>
           <form action="" onSubmit={handleCommentSubmit}>

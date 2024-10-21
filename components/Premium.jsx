@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Menubar,
   MenubarContent,
@@ -27,36 +27,43 @@ export default function Settings() {
   const [page, setPage] = useState(null);
   const [daysLeft, setDaysLeft] = useState("");
 
-  const fetchStatus = useCallback(async () => {
-    if (session) {
-      const response = await instance.post("/api/user/premiumStatus", {
-        userId: session?.id,
-      });
-      console.log(session);
+  const fetchStatus = async () => {
+    try {
+      if (session && session.id) {
+        const response = await instance.post("/api/user/premiumStatus", {
+          userId: session.id,
+        });
 
-      console.log(response.data.role);
-      setPage(response.data.role);
-      if (response.data.role === "premium" ) {
-        console.log("worked");
+        console.log(response.data.role);
+        setPage(response.data.role);
 
-        // const response = await instance.post("/api/user/expiry-date", {
-        //   userId: session?.id,
-        // });
-        // setDaysLeft(response.data.daysLeft);
+        if (response.data.role === "premium") {
+          console.log("worked");
+
+          // Fetch the expiry date for premium users
+          const expiryResponse = await instance.post("/api/user/expiry-date", {
+            userId: session.id,
+          });
+          setDaysLeft(expiryResponse.data.daysLeft);
+        }
       }
+    } catch (error) {
+      console.error("Failed to fetch status:", error);
     }
-  }, [session]);
+  };
+
   useEffect(() => {
     if (status === "authenticated") {
       fetchStatus();
     }
-  }, [fetchStatus, status]);
+  }, [status, session]); // Only re-run when 'status' or 'session' changes
 
   return (
-    <div className="bg-black text-white border h-screen my-7  rounded">
+    <div className="bg-black text-white border h-screen my-7 rounded">
       <div className="p-4">
         <Badge>Premium</Badge>
       </div>
+
       {page === "payment" && (
         <div>
           <PaymentForm />
@@ -69,7 +76,7 @@ export default function Settings() {
             Unlock Premium: A better way to use{" "}
             <span className="bg-purple-700 text-white rounded">Ginger!</span>
           </h1>
-          <div className="">
+          <div>
             <PricingCard setPage={setPage} />
           </div>
         </div>
@@ -77,12 +84,14 @@ export default function Settings() {
 
       {page === "premium" && (
         <div>
-          {" "}
-          <Subscribed  />
+          <Subscribed daysLeft={daysLeft} />
         </div>
       )}
+
       {page === "admin" && (
-        <div> {/* <Subscribed daysLeft={daysLeft} /> */}</div>
+        <div>
+          {/* Add admin-specific functionality here */}
+        </div>
       )}
     </div>
   );

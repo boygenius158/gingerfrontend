@@ -278,7 +278,7 @@ export default function PostUpload({ onNewPost }) {
                   onClick={() => setIsOpen((prev) => !prev)}
                   className="bg-purple-700 hover:bg-purplhwe-600 text-white"
                 >
-                  Create New Post
+                  Create New Posts
                 </Button>
               </div>
             </div>

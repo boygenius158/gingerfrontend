@@ -50,7 +50,7 @@ export default function Swipe() {
         console.error("Error fetching profiles:", error);
       }
     }
-  }, [session,swipeProfiles]);
+  }, [session]);
 
   // Handle "match" event
   const handleMatch = useCallback(

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import instance from "@/axiosInstance";
 
 function CheckoutForm() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
@@ -18,23 +18,21 @@ function CheckoutForm() {
     setProcessing(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL; // Access API URL from environment variable
+      const apiUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
+      // Create a payment intent
       const {
         data: { clientSecret },
       } = await axios.post(`${apiUrl}/api/create-payment-intent`, {
-        amount: 1000, // amount in cents
+        amount: 1000,
         userId: session?.id,
       });
 
-      console.log("Client Secret:", clientSecret);
-
       const cardElement = elements.getElement(CardElement);
 
+      // Confirm the payment
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-        },
+        payment_method: { card: cardElement },
       });
 
       if (paymentResult.error) {
@@ -44,12 +42,39 @@ function CheckoutForm() {
         setError(null);
         setProcessing(false);
         setSucceeded(true);
+
         const response = await instance.post("/api/user/premium-payment", {
           userId: session?.id,
         });
+        console.log("Response from updating user role:", response);
+
+        if (response.status === 200) {
+          // Update the session with the new role
+          await update({
+            ...session,
+            role: "premium",
+          });
+
+          // Refetch session using getSession
+          const updatedSession = await getSession();
+          console.log("Updated session:", updatedSession); // Log the updated session
+
+          // Optionally, check if the role is updated
+          if (updatedSession.role === "premium") {
+            console.log(
+              "User role successfully updated to premium.",
+              updatedSession
+            );
+          }
+          console.log(session);
+          
+        } else {
+          console.error("Failed to update user role:", response.data.message);
+        }
       }
     } catch (error) {
       setError("An unexpected error occurred.");
+      console.error("Error details:", error);
       setProcessing(false);
     }
   };

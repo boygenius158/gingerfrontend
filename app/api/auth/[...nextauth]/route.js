@@ -101,18 +101,17 @@ export const authOptions = {
 
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, session, trigger }) {
       if (user) {
         const customToken = jwt.sign(
           { id: user._id, roles: user.roles, username: user.username },
-          process.env.NEXTAUTH_SECRET,
-          { expiresIn: "1h" }
+          process.env.NEXTAUTH_SECRET
         );
 
         const refreshToken = jwt.sign(
           { id: user._id },
           process.env.NEXTAUTH_SECRET,
-          { expiresIn: "1d" }
+          { expiresIn: "14d" }
         );
 
         token.customToken = customToken;
@@ -121,6 +120,36 @@ export const authOptions = {
         token.roles = user.roles;
         token.profilePicture = user.profilePicture;
         token.username = user.username;
+      }
+      if (trigger === "update") {
+        // Validate session properties individually
+        if (session) {
+          if (session.username) {
+            token.username = session.username;
+          } else {
+            console.log("Session is missing username.");
+          }
+
+          if (session._id) {
+            token.id = session._id;
+          } else {
+            console.log("Session is missing _id.");
+          }
+
+          if (session.roles) {
+            token.roles = session.roles;
+          } else {
+            console.log("Session is missing roles.");
+          }
+
+          if (session.profilePicture) {
+            token.profilePicture = session.profilePicture;
+          } else {
+            console.log("Session is missing profilePicture.");
+          }
+        } else {
+          console.log("Session object is null or undefined.");
+        }
       }
 
       return token;

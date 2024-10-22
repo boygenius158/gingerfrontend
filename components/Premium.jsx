@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Menubar,
   MenubarContent,
@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import PricingCard from "./PricingCard";
 import PaymentForm from "./PaymentForm";
 import instance from "@/axiosInstance";
-import { useSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import Subscribed from "./Subscribed";
 
 const MenuItem = ({ onClick, children }) => (
@@ -23,67 +23,55 @@ const MenuItem = ({ onClick, children }) => (
 );
 
 export default function Settings() {
-  const { data: session, status } = useSession();
-  const [page, setPage] = useState("user");
-  const [daysLeft, setDaysLeft] = useState("");
+  const { data: session, status , update } = useSession();
+  const [page, setPage] = useState("");
 
-  // const fetchStatus = useCallback(async () => {
-  //   if (session) {
-  //     const response = await instance.post("/api/user/premiumStatus", {
-  //       userId: session?.id,
-  //     });
-  //     console.log(session);
+  useEffect(() => {
+    const fetchStatus = async () => {
+      console.log("d");
+      
+      if (session) {
+        const response = await instance.post("/api/user/premiumStatus", {
+          userId: session?.id,
+        });
+        console.log(response);
 
-  //     console.log(response.data.role);
-  //     setPage(response.data.role);
-  //     if (response.data.role === "premium" ) {
-  //       console.log("worked");
+        if (response.data.role && response.data.role !== session.user.role) {
+          await update({
+            ...session,
+            user: { ...session.user, roles: response.data.role },
+          });
+        }
 
-  //       // const response = await instance.post("/api/user/expiry-date", {
-  //       //   userId: session?.id,
-  //       // });
-  //       // setDaysLeft(response.data.daysLeft);
-  //     }
-  //   }
-  // }, [session]);
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     fetchStatus();
-  //   }
-  // }, [fetchStatus, status]);
+        setPage(response.data.role);
+      }
+    };
 
+    if (status === "authenticated" && !page) {
+      // Prevent fetch if page is already set
+      fetchStatus(); 
+    }
+  }, [session, status, page]);
+
+  console.log(session);
+  
   return (
-    <div className="bg-black text-white border h-screen my-7  rounded">
+    <div className="bg-black text-white border h-screen my-7 rounded">
       <div className="p-4">
         <Badge>Premium</Badge>
       </div>
-      {page === "payment" && (
-        <div>
-          <PaymentForm />
-        </div>
-      )}
-
+      {page === "payment" && <PaymentForm />}
       {page === "user" && (
         <div className="p-4 flex">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Unlock Premium: 33A better way to use{" "}
             <span className="bg-purple-700 text-white rounded">Ginger!</span>
           </h1>
-          <div className="">
-            <PricingCard setPage={setPage} />
-          </div>
+          <PricingCard setPage={setPage} />
         </div>
       )}
-
-      {page === "premium" && (
-        <div>
-          {" "}
-          <Subscribed  />
-        </div>
-      )}
-      {page === "admin" && (
-        <div> {/* <Subscribed daysLeft={daysLeft} /> */}</div>
-      )}
+      {page === "premium" && <Subscribed />}
+      {page === "admin" && <div>{/* Admin content */}</div>}
     </div>
   );
 }

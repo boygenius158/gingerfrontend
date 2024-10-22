@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,11 +19,26 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
-    const router = useRouter()
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (status === "loading") return; // Wait for loading
 
+    // Redirect based on the user role
+    if (session) {
+      if (session.role === "user") {
+        // Redirect users to their dashboard if they are a normal user
+        router.push("/u/home");
+      } else if (session.role === "admin") {
+        // Admins can access the admin pages
+        return; // Do nothing; let the page render
+      }
+    }
+  }, [session, status, router]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Here you would typically handle the login logic
@@ -46,8 +61,8 @@ export default function AdminLogin() {
         if (res.error === "AccessDenied") {
           setError("AccessDenied");
         }
-        if(res.ok){
-            router.push('/admin/dashboard')
+        if (res.ok) {
+          router.push("/admin/dashboard");
         }
       } catch (error) {
         console.error("Error signing in:", error);

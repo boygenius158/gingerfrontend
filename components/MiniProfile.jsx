@@ -42,53 +42,44 @@ export default function MiniProfile() {
   const [activePage, setActivePage] = useState(pathname);
   console.log(pathname);
 
-  // console.log(session);
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
   const handleClose = () => {
     setSearchOpen(false);
   };
-  // async function handleSignOut() {
-  //   if (socket) {
-  //     socket.emit("disconnectUser");
-  //   }
-  //   await signOut({ redirect: false });
-  // }
+
   function addStory(e) {
     const file = e.target.files[0];
     setFile(file);
     setStoryFileUrl(URL.createObjectURL(file));
   }
   console.log(session);
-  useEffect(() => {
-    let isMounted = true; // Flag to track if component is mounted
+  // useEffect(() => {
+  //   let isMounted = true; // Flag to track if component is mounted
 
-    const fetchProfileDetailsForMiniProfile = async () => {
-      if (session) {
-        try {
-          const response = await instance.post("/api/user/miniProfile", {
-            id: session.id,
-          });
+  //   const fetchProfileDetailsForMiniProfile = async () => {
+  //     if (session) {
+  //       try {
+  //         const response = await instance.post("/api/user/miniProfile", {
+  //           id: session.id,
+  //         });
+  //         console.log(response);
 
-          // Only update state if the component is still mounted
-          if (isMounted) {
-            setRole(response.data.user.roles);
-            setUser(response.data.user);
-          }
-        } catch (error) {
-          console.error("Error fetching profile details:", error);
-        }
-      }
-    };
+  //         // Only update state if the component is still mounted
+  //         if (isMounted) {
+  //           setRole(response.data.user.roles);
+  //           setUser(response.data.user);
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching profile details:", error);
+  //       }
+  //     }
+  //   };
 
-    fetchProfileDetailsForMiniProfile();
+  //   fetchProfileDetailsForMiniProfile();
 
-    return () => {
-      isMounted = false; // Cleanup function to set the flag to false on unmount
-    };
-  }, [session]);
+  //   return () => {
+  //     isMounted = false; // Cleanup function to set the flag to false on unmount
+  //   };
+  // }, [session]);
 
   useEffect(() => {
     if (socket) {
@@ -126,43 +117,6 @@ export default function MiniProfile() {
   return (
     <div className="text-white z-10 bg-black h-screen">
       <div className="scroll-m-20   tracking-tight h-screen w-180 bg-gray-25   rounded border-2 border-gray-700 mt-4">
-        {/* <div className="flex items-center justify-between p-6">
-          <div className="flex flex-col ">
-            <Image
-              src={user?.profilePicture}
-              alt="empty"
-              className="rounded-full border p-[2px] w-16 h-16 object-cover"
-              width={60}
-              height={60}
-            />
-            <div
-              onClick={() => setIsOpen2(true)}
-              className="text-sm cursor-pointer "
-            >
-              upload story
-            </div>
-          </div>
-
-          <div className="">
-            <p className=" first-letter:uppercase">{user?.name}</p>
-            <Link href={`/u/${user?.username}`}>
-              <h3 className="text-sm text-gray-400 hover:text-blue-500">
-                Visit Profile
-              </h3>
-            </Link>
-          </div>
-          {session ? (
-            <button onClick={handleSignOut} className="text-blue-500 text-sm">
-              signout
-            </button>
-          ) : (
-            <button onClick={signIn} className="text-blue-500 text-sm">
-              signin
-            </button>
-          )}
-        </div> */}
-        {/* <hr class="border-tc border-gray-300" /> */}
-
         <nav className="mt-10 ">
           <Link href="/u/home">
             <div
@@ -226,7 +180,7 @@ export default function MiniProfile() {
               Settings
             </div>
           </Link>
-          <Link href={role === "user" ? "#" : "/u/swipe"}>
+          {/* <Link href={role === "user" ? "#" : "/u/swipe"}>
             <div
               onClick={() => setActivePage("Swipe")}
               className={`flex items-center justify-start ml-4 transition-transform duration-300 p-2 cursor-pointer rounded gap-2
@@ -264,7 +218,7 @@ export default function MiniProfile() {
                 <p className="">Swipe!</p>
               )}
             </div>
-          </Link>
+          </Link> */}
 
           <Link
             href="/u/premium"
@@ -391,115 +345,8 @@ export default function MiniProfile() {
               Search
             </span>
           </div>
-          {/* <div
-            onClick={() => setIsOpen2(true)}
-            className={`flex items-center justify-start ml-4 transition-transform duration-300 p-2 cursor-pointer rounded gap-2
-    
-    hover:-translate-y-1 hover:justify-center hover:bg-purple-600 hover:text-white`}
-          >
-            {" "}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"
-              />
-            </svg>
-            Upload Story
-          </div> */}
         </nav>
       </div>
-      {isOpen2 && (
-        <Modal
-          isOpen={isOpen2}
-          onRequestClose={() => setIsOpen2(false)}
-          className="fixed inset-0 flex items-center justify-center p-4"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 z"
-          ariaHideApp={false}
-          contentLabel="Example Modal"
-        >
-          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center">
-            {/* <h4 className=" text-2xl mb-4 font-extrabold  tracking-tight lg:teFxt-2xl   ">
-              Upload Story
-            </h4> */}
-
-            {file ? (
-              <Image src={storyFileUrl} alt="story" height={120} width={120} />
-            ) : (
-              <HiPaperAirplane
-                className="text-5xl text-gray-400 cursor-pointer"
-                onClick={() => storyPickerRef.current.click()}
-              />
-            )}
-            <input
-              hidden
-              ref={storyPickerRef}
-              type="file"
-              name="file"
-              accept="image/*"
-              onChange={addStory}
-            />
-            <button
-              onClick={async () => {
-                setSpin(true);
-                if (file) {
-                  const res = await edgestore.publicFiles.upload({
-                    file,
-                    onProgressChange: (progress) => {
-                      // you can use this to show a progress bar
-                      console.log(progress);
-                    },
-                  });
-                  // you can run some server action or api here
-                  // to add the necessary data to your database
-                  console.log(res);
-                  const response = await instance.post(
-                    "/api/user/uploadStory",
-                    {
-                      url: res.url,
-                      userId: session?.id,
-                    }
-                  );
-                  if (response) {
-                    setSpin(false);
-                    setFile(null);
-                    setStoryFileUrl(null);
-                    setIsOpen2(false);
-                  }
-                }
-              }}
-              className="w-full mt-4 bg-black
-             text-white p-2 shadow-md
-             rounded-lg hover:brightness-105
-              disabled:bg-gray-200 disabled:cursor-not-allowed 
-              disabled:hover:brightness-100"
-            >
-              {!spin && <p>Upload Stories</p>}
-              {spin && (
-                <div className="flex items-center justify-center">
-                  <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
-                </div>
-              )}
-            </button>
-            <AiOutlineClose
-              className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
-              onClick={() => setIsOpen2(false)}
-            />
-          </div>
-        </Modal>
-      )}
 
       {searchOpen && (
         <Modal

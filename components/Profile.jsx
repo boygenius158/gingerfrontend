@@ -2,7 +2,6 @@ import useProfileStore from "@/app/store/user/profileStore";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft } from "lucide-react";
 
 import Image from "next/image";
 import instance from "@/axiosInstance";
@@ -38,9 +37,7 @@ export default function Profile({ username }) {
   );
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(false);
-  const goBack = () => {
-    window.history.back(); // This will navigate back to the previous page
-  };
+
   const [profileData, setProfileData] = useState({
     name: "",
     bio: "",
@@ -170,51 +167,44 @@ export default function Profile({ username }) {
           />
         </div>
 
-        <div className="flex ">
-          <div>
-            <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
-              <span className="font-bold text-lg">@{user.username}</span>
-              <span>
-                {!isSameUser && (
-                  <button
-                    className="border border-gray-700 b rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200 hover:text-purple-800"
-                    onClick={handleFollow}
-                  >
-                    {isFollowing ? "Following" : "Follow"}
-                  </button>
-                )}
-              </span>
+        <div>
+          <div className="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:justify-start lg:space-x-6">
+            <span className="font-bold text-lg">@{user.username}</span>
+            <span>
+              {!isSameUser && (
+                <button
+                  className="border border-gray-700 b rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200 hover:text-purple-800"
+                  onClick={handleFollow}
+                >
+                  {isFollowing ? "Following" : "Follow"}
+                </button>
+              )}
+            </span>
 
-              <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
-            </div>
-            <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
-              <span className="text-sm font-semibold">
-                {posts.length} posts
-              </span>
-              <span
-                onClick={() => setStatus(true)}
-                className="text-sm font-semibold hover:underline cursor-pointer "
-              >
-                {followersCount} {/* {user.followers.length} */}
-                followers
-              </span>
-              <span
-                onClick={() => setStatus(true)}
-                className="text-sm font-semibold hover:underline cursor-pointer"
-              >
-                {user.following.length} following
-              </span>
-            </div>
-            <div className="pt-6 grid">
-              <span className="text-lg font-semibold ">{user.name}</span>
-              <span>
-                <br />
-                {user.bio}
-              </span>
-            </div>
+            <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
           </div>
-          <div className="flex justify-end ml-10">
-           
+          <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
+            <span className="text-sm font-semibold">{posts.length} posts</span>
+            <span
+              onClick={() => setStatus(true)}
+              className="text-sm font-semibold hover:underline cursor-pointer "
+            >
+              {followersCount} {/* {user.followers.length} */}
+              followers
+            </span>
+            <span
+              onClick={() => setStatus(true)}
+              className="text-sm font-semibold hover:underline cursor-pointer"
+            >
+              {user.following.length} following
+            </span>
+          </div>
+          <div className="pt-6 grid">
+            <span className="text-lg font-semibold ">{user.name}</span>
+            <span>
+              <br />
+              {user.bio}
+            </span>
           </div>
         </div>
       </div>
@@ -267,9 +257,7 @@ export default function Profile({ username }) {
             className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
           >
             <h2 className="text-xl font-semibold mb-2">Add New Profile</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              click on the camera icon to upload images
-            </p>
+            <p className="text-sm text-muted-foreground mb-4">click on the camera icon to upload images</p>
             {selectedFile ? (
               <Image
                 onClick={() => setSelectedFile(null)}

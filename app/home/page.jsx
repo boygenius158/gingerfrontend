@@ -1,37 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
 
 export default function Page() {
-  const { data: session, update } = useSession(); // Destructure update from useSession
-  const [newName, setNewName] = useState("");
-
-  const handleNameChange = async () => {
-    if (!session) return;
-
-    // Call the update method to update session data
-    await update({ username: newName }); // Pass the updated username
-
-    setNewName(""); // Clear input field
-  };
-
-  if (!session) {
-    return <p>Loading...</p>; 
-  }
-console.log(session);  
-
   return (
     <div>
-      <p>Signed in as {session.username}</p>
-      <input
-        type="text"
-        value={newName}
-        onChange={(e) => setNewName(e.target.value)}
-        placeholder="Enter new name"
-      />
-      <button onClick={handleNameChange}>Change Name</button>
-      {/* ... other content based on session data ... */}
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <NavigationMenuLink className="navigation-link">Link 1</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 2</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 3</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 4</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 5</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 6</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 7</NavigationMenuLink>
+              <NavigationMenuLink className="navigation-link">Link 8</NavigationMenuLink>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
     </div>
   );
 }

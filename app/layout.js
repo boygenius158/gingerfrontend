@@ -28,8 +28,8 @@ export default function RootLayout({ children }) {
         <NextAuthProvider>
           <SocketProvider>
            
-            <div className="bg-blue-600">
-              <Navbar className="bg-blue-600"></Navbar>
+            <div className="bg-black h-screen">
+              <Navbar className="bg-black h-screen"></Navbar>
               <EdgeStoreProvider>{children}</EdgeStoreProvider>
             </div>
            

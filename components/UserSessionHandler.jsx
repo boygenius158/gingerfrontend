@@ -19,7 +19,7 @@ export default function UserSessionHandler({ children }) {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-6 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Authentication Required</h1>
         <p className="text-lg">
-          You need to be authenticated to access this page.
+          You need to be authenticated to access this page8.
         </p>
       </div>
     );

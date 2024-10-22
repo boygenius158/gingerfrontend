@@ -28,15 +28,21 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Menu, Terminal } from "lucide-react";
+import { Menu, Search, Terminal } from "lucide-react";
 // import { Button } from "./ui/button";
-import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { Lobster } from "next/font/google";
 import useProfileStore from "@/app/store/user/profileStore";
 import SearchUser from "./SearchUser";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const lobsterFont = Lobster({
   subsets: ["latin"],
@@ -75,97 +81,6 @@ export default function Navbar() {
   };
   console.log(feed[0]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     const callNotificationHandler = (data) => {
-  //       console.log(data);
-  //       setCaller(data);
-  //       setNotificationHandled(false); // Reset notification status when a new call comes in
-  //     };
-
-  //     const joinRoomHandler = (data) => {
-  //       console.log(data);
-  //       handleRoomShift(data);
-  //     };
-
-  //     // Register socket listeners
-  //     socket.on("call_notification_sent", callNotificationHandler);
-  //     socket.on("join_room", joinRoomHandler);
-
-  //     return () => {
-  //       // Unregister socket listeners during cleanup
-  //       socket.off("call_notification_sent", callNotificationHandler);
-  //       socket.off("join_room", joinRoomHandler);
-  //     };
-  //   }
-  // }, [socket, handleRoomShift]);
-
-  // const callAccept = useCallback(
-  //   (caller) => {
-  //     console.log("call accepted");
-
-  //     socket.emit("rec_accepted_call", {
-  //       rec: session?.user?.email,
-  //       caller: caller.email,
-  //     });
-
-  //     // Reset caller state and mark the notification as handled
-  //     setCaller(null);
-  //     setNotificationHandled(true);
-  //   },
-  //   [socket, session]
-  // );
-
-  // const callReject = () => {
-  //   console.log("call rejected");
-
-  //   // Reset caller state and mark the notification as handled
-  //   setCaller(null);
-  //   setNotificationHandled(true);
-  // };
-
-  // useEffect(() => {
-  //   if (caller && !notificationHandled) {
-  //     toast(
-  //       <Alert>
-  //         <div>
-  //           <div className="flex items-center justify-center">
-  //             <AlertTitle>
-  //               <span className="tracking-tight text-4xl">
-  //                 {caller.username}
-  //               </span>
-  //             </AlertTitle>
-  //           </div>
-  //           <div className="flex items-center justify-center">
-  //             <Image
-  //               src={caller?.profilePicture}
-  //               alt="Profile"
-  //               width={200}
-  //               height={200}
-  //               className="rounded-full"
-  //             />
-  //           </div>
-  //           <div className="flex items-center justify-center mt-2 space-x-4">
-  //             <Button>
-  //               <div onClick={() => callAccept(caller)}>Accept</div>
-  //             </Button>
-  //             <Button>
-  //               <div onClick={() => callReject()}>Reject</div>
-  //             </Button>
-  //           </div>
-  //         </div>
-  //       </Alert>,
-  //       {
-  //         position: "top-center",
-  //         autoClose: false,
-  //         hideProgressBar: false,
-  //       }
-  //     );
-  //   }
-  // }, [caller, callAccept, notificationHandled]);
-
-  // console.log(caller);
-
   const filePickerRef = useRef(null);
 
   function handleCaptionChange(e) {
@@ -197,7 +112,7 @@ export default function Navbar() {
             signal, // Pass the signal to the fetch request
           });
           console.log(response);
-          
+
           if (!signal.aborted) {
             // Check if the request was not aborted
             setUser(response.data.user); // Update the state only if the component is still mounted
@@ -398,12 +313,12 @@ export default function Navbar() {
                     />
                   )}
                 </div>
-                <div className="flex">
+                {/* <div className="flex">
                   <IoIosAddCircle
                     className="text-white text-2xl cursor-pointer transform hover:scale-150 transition duration-300 hover:text-purple-600"
                     onClick={() => setIsOpen(true)}
                   />
-                </div>
+                </div> */}
               </div>
             ) : (
               // <button
@@ -436,9 +351,76 @@ export default function Navbar() {
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle asChild>
+                    <Link
+                      href="/u/home"
+                      onClick={handleLinkClick}
+                      className="flex items-center gap-2 text-lg font-semibold"
+                    >
+                      <h1 className="scroll-m-20 text-primary text-4xl font-extrabold tracking-tight lg:text-5xl">
+                        Ginger
+                      </h1>
+                      <span className="sr-only">Ginger</span>
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-4 mt-8">
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/home" onClick={handleLinkClick}>
+                      Feed
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/settings" onClick={handleLinkClick}>
+                      Settings
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/swipe" onClick={handleLinkClick}>
+                      Swipe
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/premium" onClick={handleLinkClick}>
+                      Premium
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/notifications" onClick={handleLinkClick}>
+                      Notifications
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Link href="/u/messages" onClick={handleLinkClick}>
+                      Messages
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start"
+                    onClick={() => {
+                      setSearchOpen(true);
+                      setIsOpen(false);
+                    }}
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Search
+                  </Button>
+                </nav>
+              </SheetContent>
+            </Sheet>
 
             {/* Sidebar */}
-            {isOpen && (
+            {/* {isOpen && (
               <div className="fixed inset-0 z-50 bg-black text-gray-500 w-44 h-[480px] shadow-lg transition-transform transform translate-x-0 md:translate-x-0">
                 <nav className="flex flex-col gap-6 text-lg font-medium p-4">
                   <Link
@@ -504,128 +486,11 @@ export default function Navbar() {
                   </div>
                 </nav>
               </div>
-            )}
+            )} */}
           </>
         </div>
       </div>
-      {isOpen && (
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={() => setIsOpen(false)}
-          className="fixed inset-0 flex items-center justify-center p-4"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-          ariaHideApp={false}
-        >
-          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center ">
-            <h2 className="text-xl text-gray-500 font-semibold mb-4">
-              Create new post
-            </h2>
-            <div>
-              <AiOutlineClose
-                className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
-                onClick={closeUploadModal}
-              />
-            </div>
-            <div className="border-b w-full"></div>
-            <div className="p-2 ">
-              <Tabs defaultValue="images" className="w-[400px]">
-                <TabsList>
-                  <TabsTrigger value="images">Images</TabsTrigger>
-                  <TabsTrigger value="caption">Caption</TabsTrigger>
-                </TabsList>
-
-                <div className="flex flex-col">
-                  <div className="flex items-center justify-center">
-                    <TabsContent value="images">
-                      <div className="p-2 text-gray-500">
-                        <p>Tap on the images to remove selection</p>
-                      </div>
-                      <div className="flex items-center justify-center">
-                        {imageFileUrls.length > 0 ? (
-                          <Carousel>
-                            {/* Wrap the actual items */}
-                            <CarouselContent>
-                              {imageFileUrls.map((url, index) => (
-                                <CarouselItem
-                                  key={index}
-                                  className="shrink-b0 w-full h-full flex items-center justify-center relative"
-                                >
-                                  <div className="relative group flex items-center justify-center border cursor-pointer">
-                                    <Image
-                                      src={url}
-                                      alt={`selected file ${index}`}
-                                      width={150}
-                                      height={150}
-                                      className="cursor-pointer hover:opacity-70 w-[150px] h-[150px] object-fit "
-                                      onClick={() => handleImageClick(index)}
-                                    />
-                                    {/* Red overlay */}
-                                    <div
-                                      onClick={() => handleImageClick(index)}
-                                      className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center"
-                                    >
-                                      <span className="text-white text-sm">
-                                        Remove
-                                      </span>
-                                    </div>
-                                  </div>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-
-                            {/* Navigation buttons */}
-                            <CarouselPrevious className="text-blue-400 hover:text-blue-500" />
-                            <CarouselNext className="text-blue-400 hover:text-blue-500" />
-                          </Carousel>
-                        ) : (
-                          <div onClick={() => filePickerRef.current.click()}>
-                            <div className="relative inline-block">
-                              <HiPhoto className="text-8xl text-blue-400 hover:text-blue-500 cursor-pointer" />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </TabsContent>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center">
-                  <TabsContent value="caption">
-                    <input
-                      type="text"
-                      maxLength="150"
-                      onChange={handleCaptionChange}
-                      placeholder="Please enter your caption..."
-                      className="m-4 border p-2 rounded text-center  focus:ring-0 outline-none"
-                    />
-                  </TabsContent>
-                </div>
-              </Tabs>
-            </div>
-
-            <input
-              hidden
-              ref={filePickerRef}
-              type="file"
-              name="file"
-              accept="image/*"
-              multiple
-              onChange={addImageToPost}
-            />
-
-            <Button
-              // onClick={handleSubmit}
-              onClick={handleUpload}
-              disabled={selectedFiles.length === 0}
-              className="w-full  text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
-            >
-              {!spin && <p>Upload</p>}
-              {spin && (
-                <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
-              )}
-            </Button>
-          </div>
-        </Modal>
-      )}
+      
     </div>
   );
 }

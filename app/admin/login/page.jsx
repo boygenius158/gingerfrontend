@@ -18,7 +18,7 @@ import instance from "@/axiosInstance";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function AdminLogin() {
+export default function Page() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -69,6 +69,10 @@ export default function AdminLogin() {
       }
     }
   };
+
+  if(session?.role === "admin"){
+    router.push('/admin/dashboard')
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">

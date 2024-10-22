@@ -42,7 +42,7 @@ export default function Page() {
   // Fetch list when session or fetchList changes
   useEffect(() => {
     fetchList();
-  }, [session, fetchList]);
+  }, [fetchList]);
 
   // Handle user selection
   function handleUser(user) {

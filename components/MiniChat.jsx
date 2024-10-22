@@ -15,15 +15,7 @@ export default function MiniChat({ userSelected, list }) {
   const [caller, setCaller] = useState();
   const socket = useSocket();
   console.log(list);
-  // const startVideoCall = useComponentsStore((state) => state.startVideoCall);
-  let stateofvediocall = useComponentsStore((state) => state.isVedioCallActive);
-  console.log(stateofvediocall);
-  // function handleVedioCall(params) {
-  //   startVideoCall();
-  //   userSelected(params);
-  //   console.log("call clicked", params);
-  //   socket.emit("call", params.email, session.user.email);
-  // }
+ 
 
   function changeStatus() {
     setIsOpen((prevIsOpen) => !prevIsOpen);

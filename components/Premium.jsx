@@ -23,13 +23,13 @@ const MenuItem = ({ onClick, children }) => (
 );
 
 export default function Settings() {
-  const { data: session, status , update } = useSession();
+  const { data: session, status, update } = useSession();
   const [page, setPage] = useState("");
 
   useEffect(() => {
     const fetchStatus = async () => {
       console.log("d");
-      
+
       if (session) {
         const response = await instance.post("/api/user/premiumStatus", {
           userId: session?.id,
@@ -37,10 +37,8 @@ export default function Settings() {
         console.log(response);
 
         if (response.data.role && response.data.role !== session.user.role) {
-          await update({
-            ...session,
-            user: { ...session.user, roles: response.data.role },
-          });
+          console.log("j");
+          await update({ role: response.data.role });
         }
 
         setPage(response.data.role);
@@ -49,12 +47,12 @@ export default function Settings() {
 
     if (status === "authenticated" && !page) {
       // Prevent fetch if page is already set
-      fetchStatus(); 
+      fetchStatus();
     }
-  }, [session, status, page]);
+  }, [session, status, page,update]);
 
   console.log(session);
-  
+
   return (
     <div className="bg-black text-white border h-screen my-7 rounded">
       <div className="p-4">

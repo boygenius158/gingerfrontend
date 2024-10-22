@@ -12,39 +12,30 @@ import React, { useCallback, useEffect, useState } from "react";
 import ReactModal from "react-modal";
 
 export default function Page() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [list, setList] = useState([]);
   const [user, setUser] = useState("");
   const [callFrom, setCallFrom] = useState(false);
   const [incomingCall, setIncomingCall] = useState(false);
-// hi
-  
-  
-  }, [session?.id]);
+  // hi
 
-
-
-  // Fetch list when session or fetchList changes
   useEffect(() => {
-    const fetchList = useCallback(async () => {
-      if (!session?.id) {
-        console.log("Session ID is not available");
-        return;
-      }
-  
+    const fetchList = async () => {
+      if (!session?.id) return;
+
       try {
-        const response = await instance.post("/api/user/fetchChatList", {
+        const { data } = await instance.post("/api/user/fetchChatList", {
           userId: session.id,
         });
-  
-        if (response) {
-          console.log("response received", response.data.uniqueUsers);
-          setList(response.data.uniqueUsers);
-        }
+        setList(data.uniqueUsers);
       } catch (error) {
         console.error("Error fetching chat list:", error);
       }
-  }, []);
+    };
+
+    fetchList();
+    // Empty dependency array ensures this runs once on component mount
+  }, [session?.id]);
 
   // Handle user selection
   function handleUser(user) {

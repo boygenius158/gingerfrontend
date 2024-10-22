@@ -1,5 +1,6 @@
 import React from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
+import toast from "react-hot-toast";
 
 export default function Subscribed() {
   return (

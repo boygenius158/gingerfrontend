@@ -3,6 +3,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import instance from "@/axiosInstance";
+import Subscribed from "./Subscribed";
 
 function CheckoutForm() {
   const { data: session, status, update } = useSession();
@@ -67,7 +68,6 @@ function CheckoutForm() {
             );
           }
           console.log(session);
-          
         } else {
           console.error("Failed to update user role:", response.data.message);
         }
@@ -78,6 +78,10 @@ function CheckoutForm() {
       setProcessing(false);
     }
   };
+
+  if (session.role === "premium") {
+    return <Subscribed />;
+  }
 
   return (
     <form

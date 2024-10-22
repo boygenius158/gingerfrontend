@@ -61,6 +61,8 @@ export const authOptions = {
             user.roles = data.roles;
             user.profilePicture = res.data.profilePicture;
             user.username = data.username;
+            user.name = data.name || " "
+
 
             console.log("Updated user object for Google sign-in:", user);
             return user;
@@ -87,6 +89,7 @@ export const authOptions = {
             user.roles = data.roles;
             user.profilePicture = data.profilePicture;
             user.username = data.username;
+            user.name = data.name || " "
 
             console.log("Updated user object for custom login:", user);
             return user;
@@ -136,8 +139,13 @@ export const authOptions = {
             console.log("Session is missing _id.");
           }
 
-          if (session.roles) {
-            token.roles = session.roles;
+          if (session.role) {
+            token.roles = session.role;
+          } else {
+            console.log("Session is missing roles.");
+          }
+          if (session.name) {
+            token.name = session.name;
           } else {
             console.log("Session is missing roles.");
           }
@@ -157,6 +165,7 @@ export const authOptions = {
     async session({ session, token }) {
       session.id = token.id;
       session.role = token.roles;
+      session.name = token.name;
       session.token = token.customToken;
       session.username = token.username;
       session.profilePicture = token.profilePicture;

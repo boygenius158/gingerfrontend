@@ -31,25 +31,26 @@ export default function Swipe() {
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
 
   // Fetch profiles from the server
-  const fetchProfiles = useCallback(async () => {
-    if (session?.id) {
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      if (!session?.id) return;
+
       try {
         const response = await instance.post("/api/user/swipe-profiles", {
           userId: session.id,
         });
-        console.log(response);
 
         if (response.data) {
           setSwipeProfiles(response.data.profiles);
           setCurrentProfileIndex(0); // Start from the first profile
           setHasReachedEnd(false);
         }
-
-        console.log(swipeProfiles);
       } catch (error) {
         console.error("Error fetching profiles:", error);
       }
-    }
+    };
+
+    fetchProfiles();
   }, [session]);
 
   // Handle "match" event
@@ -80,7 +81,7 @@ export default function Swipe() {
       profile: swipeProfiles[currentProfileIndex],
       userId: session?.id,
     });
-    toast("You sent a like to the profile.")
+    toast("You sent a like to the profile.");
 
     if (currentProfileIndex < swipeProfiles.length - 1) {
       setTimeout(() => {
@@ -107,22 +108,22 @@ export default function Swipe() {
     }
   };
 
-  // Fetch profiles and set up socket event listeners
-  useEffect(() => {
-    if (session) {
-      fetchProfiles();
-    }
+  // // Fetch profiles and set up socket event listeners
+  // useEffect(() => {
+  //   if (session) {
+  //     fetchProfiles();
+  //   }
 
-    if (socket) {
-      socket.emit("register", session?.user?.email);
-      socket.on("match", handleMatch);
-    }
+  //   if (socket) {
+  //     socket.emit("register", session?.user?.email);
+  //     socket.on("match", handleMatch);
+  //   }
 
-    // Cleanup the socket event listener on component unmount or when socket changes
-    return () => {
-      socket?.off("match", handleMatch);
-    };
-  }, [session, socket, fetchProfiles, handleMatch]);
+  //   // Cleanup the socket event listener on component unmount or when socket changes
+  //   return () => {
+  //     socket?.off("match", handleMatch);
+  //   };
+  // }, [session, socket, fetchProfiles, handleMatch]);
 
   const currentProfile = swipeProfiles[currentProfileIndex] || {};
 
@@ -192,7 +193,9 @@ export default function Swipe() {
           {currentProfile?.images?.length > 0 ? (
             <div className=" max-w-md mx-auto w-[300px] bg-black mt-6">
               <div className="flex items-center justify-center mb-2">
-              <p className="text-white text-sm font-semibold">Swipe across profiles.</p>
+                <p className="text-white text-sm font-semibold">
+                  Swipe across profiles.
+                </p>
               </div>
               <Card
                 className={`overflow-hidden bg-black text-white border-gray-800 ${
@@ -255,7 +258,6 @@ export default function Swipe() {
                   disabled={currentIndex === 0}
                   // className="rounded-full"
                   className="hover:scale-110 transform duration-300 rounded-full"
-
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -277,7 +279,6 @@ export default function Swipe() {
                     currentIndex === (currentProfile.images || []).length - 1
                   }
                   className="hover:scale-110 transform duration-300 rounded-full"
-
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -287,7 +288,6 @@ export default function Swipe() {
                   variant="outline"
                   size="icon"
                   className="hover:scale-110 transform duration-300 rounded"
-
                   // className="w-10 h-10 rounded-full border-2 border-purple-700 bg-white hover:bg-green-100 transition-colors duration-200"
                   // onClick={handleLove}
                   aria-label="Like"

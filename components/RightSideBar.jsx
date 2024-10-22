@@ -44,7 +44,7 @@ export default function RightSideBar() {
   //   };
   // }, [session]);
   return (
-    <div className="max-w-sm mx-auto text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4 h-screen">
+    <div className="max-w-sm mx-auto text-white border border-gray-700 rounded-lg overflow-hidden shadow-lg mt-4 mr-4 ">
       {/* Banner */}
       <div className="relative h-32 bg-gray-200">
         <Image
@@ -80,7 +80,7 @@ export default function RightSideBar() {
           ) : ( */}
             <>
               <h2 className="text-xl font-semibold first-letter:uppercase">
-                {session?.username || "Unknown"}
+                {session?.user?.name || ""}
               </h2>
               <Link href={`u/${session?.username}`}>
                 <p className="text-gray-600">

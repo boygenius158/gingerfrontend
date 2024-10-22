@@ -16,7 +16,7 @@ import { toast } from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Username() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState(""); // State for error message
@@ -51,24 +51,27 @@ export default function Username() {
   // Handle form input changes
   const handleUsernameChange = (e) => {
     const value = e.target.value.trim(); // Trim whitespace from the username
-  
-    // Check for spaces
-    if (/\s/.test(value) && value.length > 0) {
-      toast.error("Username should not contain spaces.");
+    const alphanumericRegex = /^[a-zA-Z0-9]*$/; // Regular expression to allow only alphanumeric characters
+
+    // Check for spaces or symbols
+    if (!alphanumericRegex.test(value)) {
+      toast.error("Username should only contain letters and numbers.");
       setDisabled(true);
-    } else if (value.length > 10) { // Check for length greater than 10
+    } else if (value.length > 10) {
+      // Check for length greater than 10
       toast.error("Username cannot be more than 10 letters.");
       setDisabled(true);
-    } else if (value.length === 0) { // Check if username is just spaces
-      toast.error("Username cannot be empty or just spaces.");
+    } else if (value.length === 0) {
+      // Check if username is just spaces
+      toast.error("Username cannot be empty.");
       setDisabled(true);
     } else {
       setDisabled(false);
     }
-  
+
     setUsername(value);
   };
-  
+
   const handleNameChange = (e) => setName(e.target.value);
   const handleBioChange = (e) => setBio(e.target.value);
 
@@ -87,6 +90,8 @@ export default function Username() {
 
       if (response.data.success) {
         toast.success("Profile updated successfully!");
+        await update({ username: username });
+        await update({ name: name });
       } else {
         setError(response.data.error || "Username is not available.");
       }
@@ -135,7 +140,7 @@ export default function Username() {
               />
             </div>
             <CardFooter>
-              <Button 
+              <Button
                 className="bg-purple-700"
                 disabled={disabled}
                 type="submit"

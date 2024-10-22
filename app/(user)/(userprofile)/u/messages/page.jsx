@@ -19,30 +19,32 @@ export default function Page() {
   const [incomingCall, setIncomingCall] = useState(false);
 // hi
   
-  const fetchList = useCallback(async () => {
-    if (!session?.id) {
-      console.log("Session ID is not available");
-      return;
-    }
-
-    try {
-      const response = await instance.post("/api/user/fetchChatList", {
-        userId: session.id,
-      });
-
-      if (response) {
-        console.log("response received", response.data.uniqueUsers);
-        setList(response.data.uniqueUsers);
-      }
-    } catch (error) {
-      console.error("Error fetching chat list:", error);
-    }
+  
   }, [session?.id]);
+
+
 
   // Fetch list when session or fetchList changes
   useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+    const fetchList = useCallback(async () => {
+      if (!session?.id) {
+        console.log("Session ID is not available");
+        return;
+      }
+  
+      try {
+        const response = await instance.post("/api/user/fetchChatList", {
+          userId: session.id,
+        });
+  
+        if (response) {
+          console.log("response received", response.data.uniqueUsers);
+          setList(response.data.uniqueUsers);
+        }
+      } catch (error) {
+        console.error("Error fetching chat list:", error);
+      }
+  }, []);
 
   // Handle user selection
   function handleUser(user) {

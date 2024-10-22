@@ -486,7 +486,7 @@ export default function MiniProfile() {
               disabled:bg-gray-200 disabled:cursor-not-allowed 
               disabled:hover:brightness-100"
             >
-              {!spin && <p>Upload Story</p>}
+              {!spin && <p>Upload Storys</p>}
               {spin && (
                 <div className="flex items-center justify-center">
                   <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />

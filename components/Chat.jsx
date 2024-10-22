@@ -44,11 +44,7 @@ export default function Chat({ recipient }) {
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
 
-  const createRoom = () => {
-    const roomId = uuidv4();
-    console.log("New Room ID:", roomId);
-    return roomId;
-  };
+
   useEffect(() => {
     let interval;
     if (isRecording) {
@@ -223,19 +219,8 @@ export default function Chat({ recipient }) {
   console.log(session);
 
   console.log(recipient);
-  function setCallNotification() {
-    console.log("hello");
-
-    console.log("call notification");
-    socket.emit("call_button_clicked", {
-      senderEmail: session?.user?.email,
-      recipientEmail: recipient.email,
-    });
-
-    const roomId = createRoom();
-    console.log(roomId);
-    // router.push(`/u/room/${roomId}`)
-  }
+  
+  // }
   const fetchHistoricalData = useCallback(async () => {
     if (session && recipient?._id) {
       try {

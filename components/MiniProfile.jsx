@@ -50,12 +50,12 @@ export default function MiniProfile() {
   const handleClose = () => {
     setSearchOpen(false);
   };
-  async function handleSignOut() {
-    if (socket) {
-      socket.emit("disconnectUser");
-    }
-    await signOut({ redirect: false });
-  }
+  // async function handleSignOut() {
+  //   if (socket) {
+  //     socket.emit("disconnectUser");
+  //   }
+  //   await signOut({ redirect: false });
+  // }
   function addStory(e) {
     const file = e.target.files[0];
     setFile(file);
@@ -63,7 +63,7 @@ export default function MiniProfile() {
   }
   console.log(session);
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true; // Flag to track if component is mounted
 
     const fetchProfileDetailsForMiniProfile = async () => {
       if (session) {
@@ -71,9 +71,10 @@ export default function MiniProfile() {
           const response = await instance.post("/api/user/miniProfile", {
             id: session.id,
           });
-          console.log(response.data.user.roles);
-          setRole(response.data.user.roles);
+
+          // Only update state if the component is still mounted
           if (isMounted) {
+            setRole(response.data.user.roles);
             setUser(response.data.user);
           }
         } catch (error) {
@@ -85,9 +86,10 @@ export default function MiniProfile() {
     fetchProfileDetailsForMiniProfile();
 
     return () => {
-      isMounted = false;
+      isMounted = false; // Cleanup function to set the flag to false on unmount
     };
   }, [session]);
+
   useEffect(() => {
     if (socket) {
       socket.on("force-logout2", () => {

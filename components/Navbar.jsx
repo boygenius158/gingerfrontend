@@ -75,96 +75,96 @@ export default function Navbar() {
   };
   console.log(feed[0]);
 
-  useEffect(() => {
-    if (socket) {
-      const callNotificationHandler = (data) => {
-        console.log(data);
-        setCaller(data);
-        setNotificationHandled(false); // Reset notification status when a new call comes in
-      };
+  // useEffect(() => {
+  //   if (socket) {
+  //     const callNotificationHandler = (data) => {
+  //       console.log(data);
+  //       setCaller(data);
+  //       setNotificationHandled(false); // Reset notification status when a new call comes in
+  //     };
 
-      const joinRoomHandler = (data) => {
-        console.log(data);
-        handleRoomShift(data);
-      };
+  //     const joinRoomHandler = (data) => {
+  //       console.log(data);
+  //       handleRoomShift(data);
+  //     };
 
-      // Register socket listeners
-      socket.on("call_notification_sent", callNotificationHandler);
-      socket.on("join_room", joinRoomHandler);
+  //     // Register socket listeners
+  //     socket.on("call_notification_sent", callNotificationHandler);
+  //     socket.on("join_room", joinRoomHandler);
 
-      return () => {
-        // Unregister socket listeners during cleanup
-        socket.off("call_notification_sent", callNotificationHandler);
-        socket.off("join_room", joinRoomHandler);
-      };
-    }
-  }, [socket, handleRoomShift]);
+  //     return () => {
+  //       // Unregister socket listeners during cleanup
+  //       socket.off("call_notification_sent", callNotificationHandler);
+  //       socket.off("join_room", joinRoomHandler);
+  //     };
+  //   }
+  // }, [socket, handleRoomShift]);
 
-  const callAccept = useCallback(
-    (caller) => {
-      console.log("call accepted");
+  // const callAccept = useCallback(
+  //   (caller) => {
+  //     console.log("call accepted");
 
-      socket.emit("rec_accepted_call", {
-        rec: session?.user?.email,
-        caller: caller.email,
-      });
+  //     socket.emit("rec_accepted_call", {
+  //       rec: session?.user?.email,
+  //       caller: caller.email,
+  //     });
 
-      // Reset caller state and mark the notification as handled
-      setCaller(null);
-      setNotificationHandled(true);
-    },
-    [socket, session]
-  );
+  //     // Reset caller state and mark the notification as handled
+  //     setCaller(null);
+  //     setNotificationHandled(true);
+  //   },
+  //   [socket, session]
+  // );
 
-  const callReject = () => {
-    console.log("call rejected");
+  // const callReject = () => {
+  //   console.log("call rejected");
 
-    // Reset caller state and mark the notification as handled
-    setCaller(null);
-    setNotificationHandled(true);
-  };
+  //   // Reset caller state and mark the notification as handled
+  //   setCaller(null);
+  //   setNotificationHandled(true);
+  // };
 
-  useEffect(() => {
-    if (caller && !notificationHandled) {
-      toast(
-        <Alert>
-          <div>
-            <div className="flex items-center justify-center">
-              <AlertTitle>
-                <span className="tracking-tight text-4xl">
-                  {caller.username}
-                </span>
-              </AlertTitle>
-            </div>
-            <div className="flex items-center justify-center">
-              <Image
-                src={caller?.profilePicture}
-                alt="Profile"
-                width={200}
-                height={200}
-                className="rounded-full"
-              />
-            </div>
-            <div className="flex items-center justify-center mt-2 space-x-4">
-              <Button>
-                <div onClick={() => callAccept(caller)}>Accept</div>
-              </Button>
-              <Button>
-                <div onClick={() => callReject()}>Reject</div>
-              </Button>
-            </div>
-          </div>
-        </Alert>,
-        {
-          position: "top-center",
-          autoClose: false,
-          hideProgressBar: false,
-        }
-      );
-    }
-  }, [caller, callAccept, notificationHandled]);
+  // useEffect(() => {
+  //   if (caller && !notificationHandled) {
+  //     toast(
+  //       <Alert>
+  //         <div>
+  //           <div className="flex items-center justify-center">
+  //             <AlertTitle>
+  //               <span className="tracking-tight text-4xl">
+  //                 {caller.username}
+  //               </span>
+  //             </AlertTitle>
+  //           </div>
+  //           <div className="flex items-center justify-center">
+  //             <Image
+  //               src={caller?.profilePicture}
+  //               alt="Profile"
+  //               width={200}
+  //               height={200}
+  //               className="rounded-full"
+  //             />
+  //           </div>
+  //           <div className="flex items-center justify-center mt-2 space-x-4">
+  //             <Button>
+  //               <div onClick={() => callAccept(caller)}>Accept</div>
+  //             </Button>
+  //             <Button>
+  //               <div onClick={() => callReject()}>Reject</div>
+  //             </Button>
+  //           </div>
+  //         </div>
+  //       </Alert>,
+  //       {
+  //         position: "top-center",
+  //         autoClose: false,
+  //         hideProgressBar: false,
+  //       }
+  //     );
+  //   }
+  // }, [caller, callAccept, notificationHandled]);
 
-  console.log(caller);
+  // console.log(caller);
 
   const filePickerRef = useRef(null);
 
@@ -196,7 +196,8 @@ export default function Navbar() {
             id: session?.id,
             signal, // Pass the signal to the fetch request
           });
-
+          console.log(response);
+          
           if (!signal.aborted) {
             // Check if the request was not aborted
             setUser(response.data.user); // Update the state only if the component is still mounted

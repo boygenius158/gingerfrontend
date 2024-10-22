@@ -20,6 +20,8 @@ export default function RightSideBar() {
           const response = await instance.post("/api/user/miniProfile", {
             id: session.id,
           });
+          console.log(response);
+          
 
           if (isMounted) {
             setUser(response.data.user);

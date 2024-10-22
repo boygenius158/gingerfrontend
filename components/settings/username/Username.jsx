@@ -49,21 +49,27 @@ export default function Username() {
   }, [session]);
 
   // Handle form input changes
-
   const handleUsernameChange = (e) => {
-    const value = e.target.value;
-    if (/\s/.test(value)) {
-      toast("Username should not contain spaces.");
+    const value = e.target.value.trim(); // Trim whitespace from the username
+  
+    // Check for spaces
+    if (/\s/.test(value) && value.length > 0) {
+      toast.error("Username should not contain spaces.");
+      setDisabled(true);
+    } else if (value.length > 10) { // Check for length greater than 10
+      toast.error("Username cannot be more than 10 letters.");
+      setDisabled(true);
+    } else if (value.length === 0) { // Check if username is just spaces
+      toast.error("Username cannot be empty or just spaces.");
       setDisabled(true);
     } else {
-      // toast("");
       setDisabled(false);
-
     }
+  
     setUsername(value);
   };
+  
   const handleNameChange = (e) => setName(e.target.value);
-  // const handleUsernameChange = (e) => setUsername(e.target.value);
   const handleBioChange = (e) => setBio(e.target.value);
 
   // Handle form submission
@@ -80,19 +86,12 @@ export default function Username() {
       console.log(response);
 
       if (response.data.success) {
-        // alert("Profile updated successfully!");
-        toast.success("profile updated successfully!");
+        toast.success("Profile updated successfully!");
       } else {
-        console.log(response);
-
-        // Set error message if response indicates an issue
         setError(response.data.error || "Username is not available.");
       }
     } catch (error) {
-      console.log(error);
-
       console.error("Error updating user data:", error);
-      // setError(error);
     }
   };
 
@@ -128,8 +127,7 @@ export default function Username() {
             </div>
 
             <div>
-              <Label htmlFor="name">Bio</Label>
-
+              <Label htmlFor="bio">Bio</Label>
               <Textarea
                 className="text-black"
                 value={bio}
@@ -138,9 +136,12 @@ export default function Username() {
             </div>
             <CardFooter>
               <Button 
-              className="bg-purple-700"
-              disabled={disabled}
-               type="submit">Save changes</Button>
+                className="bg-purple-700"
+                disabled={disabled}
+                type="submit"
+              >
+                Save changes
+              </Button>
             </CardFooter>
           </form>
         </CardContent>

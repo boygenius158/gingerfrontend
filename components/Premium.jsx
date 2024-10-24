@@ -49,7 +49,7 @@ export default function Settings() {
       // Prevent fetch if page is already set
       fetchStatus();
     }
-  }, [session, status, page,update]);
+  }, [session, status, page, update]);
 
   console.log(session);
 
@@ -60,12 +60,14 @@ export default function Settings() {
       </div>
       {page === "payment" && <PaymentForm />}
       {page === "user" && (
-        <div className="p-4 flex">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            Unlock Premium: 33A better way to use{" "}
+        <div className="p-4 sm:flex sm:flex-col ">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5">
+            Unlock Premium: A better way to use{" "}
             <span className="bg-purple-700 text-white rounded">Ginger!</span>
           </h1>
-          <PricingCard setPage={setPage} />
+          <div className="flex justify-center items-center">
+            <PricingCard className="" setPage={setPage} />
+          </div>
         </div>
       )}
       {page === "premium" && <Subscribed />}

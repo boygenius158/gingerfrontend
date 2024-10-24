@@ -100,7 +100,7 @@ export default function PostUpload({ onNewPost }) {
       // Handle error accordingly
     }
   };
-
+  
   const handleUpload = async () => {
     try {
       setSpin(true);
@@ -132,6 +132,14 @@ export default function PostUpload({ onNewPost }) {
     setImageFileUrls([]);
     setCaption("");
   }
+  function handleImageClick(index) {
+    const newurls = [...imageFileUrls];
+    newurls.splice(index, 1);
+    setImageFileUrls(newurls);
+    const newfiles = [...selectedFiles];
+    newfiles.splice(index, 1);
+    setSelectedFiles(newfiles);
+  }
   return (
     <>
       {isOpen && (
@@ -142,90 +150,94 @@ export default function PostUpload({ onNewPost }) {
           overlayClassName="fixed inset-0 bg-black bg-opacity-50"
           ariaHideApp={false}
         >
-          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center ">
+          <div className="relative bg-black border border-gray-700 rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center ">
             <h2 className="text-xl text-gray-500 font-semibold mb-4">
               Create new post
             </h2>
             <div>
               <AiOutlineClose
-                className="cursor-pointer absolute top-4 right-4 hover:text-red-600 transition duration-300"
+                className="cursor-pointer text-gray-300 absolute top-4 right-4 hover:text-purple-600 transition duration-300"
                 onClick={closeUploadModal}
               />
             </div>
             <div className="border-b w-full"></div>
             <div className="p-2 ">
-              <Tabs defaultValue="images" className="w-[400px]">
-                <TabsList>
-                  <TabsTrigger value="images">Images</TabsTrigger>
-                  <TabsTrigger value="caption">Caption</TabsTrigger>
-                </TabsList>
-
-                <div className="flex flex-col">
+              <div className="flex items-center justify-center">
+                <Tabs defaultValue="images" className="w-[400px] ">
                   <div className="flex items-center justify-center">
-                    <TabsContent value="images">
-                      <div className="p-2 text-gray-500">
-                        <p>Tap on the images to remove selection</p>
-                      </div>
-                      <div className="flex items-center justify-center">
-                        {imageFileUrls.length > 0 ? (
-                          <Carousel>
-                            {/* Wrap the actual items */}
-                            <CarouselContent>
-                              {imageFileUrls.map((url, index) => (
-                                <CarouselItem
-                                  key={index}
-                                  className="shrink-b0 w-full h-full flex items-center justify-center relative"
-                                >
-                                  <div className="relative group flex items-center justify-center border cursor-pointer">
-                                    <Image
-                                      src={url}
-                                      alt={`selected file ${index}`}
-                                      width={150}
-                                      height={150}
-                                      className="cursor-pointer hover:opacity-70 w-[150px] h-[150px] object-fit "
-                                      onClick={() => handleImageClick(index)}
-                                    />
-                                    {/* Red overlay */}
-                                    <div
-                                      onClick={() => handleImageClick(index)}
-                                      className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center"
-                                    >
-                                      <span className="text-white text-sm">
-                                        Remove
-                                      </span>
-                                    </div>
-                                  </div>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
+                  <TabsList>
+                    <TabsTrigger value="images">Images</TabsTrigger>
+                    <TabsTrigger value="caption">Caption</TabsTrigger>
+                  </TabsList>
+                  </div>
 
-                            {/* Navigation buttons */}
-                            <CarouselPrevious className="text-blue-400 hover:text-blue-500" />
-                            <CarouselNext className="text-blue-400 hover:text-blue-500" />
-                          </Carousel>
-                        ) : (
-                          <div onClick={() => filePickerRef.current.click()}>
-                            <div className="relative inline-block">
-                              <HiPhoto className="text-8xl text-blue-400 hover:text-blue-500 cursor-pointer" />
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-center">
+                      <TabsContent value="images">
+                        <div className="p-2 text-gray-500">
+                          <p>Tap on the images to remove selection</p>
+                        </div>
+                        <div className="flex items-center justify-center">
+                          {imageFileUrls.length > 0 ? (
+                            <Carousel>
+                              {/* Wrap the actual items */}
+                              <CarouselContent>
+                                {imageFileUrls.map((url, index) => (
+                                  <CarouselItem
+                                    key={index}
+                                    className="shrink-b0 w-full h-full flex items-center justify-center relative"
+                                  >
+                                    <div className="relative group flex items-center justify-center border cursor-pointer">
+                                      <Image
+                                        src={url}
+                                        alt={`selected file ${index}`}
+                                        width={150}
+                                        height={150}
+                                        className="cursor-pointer hover:opacity-70 w-[150px] h-[150px] object-fit "
+                                        onClick={() => handleImageClick(index)}
+                                      />
+                                      {/* Red overlay */}
+                                      <div
+                                        onClick={() => handleImageClick(index)}
+                                        className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center"
+                                      >
+                                        <span className="text-white text-sm">
+                                          Remove
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+
+                              {/* Navigation buttons */}
+                              <CarouselPrevious className="text-blue-400 hover:text-blue-500" />
+                              <CarouselNext className="text-blue-400 hover:text-blue-500" />
+                            </Carousel>
+                          ) : (
+                            <div onClick={() => filePickerRef.current.click()}>
+                              <div className="relative inline-block">
+                                <HiPhoto className="text-8xl text-blue-400 hover:text-blue-500 cursor-pointer" />
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      </TabsContent>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <TabsContent value="caption">
+                      <input
+                        type="text"
+                        maxLength="150"
+                        onChange={handleCaptionChange}
+                        placeholder="Please enter your caption..."
+                        className="m-4 border p-2 rounded text-center  focus:ring-0 outline-none"
+                      />
                     </TabsContent>
                   </div>
-                </div>
-                <div className="flex items-center justify-center">
-                  <TabsContent value="caption">
-                    <input
-                      type="text"
-                      maxLength="150"
-                      onChange={handleCaptionChange}
-                      placeholder="Please enter your caption..."
-                      className="m-4 border p-2 rounded text-center  focus:ring-0 outline-none"
-                    />
-                  </TabsContent>
-                </div>
-              </Tabs>
+                </Tabs>
+              </div>
             </div>
 
             <input
@@ -242,7 +254,7 @@ export default function PostUpload({ onNewPost }) {
               // onClick={handleSubmit}
               onClick={handleUpload}
               disabled={selectedFiles.length === 0}
-              className="w-full  text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
+              className="w-full bg-purple-700  text-white p-2 shadow-md rounded-lg hover:bg-gray-300 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100"
             >
               {!spin && <p>Upload</p>}
               {spin && (

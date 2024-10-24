@@ -56,7 +56,7 @@ export default function CommentSectionPost({ post }) {
   const handleReplySubmit = async (e, commentId) => {
     e.preventDefault();
     console.log("work");
-    
+
     if (reply.trim()) {
       // Submit the reply to the backend
       const res = await instance.post("/api/user/user-posted-reply", {
@@ -89,6 +89,26 @@ export default function CommentSectionPost({ post }) {
     }
   };
 
+  async function handleDelereReplyComment(comment, parentComment) {
+    console.log(parentComment);
+    const { data } = await instance.post("/api/user/delete-commentreply", {
+      parentCommentId: parentComment._id,
+      comment,
+    });
+    toast.success("reply deleted.")
+    console.log(data);
+    let updatedComments = comments.map((item) => {
+      if (item._id === parentComment._id) {
+        return {
+          ...item,
+          replies: item.replies.filter((reply) => reply._id !== comment._id),
+        };
+      }
+      return item;
+    });
+    setComments(updatedComments);
+  }
+
   async function handleDeleteComment(comment) {
     const commentId = comment._id;
     console.log(comment);
@@ -103,7 +123,7 @@ export default function CommentSectionPost({ post }) {
     }
   }
 
-  console.log(session);
+  console.log(comments);
 
   console.log(post);
 
@@ -125,9 +145,15 @@ export default function CommentSectionPost({ post }) {
                 variant="ghost"
                 size="sm"
                 className="text-xs ml-12"
-                onClick={() => setReplyingTo(comment._id)} // Set replyingTo to the current comment's ID
+                // Set replyingTo to the current comment's ID
               >
-                Reply
+                {replyingTo === comment._id ? (
+                  <div onClick={() => setReplyingTo(null)}>
+                    <p>close</p>
+                  </div>
+                ) : (
+                  <p onClick={() => setReplyingTo(comment._id)}>reply</p>
+                )}
               </Button>
               {session.username === comment.author && (
                 <Button
@@ -156,12 +182,26 @@ export default function CommentSectionPost({ post }) {
                     />
                   </Avatar>
                   <div className="flex-1">
-                    <p className="font-semibold">
-                      {typeof reply.author === "string"
-                        ? reply.author
-                        : reply.author[0]}
-                    </p>
-                    <p className="text-muted-foreground">{reply.content}</p>
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="font-semibold">
+                          {typeof reply.author === "string"
+                            ? reply.author
+                            : reply.author[0]}
+                        </p>
+                        <p className="text-muted-foreground">{reply.content}</p>
+                      </div>
+                      {/* {session.username === comment.author && ( */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs ml-12"
+                        onClick={() => handleDelereReplyComment(reply, comment)}
+                      >
+                        Delete
+                      </Button>
+                      {/* )} */}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -176,7 +216,7 @@ export default function CommentSectionPost({ post }) {
                   placeholder="Add a reply..."
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
-                  className="w-full text-black border-purple-700 border-2 focus:border-purple-900"
+                  className="w-full bg-black text-white border-purple-700 border-2 focus:border-purple-900"
                 />
                 <Button className="bg-purple-700 mt-2" type="submit">
                   Post Reply

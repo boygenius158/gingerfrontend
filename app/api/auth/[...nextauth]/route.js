@@ -53,7 +53,10 @@ export const authOptions = {
           const res = await instance.post("/api/user/google-auth", {
             email: user.email,
           });
-          console.log(res.data.profilePicture);
+          console.log(res.data);
+          if (res.data.isBlocked) {
+            return false;
+          }
 
           if (res.status === 200) {
             const data = res.data;
@@ -61,8 +64,7 @@ export const authOptions = {
             user.roles = data.roles;
             user.profilePicture = res.data.profilePicture;
             user.username = data.username;
-            user.name = data.name || " "
-
+            user.name = data.name || " ";
 
             console.log("Updated user object for Google sign-in:", user);
             return user;
@@ -89,7 +91,7 @@ export const authOptions = {
             user.roles = data.roles;
             user.profilePicture = data.profilePicture;
             user.username = data.username;
-            user.name = data.name || " "
+            user.name = data.name || " ";
 
             console.log("Updated user object for custom login:", user);
             return user;

@@ -23,26 +23,34 @@ import { useRouter } from "next/navigation";
 const links = [
   {
     label: "Dashboard",
-    icon: <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    icon: (
+      <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
   },
   {
     label: "User Management",
-    icon: <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    icon: (
+      <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
   },
   {
     label: "Posts Management",
-    icon: <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    icon: (
+      <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
   },
   {
     label: "Graph",
-    icon: <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+    icon: (
+      <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
   },
 ];
 
 export default function Page() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [tab, setTab] = useState("Posts Management");
+  const [tab, setTab] = useState("User Management");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -117,7 +125,10 @@ export default function Page() {
 }
 
 export const Logo = () => (
-  <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
+  <Link
+    href="#"
+    className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+  >
     <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
     <motion.span
       initial={{ opacity: 0 }}
@@ -130,7 +141,10 @@ export const Logo = () => (
 );
 
 export const LogoIcon = () => (
-  <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
+  <Link
+    href="#"
+    className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+  >
     <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
   </Link>
 );

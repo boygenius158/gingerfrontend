@@ -28,7 +28,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Menu, Search, Terminal } from "lucide-react";
+import { ArrowLeft, Menu, Search, Terminal } from "lucide-react";
 // import { Button } from "./ui/button";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -415,6 +415,28 @@ export default function Navbar() {
                     <Search className="mr-2 h-4 w-4" />
                     Search
                   </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    {session && (
+                      <Link href={`/u/${session?.username}`}>
+                        <Button
+                           variant="ghost"
+                      className="text-black "
+                        >
+                          My Profile
+                        </Button>
+                      </Link>
+                    )}
+                  </Button>
+                  <Button asChild variant="ghost" className="justify-start">
+                    <Button
+                      variant="ghost"
+                      className="text-black "
+                      onClick={() => window.history.back()}
+                    >
+                      <ArrowLeft className="text-black" />
+                      Go back
+                    </Button>
+                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -490,7 +512,6 @@ export default function Navbar() {
           </>
         </div>
       </div>
-      
     </div>
   );
 }

@@ -91,22 +91,7 @@ export default function RightSideBar() {
           {/* )} */}
         </div>
 
-        {/* <div className="flex justify-between mt-4 text-center">
-          <div>
-            <p className="font-bold">{user?.postCount || 0}</p>
-            <p className="text-white-600 text-sm">Posts</p>
-          </div>
-          <div>
-            <p className="font-bold">{user?.followers?.length || 0}</p>
-            <p className="text-white-600 text-sm">Followers</p>
-          </div>
-          <div>
-            <p className="font-bold">{user?.following?.length || 0}</p>
-            <p className="text-white-600 text-sm">Following</p>
-          </div>
-        </div> */}
-
-        {/* My Profile Button */}
+        
         {session && (
           <Link href={`/u/${session?.username}`}>
             <Button

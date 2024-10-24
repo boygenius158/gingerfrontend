@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,6 +19,14 @@ import { useEdgeStore } from "@/app/lib/edgestore";
 import { useCallback } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import toast from "react-hot-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function ProfileImages() {
   const { edgestore } = useEdgeStore();
@@ -30,17 +39,31 @@ export default function ProfileImages() {
   const [selectedFileUrls, setSelectedFileUrls] = useState([]);
   const [uploadUrls, setUploadUrls] = useState([]);
   const [spin, setSpin] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [accountExist, setAccountExist] = useState(false);
+  async function uploadImageDb(toggleStatus) {
+    if (toggleStatus) {
+      if (uploadUrls.length === 0) {
+        toast.error("No Changes Detected.");
+        return;
+      }
 
-  function handleUploadClick() {
-    if (filePickerRef.current) {
-      filePickerRef.current.click();
+      try {
+        const response = await instance.post("/api/user/dating-tab2", {
+          url: uploadUrls,
+          userId: session?.id,
+        });
+
+        if (response) {
+          setUploadUrls([]); // Clear the upload URLs after saving
+          setIsOpen(false);
+          toast.success("Changes saved.");
+        }
+      } catch (error) {
+        console.error("Error saving images:", error);
+        toast.error("Failed to save changes.");
+      }
     }
-  }
-
-  function handleOpenModal() {
-    setFiles(null);
-    setSelectedFileUrls(null);
-    setIsOpen(true);
   }
 
   const fetchProfileImages = useCallback(async () => {
@@ -51,8 +74,10 @@ export default function ProfileImages() {
         });
         if (response) {
           setSelectedFileUrls(response.data.images);
+          setAccountExist(true);
         }
       } catch (error) {
+        setAccountExist(false);
         console.error("Error fetching profile images:", error);
       }
     }
@@ -65,8 +90,6 @@ export default function ProfileImages() {
   async function toggleSave(state) {
     setToggleStatus(state);
     setIsEditing(!state);
-    // Uncomment this if you intend to make a save call:
-    // const response = await instance.post("/api/user/dating-tab2");
   }
 
   function addImage(e) {
@@ -76,32 +99,17 @@ export default function ProfileImages() {
     setSelectedFileUrls(newFileUrls);
   }
 
-  function closeModal() {
+  function handleModalClose() {
     setIsOpen(false);
     setFiles([]);
     setSelectedFileUrls([]);
   }
 
-  async function uploadImageDb(toggleStatus) {
-    if (toggleStatus) {
-
-      const response = await instance.post("/api/user/dating-tab2", {
-        url: uploadUrls,
-        userId: session?.id,
-      });
-
-      if (response) {
-        setFiles([]);
-        setSelectedFileUrls([]);
-        setIsOpen(false);
-      }
-    }
-  }
-
   async function uploadDatingImages() {
     setSpin(true);
+    if (files.length > 0 && files.length < 4) {
+      setIsUploading(true);
 
-    if (files.length > 0) {
       const edgeUploads = await Promise.all(
         files.map(async (file) => {
           const res = await edgestore.publicFiles.upload({
@@ -113,98 +121,120 @@ export default function ProfileImages() {
           return res.url;
         })
       );
-      toast('You have successfully added images.Save to keep changes.')
+      toast.success("Image Added.Save to keep changes.");
 
       setSpin(false);
+      setIsUploading(false);
 
       setIsOpen(false);
       setUploadUrls(edgeUploads);
+      setFiles([]);
+      setSelectedFileUrls((prevUrls) => [...prevUrls, ...edgeUploads]);
+    } else {
+      toast.error("Maximum 3 Images");
     }
   }
 
+  if (!accountExist) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="bg-black p-6 rounded-lg shadow-lg">
+          <h2 className="scroll-m-20 text-white border-b pb-2 text-3xl font-semibold tracking-tight mb-4">
+            Complete Profile Details First.
+          </h2>
+          <p className="text-gray-400 text-lg">
+            Please fill out your profile information to continue.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-4 flex justify-center items-center">
-      <Card className="w-full sm:max-w-md lg:w-1/2">
-        <div className="border-b p-4 flex justify-between items-center">
+    <Card className="w-full max-w-md mx-auto bg-black text-white">
+      <CardHeader>
+        <div className="flex justify-between items-center">
           <CardTitle>Profile Images</CardTitle>
-          <div className="flex flex-col">
+          <div className="flex items-center space-x-2">
             <Switch
               onClick={() => uploadImageDb(!toggleStatus)}
               checked={toggleStatus}
-              onCheckedChange={() => toggleSave(!toggleStatus)}
+              onCheckedChange={toggleSave}
             />
-            {/* <p className="text-sm">save </p> */}
+            <span className="text-sm text-muted-foreground">
+              {toggleStatus ? "Saved" : "Editing"}
+            </span>
           </div>
         </div>
-        <CardHeader className="text-center">
-          <div className="flex gap-4">
-            <CardDescription>Upload your profile images.</CardDescription>
-            <CardDescription>
-              <button
-                disabled={!isEditing}
-                onClick={handleOpenModal}
-                className="flex items-center justify-center aspect-square rounded-md border border-dashed "
-              >
-                <Upload className="h-4 w-4 text-muted-foreground  hover:scale-125 cursor-pointer" />
-                <span className="sr-only">Add Image</span>
-              </button>
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            {selectedFileUrls?.length ? (
-              <Image
-                alt="Profile image"
-                className="aspect-square rounded-md object-cover"
-                height="300"
-                src={selectedFileUrls[0]}
-                width="300"
-                loading="lazy"
-              />
-            ) : (
-              <Skeleton className="h-[250px] w-[250px] rounded-md" />
-            )}
-            <div className="grid grid-cols-3 gap-2">
-              {selectedFileUrls && selectedFileUrls.length > 1 ? (
-                selectedFileUrls
+        <CardDescription>Select a maximum of 3 images.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4">
+          {selectedFileUrls?.length ? (
+            <Image
+              alt="Profile image"
+              className="aspect-square rounded-lg object-cover"
+              height={300}
+              src={selectedFileUrls[0]}
+              width={300}
+            />
+          ) : (
+            <Skeleton className="h-[300px] w-full rounded-lg" />
+          )}
+          <div className="grid grid-cols-3 gap-2">
+            {selectedFileUrls && selectedFileUrls.length > 1
+              ? selectedFileUrls
                   .slice(1, 4)
                   .map((url, index) => (
                     <Image
                       key={index}
                       alt={`Profile thumbnail ${index + 1}`}
                       className="aspect-square rounded-md object-cover"
-                      height="84"
+                      height={84}
                       src={url}
-                      width="84"
-                      loading="lazy"
+                      width={84}
                     />
                   ))
-              ) : (
-                <>
-                  <Skeleton className="h-[84px] w-[84px] rounded-md" />
-                  <Skeleton className="h-[84px] w-[84px] rounded-md" />
-                </>
-              )}
-            </div>
+              : Array(3)
+                  .fill(null)
+                  .map((_, index) => (
+                    <Skeleton
+                      key={index}
+                      className="h-[84px] w-full rounded-md"
+                    />
+                  ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button
+          onClick={() => setIsOpen(true)}
+          disabled={!isEditing}
+          className="w-full"
+        >
+          <Upload className="mr-2 h-4 w-4" />
+          Upload Images
+        </Button>
+      </CardFooter>
 
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
-        className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
-        overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-50"
-        contentLabel="Upload Images Modal"
-      >
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-          <button
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-            onClick={closeModal}
+      <Dialog open={isOpen} onOpenChange={handleModalClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload Profile Images</DialogTitle>
+            <DialogDescription>
+              Select images to upload for your profile. Click or drag files to
+              the upload area.
+            </DialogDescription>
+          </DialogHeader>
+          <div
+            onClick={() => filePickerRef.current?.click()}
+            className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary"
           >
-            &times;
-          </button>
+            <Upload className="h-10 w-10 text-muted-foreground mb-2" />
+            <p className="text-sm text-muted-foreground">
+              Click to select images or drag and drop
+            </p>
+          </div>
           <input
             ref={filePickerRef}
             type="file"
@@ -214,22 +244,50 @@ export default function ProfileImages() {
             onChange={addImage}
             multiple
           />
-          <h1 className="text-xl font-semibold mb-4">Upload Images</h1>
-          <div
-            onClick={handleUploadClick}
-            className="flex items-center justify-center cursor-pointer mb-4 border border-dashed p-4 rounded-md"
-          >
-            <Upload className="h-6 w-6 text-muted-foreground" />
-            <span className="ml-2 text-gray-600">Click to select images</span>
-          </div>
-          <Button onClick={uploadDatingImages} variant="">
-            {!spin && <p>Add Images</p>}
-            {spin && (
-              <AiOutlineLoading3Quarters className="text-2xl text-white animate-spin" />
-            )}
-          </Button>
-        </div>
-      </Modal>
-    </div>
+          {files.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {files.map((file, index) => (
+                <div key={index} className="relative">
+                  <Image
+                    src={URL.createObjectURL(file)}
+                    alt={`Selected image ${index + 1}`}
+                    width={100}
+                    height={100}
+                    className="rounded-md object-cover"
+                  />
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    className="absolute top-0 right-0 h-6 w-6"
+                    onClick={() => {
+                      const newFiles = files.filter((_, i) => i !== index);
+                      setFiles(newFiles);
+                      setSelectedFileUrls(newFiles.map(URL.createObjectURL));
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => handleModalClose()} variant="outline">
+              Cancel
+            </Button>
+            <Button onClick={uploadDatingImages} disabled={isUploading}>
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                "Add Images"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
   );
 }

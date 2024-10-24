@@ -7,7 +7,7 @@ import Modal from "react-modal";
 import { AiOutlineClose } from "react-icons/ai";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ImageSection from "./ImageSection";
 import {
@@ -27,6 +27,7 @@ import HoverCardPost from "./HoverCardPost";
 import LikedList from "./modals/LikedList";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton"; // Import the Skeleton
+import { toast } from "react-hot-toast";
 
 export default function Post({ post, isSaved, loading }) {
   const notify = () => {
@@ -54,7 +55,8 @@ export default function Post({ post, isSaved, loading }) {
 
     if (response) {
       setIsOpen(false);
-      notify();
+      toast.success("Post has been reported.");
+      // notify();
     }
   }
 

@@ -17,6 +17,7 @@ import { LockIcon } from "lucide-react";
 import instance from "@/axiosInstance";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const router = useRouter();
@@ -56,12 +57,14 @@ export default function Page() {
         console.log("Response", res);
 
         if (res.error === "CredentialsSignin") {
-          setError("Unable to Login");
+          toast.error("Unable to Login");
         }
         if (res.error === "AccessDenied") {
-          setError("AccessDenied");
+          toast.error("AccessDenied");
         }
         if (res.ok) {
+          toast.success("Welcome");
+
           router.push("/admin/dashboard");
         }
       } catch (error) {
@@ -70,8 +73,8 @@ export default function Page() {
     }
   };
 
-  if(session?.role === "admin"){
-    router.push('/admin/dashboard')
+  if (session?.role === "admin") {
+    router.push("/admin/dashboard");
   }
 
   return (

@@ -75,7 +75,7 @@ export default function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -86,7 +86,7 @@ export default function Page() {
   };
 
   const showToast = () => {
-    toast("User Already Exists!");
+    toast.error("User Already Exists!");
   };
 
   const userRegistration = async () => {
@@ -104,7 +104,7 @@ export default function Page() {
   };
 
   async function handleOtp() {
-    toast("Otp generated");
+    toast.success("Otp generated");
 
     await instance.post("/api/user/register/generateotp", {
       email,
@@ -120,10 +120,10 @@ export default function Page() {
     });
 
     if (response.data.success === true) {
-      toast("Successfully registered");
+      toast.success("Successfully registered");
       router.push("/login");
     } else {
-      toast("Failed");
+      toast.error("Failed to register your account.");
     }
   }
 
@@ -136,7 +136,7 @@ export default function Page() {
   }
 
   return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] bg-white">
       <Toaster />
       <div className="flex items-center justify-center py-12">
         {tab === "create-password" && (

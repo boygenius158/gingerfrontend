@@ -11,16 +11,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { useSocket } from "@/app/lib/SocketContext";
 import { Switch } from "@/components/ui/switch";
+import { useSocket } from "@/app/lib/SocketContext";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function FilterGUI() {
   const socket = useSocket();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   const [users, setUsers] = useState([]);
   const [blockedUsers, setBlockedUsers] = useState([]);
-  const [isEnabled, setIsEnabled] = useState(false);
+
+  useEffect(() => {
+    // Redirect to login if user is not authenticated
+    if (status === "unauthenticated") {
+      router.push("/login");  // Adjust the route as per your project
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchUserDetails();
+    }
+  }, [status]);
 
   async function fetchUserDetails() {
     const response = await instance.post("/api/admin/userDetails");
@@ -28,8 +43,6 @@ export default function FilterGUI() {
 
     // Get list of blocked users
     const blockedResponse = await instance.post("/api/admin/getBlockedUsers");
-    console.log(blockedResponse);
-
     setBlockedUsers(blockedResponse?.data?.blockedUserIds);
   }
 
@@ -50,11 +63,13 @@ export default function FilterGUI() {
     }
   }
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
+  if (status === "loading") {
+    return <p>Loading...</p>;  // Show a loading message until session loads
+  }
 
-  console.log(blockedUsers);
+  if (status === "unauthenticated") {
+    return null;  // Prevent rendering if unauthenticated
+  }
 
   return (
     <Table>

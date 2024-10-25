@@ -12,7 +12,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import PricingCard from "./PricingCard";
 import PaymentForm from "./PaymentForm";
-import instance from "@/axiosInstance";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Subscribed from "./Subscribed";
 
@@ -23,35 +22,15 @@ const MenuItem = ({ onClick, children }) => (
 );
 
 export default function Settings() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const [page, setPage] = useState("");
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      console.log("d");
-
-      if (session) {
-        const response = await instance.post("/api/user/premiumStatus", {
-          userId: session?.id,
-        });
-        console.log(response);
-
-        if (response.data.role && response.data.role !== session.user.role) {
-          console.log("j");
-          await update({ role: response.data.role });
-        }
-
-        setPage(response.data.role);
-      }
-    };
-
-    if (status === "authenticated" && !page) {
-      // Prevent fetch if page is already set
-      fetchStatus();
+    // Use the session's role field directly
+    if (status === "authenticated" && session?.role && !page) {
+      setPage(session.role);
     }
-  }, [session, status, page, update]);
-
-  console.log(session);
+  }, [session, status, page]);
 
   return (
     <div className="bg-black text-white border h-screen my-7 rounded">

@@ -39,12 +39,12 @@ const links = [
       <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
-  {
-    label: "Graph",
-    icon: (
-      <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
+  // {
+  //   label: "Graph",
+  //   icon: (
+  //     <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+  //   ),
+  // },
 ];
 
 export default function Page() {
@@ -73,8 +73,8 @@ export default function Page() {
         return <FilterGUI />;
       case "Posts Management":
         return <PostGUI />;
-      case "Graph":
-        return <GraphAdmin />;
+      // case "Graph":
+      //   return <GraphAdmin />;
       default:
         return <DashboardGUI />;
     }

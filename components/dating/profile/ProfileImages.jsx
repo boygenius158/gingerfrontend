@@ -135,6 +135,8 @@ export default function ProfileImages() {
     }
   }
 
+  console.log(selectedFileUrls);
+
   if (!accountExist) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black">
@@ -182,19 +184,17 @@ export default function ProfileImages() {
             <Skeleton className="h-[300px] w-full rounded-lg" />
           )}
           <div className="grid grid-cols-3 gap-2">
-            {selectedFileUrls && selectedFileUrls.length > 1
-              ? selectedFileUrls
-                  .slice(1, 4)
-                  .map((url, index) => (
-                    <Image
-                      key={index}
-                      alt={`Profile thumbnail ${index + 1}`}
-                      className="aspect-square rounded-md object-cover"
-                      height={84}
-                      src={url}
-                      width={84}
-                    />
-                  ))
+            {selectedFileUrls && selectedFileUrls.length > 0
+              ? selectedFileUrls.slice(0, 3).map((url) => (
+                  <Image
+                    key={url} // Using the URL as a unique key if it's guaranteed to be unique
+                    alt={`Profile thumbnail`} // Consider a more descriptive alt text
+                    className="aspect-square rounded-md object-cover"
+                    height={84}
+                    src={url}
+                    width={84}
+                  />
+                ))
               : Array(3)
                   .fill(null)
                   .map((_, index) => (

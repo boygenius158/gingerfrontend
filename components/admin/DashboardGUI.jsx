@@ -5,19 +5,14 @@ import RecentSales from "../RecentSales";
 
 export default function DashboardGUI() {
   return (
-    <div>
-      <div className="p-4">
-        <div className="flex items-center justify-center gap-20">
-          <div className="gap-y-2 ">
-            <div className="mb-2">
-              <ThisMonth />
-            </div>
-
-            <Chart1 />
-          </div>
-
-          <RecentSales />
+    <div className="p-4 space-y-6">
+      {/* ThisMonth and Chart1 Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <ThisMonth />
+          <Chart1 />
         </div>
+        <RecentSales />
       </div>
     </div>
   );

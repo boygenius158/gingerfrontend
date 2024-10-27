@@ -42,7 +42,7 @@ export default function Swipe() {
 
         if (response.data) {
           setSwipeProfiles(response.data.profiles);
-          setCurrentProfileIndex(0); // Start from the first profile
+          setCurrentProfileIndex(0);
           setHasReachedEnd(false);
         }
       } catch (error) {
@@ -52,16 +52,19 @@ export default function Swipe() {
 
     fetchProfiles();
   }, [session]);
+  console.log(swipeProfiles);
 
-  // Handle "match" event
-  const handleMatch = useCallback(
-    (msg) => {
-      console.log(msg);
-      setIsMatch(true);
-      socket.emit("match_owner", { userId: session?.id });
-    },
-    [session, socket]
-  );
+  useEffect(() => {
+    if (socket) {
+      socket.on("match", (message) => {
+        setIsMatch(true);
+      });
+
+      return () => {
+        socket.off("match");
+      };
+    }
+  }, [socket]);
 
   // Handle image click for like/dislike
   const handleImageClick = (event) => {
@@ -76,12 +79,14 @@ export default function Swipe() {
   };
 
   const handleLike = () => {
+    if (swipeProfiles.length === 0) return; // Prevent actions if no profiles
+
     setSwipeDirection("right");
     socket.emit("swipe", {
       profile: swipeProfiles[currentProfileIndex],
       userId: session?.id,
     });
-    toast("You sent a like to the profile.");
+    toast.success("liked!");
 
     if (currentProfileIndex < swipeProfiles.length - 1) {
       setTimeout(() => {
@@ -108,35 +113,21 @@ export default function Swipe() {
     }
   };
 
-  // // Fetch profiles and set up socket event listeners
-  // useEffect(() => {
-  //   if (session) {
-  //     fetchProfiles();
-  //   }
-
-  //   if (socket) {
-  //     socket.emit("register", session?.user?.email);
-  //     socket.on("match", handleMatch);
-  //   }
-
-  //   // Cleanup the socket event listener on component unmount or when socket changes
-  //   return () => {
-  //     socket?.off("match", handleMatch);
-  //   };
-  // }, [session, socket, fetchProfiles, handleMatch]);
-
   const currentProfile = swipeProfiles[currentProfileIndex] || {};
+  console.log(currentProfile);
+
+  console.log(currentProfile);
+  console.log(currentProfile.images);
+  console.log(currentIndex);
 
   return (
     <div className="bg-black h-screen">
-      {hasReachedEnd ? (
-        <ReachedEnd />
-      ) : isMatch ? (
+      {isMatch ? (
         <div className="flex items-center justify-center">
           <div className="w-[700px] h-[600px] overflow-hidden mt-4 animate-fade-in relative">
             <div className="flex items-center justify-center mt-4 animate-fade-up flex-col">
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-pink-500 via-red-500 to-pink-500 text-white rounded p-4 shadow-lg animate-heartbeat">
-                You found a match
+                You found a match {currentProfile.name}
               </h1>
               <div className="flex p-4 mt-8">
                 <div className="relative group">
@@ -151,10 +142,13 @@ export default function Swipe() {
                   )}
                 </div>
 
-                <div className="relative group ml-6">
-                  {currentProfile?.images?.[currentIndex] && (
+                {currentProfile?.images?.length > 0 && (
+                  <div className="relative group ml-6">
                     <Image
-                      src={currentProfile.images[currentIndex]}
+                      src={
+                        currentProfile.images[0] ||
+                        "/path/to/fallback-image.jpg"
+                      }
                       height="200"
                       width="200"
                       className="w-full object-cover aspect-square rounded-xl border-red-700 border-4 glow-effect"
@@ -162,23 +156,17 @@ export default function Swipe() {
                         currentProfile?.name ?? "Profile"
                       }'s profile image`}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div className="flex mt-4 gap-1">
-                {/* <Button
-                  className="text-red-600 font-semibold hover:text-white hover:bg-red-600"
-                  variant="outline"
-                >
-                  Visit Profile
-                </Button>
                 <Button
                   onClick={() => setIsMatch(false)}
                   variant="outline"
                   className="text-red-600 font-semibold hover:text-white hover:bg-red-600"
                 >
                   Keep Swiping
-                </Button> */}
+                </Button>
               </div>
             </div>
             <div
@@ -188,6 +176,8 @@ export default function Swipe() {
             <FlyingHeart />
           </div>
         </div>
+      ) : hasReachedEnd ? (
+        <ReachedEnd />
       ) : (
         <div>
           {currentProfile?.images?.length > 0 ? (

@@ -158,6 +158,10 @@ export default function Post({ post, isSaved, loading }) {
                 <p className="font-bold first-letter:uppercase">
                   <HoverCardPost user={post.userDetails}></HoverCardPost>
                 </p>
+                {/* <p className="font-bold first-letter:uppercase hover:underline">
+                  <p>{post?.userDetails?.username}</p>
+                </p> */}
+                
               </Link>
             )}
           </div>

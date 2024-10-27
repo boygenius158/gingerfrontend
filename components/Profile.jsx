@@ -112,7 +112,7 @@ export default function Profile({ username }) {
 
       console.log(res);
       if (!isFollowing) {
-        toast(`You started following ${user.username}`);
+        toast.success(`You started following ${user.username}`);
       }
     } catch (error) {
       console.error("Failed to follow/unfollow profile", error);
@@ -257,7 +257,9 @@ export default function Profile({ username }) {
             className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
           >
             <h2 className="text-xl font-semibold mb-2">Add New Profile</h2>
-            <p className="text-sm text-muted-foreground mb-4">click on the camera icon to upload images</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              click on the camera icon to upload images
+            </p>
             {selectedFile ? (
               <Image
                 onClick={() => setSelectedFile(null)}

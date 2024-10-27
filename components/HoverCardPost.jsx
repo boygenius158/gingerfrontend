@@ -28,10 +28,10 @@ export default function HoverCardPost({ user }) {
             <h4 className="text-sm ">@{user?.username}</h4>
            <div className="flex space-x-2">
            <p className="text-sm">
-              Followers:{user?.followers.length}
+              Followers:{user?.followers?.length || 0}
             </p>
             <p className="text-sm">
-              Following:{user?.following.length}
+              Following:{user?.following?.length || 0 }
             </p>
            </div>
             <div className="flex items-center pt-2">

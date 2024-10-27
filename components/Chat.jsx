@@ -44,7 +44,6 @@ export default function Chat({ recipient }) {
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
 
-
   useEffect(() => {
     let interval;
     if (isRecording) {
@@ -219,7 +218,7 @@ export default function Chat({ recipient }) {
   console.log(session);
 
   console.log(recipient);
-  
+
   // }
   const fetchHistoricalData = useCallback(async () => {
     if (session && recipient?._id) {
@@ -377,7 +376,12 @@ export default function Chat({ recipient }) {
                 />
               </div>
               <div>
-                <div>{recipient.username}</div>
+                <Link
+                  href={`/u/${recipient.username}`}
+                  className="hover:underline cursor-pointer"
+                >
+                  {recipient.username}
+                </Link>
                 <div>
                   {recipientOnline && (
                     <div>
@@ -434,7 +438,9 @@ export default function Chat({ recipient }) {
             return (
               <div
                 key={index}
-                className={`flex ${isSender ? "justify-end" : "justify-start"} mt-2`}
+                className={`flex ${
+                  isSender ? "justify-end" : "justify-start"
+                } mt-2`}
               >
                 <div
                   onMouseEnter={() => handleMouseEnterMessage(index)}
@@ -600,7 +606,10 @@ export default function Chat({ recipient }) {
               ariaHideApp={false}
             >
               <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-gray-300">
-                <h2 className="text-xl font-semibold mb-4">Send Image</h2>
+                <h2 className="text-xl font-semibold mb-2">Send Image</h2>
+                <p className="mb-2 text-muted-foreground">
+                  click here to select images.
+                </p>
                 {imageFileUrls ? (
                   <div className="flex items-center justify-center bg-red-600">
                     {/* <div className="grid grid-cols-2 gap-4"> */}
@@ -643,7 +652,7 @@ export default function Chat({ recipient }) {
                   type="submit"
                   onClick={handleSubmit}
                   disabled={!file}
-                  className="w-full mt-4 text-white p-2 shadow-md rounded-lg hover:brightness-105  disabled:cursor-not-allowed disabled:hover:brightness-100"
+                  className="w-full mt-4 text-white p-2 bg-purple-800 shadow-md rounded-lg hover:brightness-105  disabled:cursor-not-allowed disabled:hover:brightness-100"
                 >
                   {!spin && <p>Upload</p>}
                   {spin && (

@@ -95,7 +95,7 @@ export default function CommentSectionPost({ post }) {
       parentCommentId: parentComment._id,
       comment,
     });
-    toast.success("reply deleted.")
+    toast.success("reply deleted.");
     console.log(data);
     let updatedComments = comments.map((item) => {
       if (item._id === parentComment._id) {
@@ -141,20 +141,26 @@ export default function CommentSectionPost({ post }) {
                 <p className="font-semibold">{comment.author}</p>
                 <p className="text-muted-foreground">{comment.content}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs ml-12"
-                // Set replyingTo to the current comment's ID
-              >
-                {replyingTo === comment._id ? (
-                  <div onClick={() => setReplyingTo(null)}>
-                    <p>close</p>
-                  </div>
-                ) : (
-                  <p onClick={() => setReplyingTo(comment._id)}>reply</p>
-                )}
-              </Button>
+              {replyingTo === comment._id ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs ml-12"
+                  onClick={() => setReplyingTo(null)}
+                >
+                  <p>close</p>
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs ml-12"
+                  onClick={() => setReplyingTo(comment._id)}
+                >
+                  <p>reply</p>
+                </Button>
+              )}
+
               {session.username === comment.author && (
                 <Button
                   variant="ghost"

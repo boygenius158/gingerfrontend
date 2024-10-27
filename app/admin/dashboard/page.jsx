@@ -39,18 +39,18 @@ const links = [
       <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
-  // {
-  //   label: "Graph",
-  //   icon: (
-  //     <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-  //   ),
-  // },
+  {
+    label: "Graph",
+    icon: (
+      <IconChartBar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
+  },
 ];
 
 export default function Page() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [tab, setTab] = useState("User Management");
+  const [tab, setTab] = useState("Posts Management");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -73,8 +73,8 @@ export default function Page() {
         return <FilterGUI />;
       case "Posts Management":
         return <PostGUI />;
-      // case "Graph":
-      //   return <GraphAdmin />;
+      case "Graph":
+        return <GraphAdmin />;
       default:
         return <DashboardGUI />;
     }

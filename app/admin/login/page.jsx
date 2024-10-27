@@ -26,12 +26,14 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  console.log(session);
+
   useEffect(() => {
     if (status === "loading") return; // Wait for loading
 
     // Redirect based on the user role
     if (session) {
-      if (session.role === "user") {
+      if (session.role === "user" || session.role === "premium") {
         // Redirect users to their dashboard if they are a normal user
         router.push("/u/home");
       } else if (session.role === "admin") {

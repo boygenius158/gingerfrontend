@@ -8,24 +8,9 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MoreHorizontal,
-  MoreVertical,
-} from "lucide-react";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Carousel,
@@ -36,13 +21,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";

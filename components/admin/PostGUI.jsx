@@ -3,9 +3,21 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { format } from "date-fns";
-import { AlertCircle, Ban, ExternalLink } from "lucide-react";
+import {
+  AlertCircle,
+  Ban,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCcw,
+} from "lucide-react";
 import instance from "@/axiosInstance";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +25,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -22,20 +35,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import toast from "react-hot-toast";
 
 function PostGUI() {
   const [reportedPosts, setReportedPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   async function fetchReportedPosts() {
     try {
       setIsLoading(true);
       const response = await instance.post("/api/admin/filterPost");
+
       if (response && response.data) {
         setReportedPosts(response.data.posts);
       }
@@ -46,31 +71,49 @@ function PostGUI() {
       setIsLoading(false);
     }
   }
+
   async function handleDeleteRecord(id) {
-    const response = await instance.post("/api/admin/delete-record", {
-      id,
-    });
-    const updatedRecords = reportedPosts.filter((post) => post._id !== id);
-    setReportedPosts(updatedRecords);
+    console.log(id);
+    
+    await instance.post("/api/admin/delete-record", { id });
+    setReportedPosts((prevPosts) =>
+      prevPosts.filter((post) => post._id !== id)
+    );
   }
-  async function banPost(postId) {
+
+  async function confirmBanPost(postId) {
     try {
-      await instance.post("/api/admin/banPost", { postId });
-      fetchReportedPosts();
-      setSelectedPost(null);
+      const response = await instance.post("/api/admin/banPost", { postId });
+      if (response) {
+        toast.success("Post has been banned and deleted.");
+        await handleDeleteRecord(postId);
+        fetchReportedPosts();
+        setSelectedPost(null);
+      }
     } catch (error) {
       console.error("Error banning post:", error);
       setError("Failed to ban post. Please try again.");
+    } finally {
+      setShowConfirmation(false);
     }
   }
 
   useEffect(() => {
     fetchReportedPosts();
   }, []);
-
+  console.log(reportedPosts);
+  
   return (
     <div className="container mx-auto p-4 space-y-4">
-      <h1 className="text-3xl font-bold">Reported Posts</h1>
+      <div className="flex gap-2">
+        <h1 className="text-3xl font-bold">Reported Posts</h1>
+        <div
+          onClick={() => fetchReportedPosts()}
+          className="mt-2 cursor-pointer hover:animate-spin hover:duration-[2000ms]"
+        >
+          <RefreshCcw />
+        </div>
+      </div>
 
       {error && (
         <Alert variant="destructive">
@@ -93,7 +136,6 @@ function PostGUI() {
               <TableHead>Post ID</TableHead>
               <TableHead>Owner</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Created At</TableHead>
               <TableHead>Delete Record</TableHead>
             </TableRow>
           </TableHeader>
@@ -109,9 +151,6 @@ function PostGUI() {
                   >
                     {post?.postId?.isBanned ? "Banned" : "Active"}
                   </Badge>
-                </TableCell>
-                <TableCell>
-                  {/* {format(new Date(post?.postId?.createdAt), "PPpp")} */}
                 </TableCell>
                 <TableCell>
                   <Button
@@ -141,15 +180,36 @@ function PostGUI() {
                 <strong>Owner:</strong> @
                 {selectedPost?.postId?.userId?.username}
               </div>
-              <div className="relative h-48 w-full">
-                <Image
-                  src={selectedPost?.postId?.imageUrl[0]}
-                  alt="Post image"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg"
-                />
-              </div>
+
+              <Card className="relative">
+                <CardContent className="p-0">
+                  <Carousel className="w-full">
+                    <CarouselContent>
+                      {selectedPost?.postId?.imageUrl?.map((url, index) => (
+                        <CarouselItem key={index}>
+                          <div className="relative aspect-square">
+                            <Image
+                              src={url}
+                              alt={`Post image ${index + 1} of ${
+                                selectedPost?.postId?.imageUrl.length
+                              }`}
+                              fill
+                              className="object-cover rounded-t-lg"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    {selectedPost?.postId?.imageUrl?.length > 1 && (
+                      <>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                      </>
+                    )}
+                  </Carousel>
+                </CardContent>
+              </Card>
+
               <div>
                 <strong>Status:</strong>{" "}
                 <Badge
@@ -160,23 +220,11 @@ function PostGUI() {
                   {selectedPost?.postId?.isBanned ? "Banned" : "Active"}
                 </Badge>
               </div>
-              <div>
-                <strong>Created At:</strong>{" "}
-                {format(new Date(selectedPost?.postId?.createdAt), "PPpp")}
-              </div>
-              <div className="flex items-center space-x-2">
-                <strong>Visit Post:</strong>
-                <Link
-                  href={`/post/${selectedPost?.postId?._id}`}
-                  className="text-blue-500 hover:underline flex items-center"
-                >
-                  Link <ExternalLink className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
+
               {!selectedPost?.postId?.isBanned && (
                 <Button
                   variant="destructive"
-                  onClick={() => banPost(selectedPost?.postId?._id)}
+                  onClick={() => setShowConfirmation(true)}
                   className="w-full"
                 >
                   <Ban className="mr-2 h-4 w-4" /> Ban Post
@@ -184,6 +232,32 @@ function PostGUI() {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Modal */}
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Ban</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to ban this post? This action is irreversible.
+          </p>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowConfirmation(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => confirmBanPost(selectedPost?.postId?._id)}
+            >
+              Confirm Ban and Delete
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -12,7 +12,7 @@ export default function ULayout({ children }) {
           <ul>
             <li><a href="/u/profile">Profile</a></li>
             <li><a href="/u/settings">Settings</a></li>
-          </ul>
+          </ul> 
         </nav>
       </header>
 

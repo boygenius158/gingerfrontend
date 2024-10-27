@@ -18,7 +18,7 @@ export default function SavedPosts() {
     <div>
       <div className="pt-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {savedPosts.map((post) => (
+          {savedPosts?.map((post) => (
             <div key={post._id} className="flex justify-center items-center">
               <Link href={`/savedpost/${post._id}`}>
                 <Image
@@ -31,7 +31,7 @@ export default function SavedPosts() {
                 />
               </Link>
             </div>
-          ))}
+          )) || <p>No saved posts found.</p>}
         </div>
         <div className="pb-24"></div>
       </div>

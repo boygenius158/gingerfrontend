@@ -184,7 +184,7 @@ export default function Profile({ username }) {
             <div className="flex items-center justify-center mt-2 lg:mt-0"></div>
           </div>
           <div className="flex justify-between pt-3 text-center lg:text-left gap-4">
-            <span className="text-sm font-semibold">{posts.length} posts</span>
+            <span className="text-sm font-semibold">{posts?.length || 0} posts</span>
             <span
               onClick={() => setStatus(true)}
               className="text-sm font-semibold hover:underline cursor-pointer "
@@ -196,7 +196,7 @@ export default function Profile({ username }) {
               onClick={() => setStatus(true)}
               className="text-sm font-semibold hover:underline cursor-pointer"
             >
-              {user.following.length} following
+              {user?.following?.length} following
             </span>
           </div>
           <div className="pt-6 grid">

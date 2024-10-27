@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export default function PostSection({posts}) {
+export default function PostSection({ posts }) {
   return (
     <div className="pt-6">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <div key={post._id} className="flex justify-center items-center">
             <Link href={`/post/${post._id}`}>
               <Image
@@ -19,7 +19,7 @@ export default function PostSection({posts}) {
               />
             </Link>
           </div>
-        ))}
+        )) || <p>No posts available.</p>}
       </div>
       <div className="pb-24"></div>
     </div>

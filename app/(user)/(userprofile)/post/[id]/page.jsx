@@ -55,6 +55,7 @@ import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import { useSocket } from "@/app/lib/SocketContext";
 import { Trash } from "lucide-react";
 import OptionsModal from "@/components/modals/OptionsModal";
+import useAdminRedirect from "@/app/utils/useAdminRedirect";
 
 export default function Page({ params }) {
   const { data: session } = useSession();
@@ -71,7 +72,7 @@ export default function Page({ params }) {
 
   const [reply, setReply] = useState("");
   const [hasLiked, setHasLiked] = useState(false);
-
+  useAdminRedirect()
   async function likePost() {
     try {
       await instance.post("/api/user/likepost", {

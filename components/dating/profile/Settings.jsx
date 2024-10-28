@@ -11,8 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-
+} from "@/components/ui/select";
 
 export default function Settings() {
   const { data: session } = useSession();
@@ -118,7 +117,7 @@ export default function Settings() {
       <div className="border-b"></div>
       <div className="border-b"></div>
       <div className="mb-6">
-        <div className="p-4">Maximum Age: {age}</div>
+        <div className="p-4">Maximum Age Interested: {age}</div>
         <div className="ml-2 mr-2">
           <Slider
             disabled={isEditing}
@@ -134,12 +133,14 @@ export default function Settings() {
       <div className="flex flex-col mt-4 gap-2">
         <div className="ml-2">Gender Preference</div>
         <div className="text-4xl ml-4">
+          <Label>Select Gender</Label>
+
           <Select
             disabled={isEditing}
             value={gender}
             onValueChange={handleGenderChange}
           >
-            <SelectTrigger className="w-[180px] bg-black text-gray-300">
+            <SelectTrigger className="w-[180px] bg-gray-700 text-gray-300">
               <SelectValue placeholder="Select gender" />
             </SelectTrigger>
             <SelectContent className="bg-black text-white">

@@ -27,7 +27,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-
 export default function UserDemographics() {
   const [demographics, setDemographics] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -38,10 +37,7 @@ export default function UserDemographics() {
       try {
         const response = await instance.get("/api/user/user-demographics");
         console.log(response.data);
-        setDemographics([
-          { label: "user", value: 12 },
-          { label: "premium", value: 10 },
-        ]);
+        setDemographics(response.data);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -84,35 +80,34 @@ export default function UserDemographics() {
             <TabsTrigger value="pie">Pie Chart</TabsTrigger>
           </TabsList>
           <TabsContent value="bar">
-          <ChartContainer
-          config={{
-            userCount: {
-              label: "User Count",
-              color: "hsl(var(--chart-1))",
-            },
-          }}
-          className="h-[400px]"
-        >
-          <ResponsiveContainer width="100%" height="100%">
-  <BarChart data={demographics}>
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis 
-      dataKey="label" 
-      tick={{ fill: '#333333' }} // Dark gray tick color
-    />
-    <YAxis 
-      tick={{ fill: '#333333' }} // Dark gray tick color
-    />
-    <ChartTooltip content={<ChartTooltipContent />} />
-    <Bar 
-      dataKey="value" 
-      fill="#1E90FF" // Light blue bar color
-      radius={[4, 4, 0, 0]}
-    />
-  </BarChart>
-</ResponsiveContainer>
-
-        </ChartContainer>
+            <ChartContainer
+              config={{
+                userCount: {
+                  label: "User Count",
+                  color: "hsl(var(--chart-1))",
+                },
+              }}
+              className="h-[400px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={demographics}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fill: "#333333" }} // Dark gray tick color
+                  />
+                  <YAxis
+                    tick={{ fill: "#333333" }} // Dark gray tick color
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar
+                    dataKey="value"
+                    fill="#1E90FF" // Light blue bar color
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </TabsContent>
           <TabsContent value="pie">
             <ResponsiveContainer width="100%" height={400}>
@@ -140,6 +135,10 @@ export default function UserDemographics() {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
+            <div className="flex gap-2" style={{ textAlign: "center", marginTop: "10px" }}>
+              <p style={{ color: COLORS[0] }}>Premium</p>
+              <p style={{ color: COLORS[1] }}>User</p>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>

@@ -9,8 +9,11 @@ import Swipe from "@/components/dating/Swipe";
 import { useSocket } from "@/app/lib/SocketContext";
 import DatingHome from "@/components/DatingMain/DatingHome";
 import RightSideBar from "@/components/RightSideBar";
+import useAdminRedirect from "@/app/utils/useAdminRedirect";
 
 export default function Page() {
+  useAdminRedirect();
+
   return (
     <div className="bg-black min-h-screen">
       <main className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto z-30 bg-black min-h-screen">

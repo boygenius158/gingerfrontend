@@ -235,7 +235,7 @@ export default function Profile({ username }) {
           </div>
 
           <TabsContent value="saved-posts">
-            <SavedPosts username={user.username} />
+            <SavedPosts username={user?.username} />
           </TabsContent>
           <TabsContent value="posts">
             <PostSection posts={posts} />

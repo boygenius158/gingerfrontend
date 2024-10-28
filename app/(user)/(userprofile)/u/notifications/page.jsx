@@ -1,11 +1,14 @@
 "use client"
 
+import useAdminRedirect from "@/app/utils/useAdminRedirect";
 import MiniProfile from "@/components/MiniProfile";
 import Notification from "@/components/Notification";
 import RightSideBar from "@/components/RightSideBar";
 import React from "react";
 
-export default function page() {
+export default function Page() {
+  useAdminRedirect();
+
   return (
     
     <div className="bg-black">

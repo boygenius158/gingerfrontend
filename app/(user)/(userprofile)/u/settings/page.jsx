@@ -1,12 +1,15 @@
 "use client"
 
+import useAdminRedirect from "@/app/utils/useAdminRedirect";
 import MiniProfile from "@/components/MiniProfile";
 import Premium from "@/components/Premium";
 import RightSideBar from "@/components/RightSideBar";
 import Settings from "@/components/Settings";
 import React from "react";
 
-export default function page() {
+export default function Page() {
+  useAdminRedirect();
+
   return (
     <div className="bg-black">
       <main className="grid md:grid-cols-4 mx-auto z-30 min-h-screen">

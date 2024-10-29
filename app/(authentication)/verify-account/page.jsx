@@ -15,12 +15,18 @@ export default function GenerateOTP() {
   const [isOtpSent, setOtpSent] = useState(false); // State to track if OTP was sent
   const [message, setMessage] = useState('');
   const [resendTimer, setResendTimer] = useState(30); // Timer for resending OTP
+  const [isOtpExpired, setOtpExpired] = useState(false); // State to track if OTP is expired
   const router = useRouter();
 
   useEffect(() => {
     if (resendTimer > 0 && isOtpSent) {
       const timer = setInterval(() => {
-        setResendTimer(prev => prev - 1);
+        setResendTimer(prev => {
+          if (prev <= 1) {
+            setOtpExpired(true); // Set OTP as expired
+          }
+          return prev - 1;
+        });
       }, 1000);
       return () => clearInterval(timer);
     }
@@ -68,6 +74,7 @@ export default function GenerateOTP() {
 
   const startResendTimer = () => {
     setResendTimer(60);
+    setOtpExpired(false); // Reset OTP expiration state
   };
 
   return (
@@ -103,9 +110,11 @@ export default function GenerateOTP() {
                   onChange={(e) => setOtp(e.target.value)}
                   required
                 />
-                <Button className="w-full" type="submit" disabled={isLoading}>
-                  {isLoading ? 'Verifying...' : 'Verify OTP'}
-                </Button>
+                {!isOtpExpired && (
+                  <Button className="w-full" type="submit" disabled={isLoading}>
+                    {isLoading ? 'Verifying...' : 'Verify OTP'}
+                  </Button>
+                )}
                 <p className="text-sm text-center">
                   Resend OTP in {resendTimer > 0 ? `${resendTimer}s` : <span onClick={handleOtp}>Resend OTP</span>}
                 </p>

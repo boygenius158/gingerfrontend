@@ -67,7 +67,7 @@ export default function GenerateOTP() {
   };
 
   const startResendTimer = () => {
-    setResendTimer(30);
+    setResendTimer(60);
   };
 
   return (

@@ -10,6 +10,7 @@ import MiniProfile from "@/components/MiniProfile";
 import SessionHandler from "@/components/SessionHandler";
 import RightSideBar from "@/components/RightSideBar";
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
+import useUserRedirect from "@/app/utils/useUserRedirect";
 
 export default function Page({ params }) {
   const {
@@ -38,7 +39,7 @@ export default function Page({ params }) {
   const hasFetchedProfile = useRef(false);
   const hasFetchedSavedPosts = useRef(false);
   useAdminRedirect();
-
+  useUserRedirect();
   useEffect(() => {
     const fetchProfileData = async () => {
       const username = id;

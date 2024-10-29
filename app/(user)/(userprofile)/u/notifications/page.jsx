@@ -1,6 +1,7 @@
 "use client"
 
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
+import useUserRedirect from "@/app/utils/useUserRedirect";
 import MiniProfile from "@/components/MiniProfile";
 import Notification from "@/components/Notification";
 import RightSideBar from "@/components/RightSideBar";
@@ -8,6 +9,7 @@ import React from "react";
 
 export default function Page() {
   useAdminRedirect();
+  useUserRedirect();
 
   return (
     

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import {  Toaster, toast } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import {
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import * as yup from "yup";  // Import yup for validation
+import * as yup from "yup"; // Import yup for validation
 
 export const description = "";
 
@@ -57,7 +57,10 @@ export default function Page() {
       .matches(/[a-z]/, "Password must contain at least one lowercase letter")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
       .matches(/\d/, "Password must contain at least one number")
-      .matches(/[@$!%*?&#]/, "Password must contain at least one special character")
+      .matches(
+        /[@$!%*?&#]/,
+        "Password must contain at least one special character"
+      )
       .required("Password is required"),
   });
 
@@ -192,10 +195,14 @@ export default function Page() {
           <div className="">
             <div className="mx-auto grid w-[350px] gap-6">
               <div className="grid gap-2 text-center">
-                <h1 className="text-3xl font-bold">Verify OTP</h1>
-                <p className="text-muted-foreground">
-                  Enter the OTP sent to your email
-                </p>
+                {/* {!resendAvailable && ( */}
+                  <>
+                    <h1 className="text-3xl font-bold">Verify OTP</h1>
+                    <p className="text-muted-foreground">
+                      Enter the OTP sent to your email
+                    </p>
+                  </>
+                {/* )} */}
               </div>
               <div className="flex-col items-center justify-center">
                 <div className="flex items-center justify-center ">
@@ -223,12 +230,15 @@ export default function Page() {
                   )}
                   {isOtpGenerated && (
                     <>
-                      <Button
-                        onClick={() => verifyOtp()}
-                        className="w-full cursor-pointer mt-4"
-                      >
-                        Verify OTP
-                      </Button>
+                      {!resendAvailable && (
+                        <Button
+                          onClick={() => verifyOtp()}
+                          className="w-full cursor-pointer mt-4"
+                        >
+                          Verify OTP
+                        </Button>
+                      )}
+
                       <div className="mt-4">
                         <p>
                           {resendAvailable
@@ -265,3 +275,4 @@ export default function Page() {
     </div>
   );
 }
+ 

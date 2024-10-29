@@ -3,45 +3,46 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import useUserStore from "@/app/store/user/userStore";
 import { useRouter } from "next/navigation";
+
 export default function SignInForm() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   useEffect(() => {
     if (session) {
       router.replace("/u/home");
     }
   }, [router, session]);
-  // const{data:session,status}= useSession()
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  // const userEmail = useUserStore((state) => state.email);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password, error);
-
+  
     try {
-      console.log("working");
       const res = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
-      console.log("Response", res);
-
-      if (res.error === "CredentialsSignin") {
-        setError("Unable to Login");
-      }
-      if(res.error === 'AccessDenied'){
-        setError("AccessDenied")
+      console.log("Sign-in Response:", res);
+  
+      if (res.error) {
+        setError(res.error); // Display error message to the user
+        if (res.error.includes("unverified")) {
+          router.push("/verify-account"); // Redirect if account is unverified
+        }
+      } else if (res.ok) {
+        router.replace("/u/home"); // Redirect to home if sign-in is successful
       }
     } catch (error) {
-      console.error("Error signing in:", error);
+      console.error("Error during sign-in:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
+  
 
   return (
     <div className="py-16 bg-black">
@@ -51,7 +52,6 @@ export default function SignInForm() {
           style={{
             backgroundImage:
               "url('https://i.pinimg.com/564x/7c/e7/fc/7ce7fc52be83670df90e94bd90b66d21.jpg')",
-            // "url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')",
           }}
         ></div>
         <div className="w-full p-8 lg:w-1/2">
@@ -60,7 +60,6 @@ export default function SignInForm() {
               Ginger
             </h1>
           </div>
-          {/* <p className="text-xl text-gray-600 text-center">Welcome back!</p> */}
           <button
             onClick={() => signIn("google")}
             className="flex bg-purple-700 border-gray-700 border items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-600 w-full py-2"
@@ -71,7 +70,7 @@ export default function SignInForm() {
               width={24}
               alt="Google Icon"
             />
-            <span className="ml-2  ">sign-up/sign-in using Google</span>
+            <span className="ml-2">sign-up/sign-in using Google</span>
           </button>
           <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 lg:w-1/4"></span>

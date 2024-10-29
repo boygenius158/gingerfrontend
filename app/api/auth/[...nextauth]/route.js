@@ -6,12 +6,11 @@ import jwt from "jsonwebtoken";
 
 export const authOptions = {
   providers: [
-    
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    
+
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -22,22 +21,24 @@ export const authOptions = {
         const { email, password } = credentials;
 
         try {
-          
           const res = await instance.post("/api/user/custom-signin", {
             email,
             password,
           });
+          console.log(res.data);
 
-          if (res.status === 200 && res.data) {
-            console.log("User data from custom backend:", res.data);
-            return res.data; 
+          if (res.data === "unverified") {
+            throw new Error(
+              "Your account is unverified. Please verify your email."
+            );
+          } else if (res.status === 200 && res.data) {
+            return res.data; // return user data if verified
           } else {
-            console.log("Error in response:", res.statusText);
-            return null; 
+            throw new Error("Invalid credentials.");
           }
         } catch (error) {
-          console.error("Error in authorization:", error);
-          return null; 
+          console.error("Error in authorization:", error.message);
+          throw new Error(error.message); // Re-throw to catch in signIn
         }
       },
     }),
@@ -84,6 +85,7 @@ export const authOptions = {
             email: user.email,
             password: user.password,
           });
+          console.log(res.data);
 
           if (res.status === 200) {
             const data = res.data.user;
@@ -127,7 +129,6 @@ export const authOptions = {
         token.username = user.username;
       }
       if (trigger === "update") {
-       
         if (session) {
           if (session.username) {
             token.username = session.username;
@@ -180,6 +181,5 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 
 export { handler as GET, handler as POST };

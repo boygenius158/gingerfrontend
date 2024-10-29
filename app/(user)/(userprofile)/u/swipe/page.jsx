@@ -10,9 +10,11 @@ import { useSocket } from "@/app/lib/SocketContext";
 import DatingHome from "@/components/DatingMain/DatingHome";
 import RightSideBar from "@/components/RightSideBar";
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
+import useUserRedirect from "@/app/utils/useUserRedirect";
 
 export default function Page() {
   useAdminRedirect();
+  useUserRedirect();
 
   return (
     <div className="bg-black min-h-screen">

@@ -2,6 +2,7 @@
 
 import useComponentsStore from "@/app/store/user/componentsStore";
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
+import useUserRedirect from "@/app/utils/useUserRedirect";
 import instance from "@/axiosInstance";
 import Chat from "@/components/Chat";
 import MiniChat from "@/components/MiniChat";
@@ -20,6 +21,8 @@ export default function Page() {
   const [incomingCall, setIncomingCall] = useState(false);
   // hi
   useAdminRedirect();
+  useUserRedirect();
+
   useEffect(() => {
     const fetchList = async () => {
       if (!session?.id) return;

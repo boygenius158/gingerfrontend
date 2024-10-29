@@ -1,6 +1,7 @@
 "use client"
 
 import useAdminRedirect from '@/app/utils/useAdminRedirect'
+import useUserRedirect from '@/app/utils/useUserRedirect'
 import MiniProfile from '@/components/MiniProfile'
 import Posts from '@/components/Posts'
 import SavedPosts from '@/components/SavedPosts'
@@ -8,6 +9,7 @@ import React from 'react'
 
 export default function Page() {
   useAdminRedirect();
+  useUserRedirect();
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-3 md:max-w-6xl mx-auto">

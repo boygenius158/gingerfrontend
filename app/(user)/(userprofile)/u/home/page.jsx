@@ -1,6 +1,7 @@
 "use client";
 
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
+import useUserRedirect from "@/app/utils/useUserRedirect";
 import MiniProfile from "@/components/MiniProfile";
 import Posts from "@/components/Posts";
 import RightSideBar from "@/components/RightSideBar";
@@ -8,6 +9,8 @@ import React from "react";
 
 export default function Page() {
   useAdminRedirect();
+  useUserRedirect();
+
 
   return (
     <div className="bg-black h-screen overflow-hidden">

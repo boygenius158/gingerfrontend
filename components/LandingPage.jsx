@@ -81,7 +81,7 @@ const data = [
     // content: <DummyContent />,
   },
   {
-    category: "Story",
+    category: "Share",
     title: "Capture moments.",
     src: "https://i.pinimg.com/564x/95/24/d9/9524d995bcf7c9e867c0a2c1c8df6b83.jpg",
     // src: "https://images.unsplash.com/photo-1713869791518-a770879e60dc?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",

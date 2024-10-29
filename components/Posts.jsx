@@ -93,7 +93,8 @@ export default function Posts() {
   if (status === "unauthenticated") {
     return <div>Please log in to view posts.</div>;
   }
-
+  console.log(feedPosts);
+  
   return (
     <div className="relative ">
       {/* <div 

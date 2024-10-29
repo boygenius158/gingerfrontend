@@ -135,7 +135,7 @@ function PostGUI() {
             <TableRow>
               <TableHead>Post ID</TableHead>
               <TableHead>Owner</TableHead>
-              <TableHead>Status</TableHead>
+              {/* <TableHead>Status</TableHead> */}
               <TableHead>Delete Record</TableHead>
             </TableRow>
           </TableHeader>
@@ -144,14 +144,14 @@ function PostGUI() {
               <TableRow key={post._id} className="cursor-pointer">
                 <TableCell className="font-medium">{post._id}</TableCell>
                 <TableCell>@{post?.postId?.userId?.username}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Badge
                     onClick={() => setSelectedPost(post)}
                     variant={post?.postId?.isBanned ? "destructive" : "success"}
                   >
                     {post?.postId?.isBanned ? "Banned" : "Active"}
                   </Badge>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <Button
                     onClick={() => handleDeleteRecord(post._id)}

@@ -63,7 +63,7 @@ export default function SignInForm() {
           {/* <p className="text-xl text-gray-600 text-center">Welcome back!</p> */}
           <button
             onClick={() => signIn("google")}
-            className="flex border-purple-700 border items-center justify-center mt-4 text-white bg-black rounded-lg shadow-md hover:bg-gray-600 w-full py-2"
+            className="flex bg-purple-700 border-gray-700 border items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-600 w-full py-2"
           >
             <Image
               src="/Google_Icons-09-512.webp"
@@ -71,7 +71,7 @@ export default function SignInForm() {
               width={24}
               alt="Google Icon"
             />
-            <span className="ml-2 ">Sign-up or Sign-in with Google</span>
+            <span className="ml-2  ">sign-up/sign-in using Google</span>
           </button>
           <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 lg:w-1/4"></span>
@@ -115,7 +115,7 @@ export default function SignInForm() {
             </div>
             <button
               type="submit"
-              className="mt-8 bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+              className="mt-8 bg-purple-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
             >
               Sign In
             </button>

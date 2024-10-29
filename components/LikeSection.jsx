@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import SharePost from "./radixui/SharePost";
 import LikedList from "./modals/LikedList";
+import toast from "react-hot-toast";
 
 export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
   const socket = useSocket();
@@ -62,6 +63,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
       postId: post._id,
       userId: session.id,
     });
+    toast.success("saved")
   }
   function toggleStatusChange(newStatus) {
     setStatus(newStatus);

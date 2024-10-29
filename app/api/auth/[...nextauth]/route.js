@@ -6,12 +6,12 @@ import jwt from "jsonwebtoken";
 
 export const authOptions = {
   providers: [
-    // Google OAuth Provider
+    
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    // Custom Credentials Provider
+    
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -22,7 +22,7 @@ export const authOptions = {
         const { email, password } = credentials;
 
         try {
-          // Request to custom sign-in API
+          
           const res = await instance.post("/api/user/custom-signin", {
             email,
             password,
@@ -30,14 +30,14 @@ export const authOptions = {
 
           if (res.status === 200 && res.data) {
             console.log("User data from custom backend:", res.data);
-            return res.data; // Return user data from backend
+            return res.data; 
           } else {
             console.log("Error in response:", res.statusText);
-            return null; // Return null if login fails
+            return null; 
           }
         } catch (error) {
           console.error("Error in authorization:", error);
-          return null; // Return null on any error
+          return null; 
         }
       },
     }),
@@ -127,7 +127,7 @@ export const authOptions = {
         token.username = user.username;
       }
       if (trigger === "update") {
-        // Validate session properties individually
+       
         if (session) {
           if (session.username) {
             token.username = session.username;
@@ -181,5 +181,5 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions);
 
-// Export handler for GET and POST requests
+
 export { handler as GET, handler as POST };

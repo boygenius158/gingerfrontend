@@ -49,7 +49,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import toast, { ToastBar } from "react-hot-toast";
+import toast, { ToastBar, ToastIcon } from "react-hot-toast";
 import LikeSection from "@/components/LikeSection";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import { useSocket } from "@/app/lib/SocketContext";
@@ -58,6 +58,8 @@ import OptionsModal from "@/components/modals/OptionsModal";
 import useAdminRedirect from "@/app/utils/useAdminRedirect";
 
 export default function Page({ params }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { data: session } = useSession();
   const { id } = params;
   const [open, setOpen] = useState(false);
@@ -68,11 +70,26 @@ export default function Page({ params }) {
   const [likes, setLikes] = useState(0);
   const [showButtons, setShowButtons] = useState("");
   const [bookmarked, setBookmarked] = useState(false);
+  const [user, setUser] = useState("");
   const socket = useSocket();
 
   const [reply, setReply] = useState("");
   const [hasLiked, setHasLiked] = useState(false);
-  useAdminRedirect()
+  useAdminRedirect();
+  useEffect(() => {
+    if (!session) {
+      return;
+    }
+    async function fetchSavedDetails() {
+      const response = await instance.post("/api/user/is-post-saved", {
+        userId: session?.id,
+      });
+      console.log(response.data.user.savedPosts.includes(id));
+      setBookmarked(response.data.user.savedPosts.includes(id));
+    }
+    fetchSavedDetails();
+  }, [session, id]);
+
   async function likePost() {
     try {
       await instance.post("/api/user/likepost", {
@@ -141,11 +158,14 @@ export default function Page({ params }) {
       const response = await instance.post("/api/user/visitPost", {
         postId: id,
       });
+      console.log(response.data.result);
+
       setPost(response.data.result);
       // setComments(response.data.comments);
 
       console.log(response.data.result.userId.savedPosts, session.id);
-      setBookmarked(response.data.result.userId.savedPosts.includes(id));
+      setUser(response.data.result.userId);
+      // setBookmarked(response.data.result.userId.savedPosts.includes(id));
       setLikes(response.data.result.likes.length);
       setHasLiked(response.data.result.likes.includes(session?.id));
       console.log(response.data.result.likes.includes(session?.id));
@@ -153,6 +173,7 @@ export default function Page({ params }) {
       console.error("Error fetching post:", error);
     }
   }, [id, session]);
+  console.log(user);
 
   useEffect(() => {
     getPost();
@@ -233,7 +254,21 @@ export default function Page({ params }) {
   }
   // Avoid rendering certain elements until session is loaded on the client-side
   console.log(comments);
-  const [isOpen, setIsOpen] = useState(false);
+  async function handleSavePost() {
+    // setIsSaved((prev) => !prev);
+    setBookmarked((prev) => !prev);
+
+    console.log("save post");
+    const res = await instance.post("/api/user/savePost", {
+      postId: post._id,
+      userId: session.id,
+    });
+    if (!bookmarked) {
+      toast.success("Saved");
+    }
+  }
+  console.log(bookmarked);
+
   return (
     <div className="flex flex-col md:flex-row justify-center items-start gap-4 p-4 bg-background bg-black h-screen ">
       <OptionsModal
@@ -250,6 +285,46 @@ export default function Page({ params }) {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Go back
         </Button>
+        {session?.username !== user.username && (
+          <Button
+            className={`text-white ${bookmarked ? "" : ""}`}
+            onClick={handleSavePost}
+          >
+            {bookmarked ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 text-purple-700"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9"
+                  // onClick={handleSavePost}
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 text-purple-700"
+                // onClick={handleSavePost}
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                />
+              </svg>
+            )}
+          </Button>
+        )}
       </div>
 
       <Card className="w-full md:w-[538px] border border-gray-700 rounded">
@@ -304,8 +379,8 @@ export default function Page({ params }) {
           {session?.id === post?.userId._id && (
             <Dialog>
               <DialogTrigger asChild>
-                <div className="text-black rounded">
-                  <Trash className="text-white cursor-pointer hover:scale-75" />
+                <div className="text-black rounded ml-4">
+                  <Trash className="text-purple-700 cursor-pointer hover:scale-75" />
                 </div>
               </DialogTrigger>
               <DialogContent>

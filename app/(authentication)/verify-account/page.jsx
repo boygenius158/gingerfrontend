@@ -75,7 +75,7 @@ export default function GenerateOTP() {
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Your account needs to be verified</CardTitle>
-          <CardDescription className="text-center">We'll send a one-time password to your email</CardDescription>
+          <CardDescription className="text-center">We will send a one-time password to your email</CardDescription>
         </CardHeader>
         <CardContent>
           {!isOtpSent ? (

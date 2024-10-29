@@ -110,6 +110,13 @@ export default function UserDemographics() {
             </ChartContainer>
           </TabsContent>
           <TabsContent value="pie">
+            <div
+              className="flex gap-2"
+              style={{ textAlign: "center", marginTop: "10px" }}
+            >
+              <p style={{ color: COLORS[0] }}>Premium</p>
+              <p style={{ color: COLORS[1] }}>User</p>
+            </div>
             <ResponsiveContainer width="100%" height={400}>
               <PieChart>
                 <Pie
@@ -135,10 +142,6 @@ export default function UserDemographics() {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
-            <div className="flex gap-2" style={{ textAlign: "center", marginTop: "10px" }}>
-              <p style={{ color: COLORS[0] }}>Premium</p>
-              <p style={{ color: COLORS[1] }}>User</p>
-            </div>
           </TabsContent>
         </Tabs>
       </CardContent>

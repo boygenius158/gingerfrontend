@@ -63,7 +63,9 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
       postId: post._id,
       userId: session.id,
     });
-    toast.success("saved")
+    if (!bookmarked) {
+      toast.success("Saved");
+    }
   }
   function toggleStatusChange(newStatus) {
     setStatus(newStatus);

@@ -65,7 +65,7 @@ export default function SearchUser({ handleClose }) {
 
         {searchTerm.length > 0 && userProfiles.length > 0 && (
           <div className="mt-6">
-            <h2 className="text-sm font-semibold mb-2">Recent</h2>
+            <h2 className="text-sm font-semibold mb-2">Result</h2>
             <ScrollArea className="h-[500px]">
               {userProfiles.map((search, index) => (
                 <div

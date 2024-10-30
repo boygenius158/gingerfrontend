@@ -248,13 +248,13 @@ export default function Profile({ username }) {
         <Modal
           isOpen={isOpen}
           onRequestClose={() => setIsOpen(false)}
-          className="fixed inset-0 flex items-center justify-center p-4"
+          className="fixed  inset-0 flex items-center justify-center p-4"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50"
           ariaHideApp={false}
         >
           <div
             // onClick={() => filePickerRef.current.click()}
-            className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
+            className="relative border bg-black text-white border-gray-700 rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center "
           >
             <h2 className="text-xl font-semibold mb-2">Add New Profile</h2>
             <p className="text-sm text-muted-foreground mb-4">
@@ -286,7 +286,7 @@ export default function Profile({ username }) {
             <button
               onClick={handleSubmit}
               disabled={!selectedFile}
-              className="w-full bg-black text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100 mt-4"
+              className="w-full bg-purple-700 text-white p-2 shadow-md rounded-lg hover:bg-gray-700 disabled:bg-gray-200 disabled:cursor-not-allowed disabled:hover:brightness-100 mt-4"
             >
               {!spin && <p>upload new profile</p>}
               {spin && (

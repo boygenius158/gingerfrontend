@@ -107,7 +107,7 @@ export default function ProfileImages() {
 
   async function uploadDatingImages() {
     setSpin(true);
-    if (files.length > 0 && files.length < 4) {
+    if (files.length === 3) {
       setIsUploading(true);
 
       const edgeUploads = await Promise.all(
@@ -212,7 +212,7 @@ export default function ProfileImages() {
           disabled={!isEditing}
           className="w-full"
         >
-          <Upload className="mr-2 h-4 w-4" />
+          <Upload className="mr-2 h-4 w-4  bg-purple-700" />
           Upload Images
         </Button>
       </CardFooter>

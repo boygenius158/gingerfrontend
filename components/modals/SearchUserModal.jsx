@@ -48,7 +48,7 @@ export default function SearchUserModal({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={updateStatus}>
-        <DialogContent className="sm:max-w-[425px] border border-purple-700 bg-black text-gray-400">
+        <DialogContent className="sm:max-w-[425px] border border-gray-700 bg-black text-gray-400">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold ">
               New message

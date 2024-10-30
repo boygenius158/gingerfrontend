@@ -1,19 +1,26 @@
-"use client"
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import instance from '@/axiosInstance';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import instance from "@/axiosInstance";
 
 export default function GenerateOTP() {
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState(''); // State for OTP input
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState(""); // State for OTP input
   const [isLoading, setIsLoading] = useState(false);
   const [isOtpSent, setOtpSent] = useState(false); // State to track if OTP was sent
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [resendTimer, setResendTimer] = useState(30); // Timer for resending OTP
   const [isOtpExpired, setOtpExpired] = useState(false); // State to track if OTP is expired
   const router = useRouter();
@@ -21,7 +28,7 @@ export default function GenerateOTP() {
   useEffect(() => {
     if (resendTimer > 0 && isOtpSent) {
       const timer = setInterval(() => {
-        setResendTimer(prev => {
+        setResendTimer((prev) => {
           if (prev <= 1) {
             setOtpExpired(true); // Set OTP as expired
           }
@@ -41,7 +48,7 @@ export default function GenerateOTP() {
 
   async function verifyOtp() {
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
 
     const response = await instance.post("/api/user/register/verifyotp", {
       otp,
@@ -60,7 +67,7 @@ export default function GenerateOTP() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
 
     await handleOtp();
 
@@ -81,8 +88,12 @@ export default function GenerateOTP() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Your account needs to be verified</CardTitle>
-          <CardDescription className="text-center">We will send a one-time password to your email</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center">
+            Your account needs to be verified
+          </CardTitle>
+          <CardDescription className="text-center">
+            We will send a one-time password to your email
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {!isOtpSent ? (
@@ -96,7 +107,7 @@ export default function GenerateOTP() {
                   required
                 />
                 <Button className="w-full" type="submit" disabled={isLoading}>
-                  {isLoading ? 'Sending...' : 'Generate OTP'}
+                  {isLoading ? "Sending..." : "Generate OTP"}
                 </Button>
               </div>
             </form>
@@ -112,18 +123,29 @@ export default function GenerateOTP() {
                 />
                 {!isOtpExpired && (
                   <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? 'Verifying...' : 'Verify OTP'}
+                    {isLoading ? "Verifying..." : "Verify OTP"}
                   </Button>
                 )}
                 <p className="text-sm text-center">
-                  Resend OTP in {resendTimer > 0 ? `${resendTimer}s` : <span onClick={handleOtp}>Resend OTP</span>}
+                  Resend OTP in{" "}
+                  {resendTimer > 0 ? (
+                    `${resendTimer}s`
+                  ) : (
+                    <span onClick={handleOtp}>
+                      <Button variant="outline">Resend OTP</Button>
+                    </span>
+                  )}
                 </p>
               </div>
             </form>
           )}
         </CardContent>
         <CardFooter>
-          {message && <p className="text-sm text-green-600 text-center w-full">{message}</p>}
+          {message && (
+            <p className="text-sm text-green-600 text-center w-full">
+              {message}
+            </p>
+          )}
         </CardFooter>
       </Card>
     </div>

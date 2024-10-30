@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import instance from "@/axiosInstance";
+import { ToastBar } from "react-hot-toast";
 
 export default function GenerateOTP() {
   const [email, setEmail] = useState("");
@@ -40,7 +41,17 @@ export default function GenerateOTP() {
   }, [resendTimer, isOtpSent]);
 
   async function handleOtp() {
-    await instance.post("/api/user/register/generateotp", { email });
+    console.log("hi");
+
+    const response = await instance.post("/api/user/register/generateotp", {
+      email,
+    });
+    console.log(response);
+    if (response.data.success === false) {
+      toast.error("Email doesnt exist, please register this email.");
+      return;
+    }
+
     setOtpSent(true);
     startResendTimer();
     toast.success("OTP generated and sent to your email.");

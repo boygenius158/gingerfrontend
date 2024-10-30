@@ -4,6 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SignInForm() {
   const { data: session } = useSession();
@@ -30,9 +31,12 @@ export default function SignInForm() {
       console.log("Sign-in Response:", res);
   
       if (res.error) {
-        setError(res.error); // Display error message to the user
+        // setError(res.error); // Display error message to the user
         if (res.error.includes("unverified")) {
           router.push("/verify-account"); // Redirect if account is unverified
+        }
+        if(res.error.includes("Request failed with status code 401")){
+          toast.error("User doesnt exist.")
         }
       } else if (res.ok) {
         router.replace("/u/home"); // Redirect to home if sign-in is successful

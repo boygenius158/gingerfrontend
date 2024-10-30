@@ -25,12 +25,18 @@ export const authOptions = {
             email,
             password,
           });
+          console.log(res);
+          
           console.log(res.data);
 
           if (res.data === "unverified") {
             throw new Error(
               "Your account is unverified. Please verify your email."
             );
+          } else if (res.status === 401) {
+            console.log("ss");
+            
+            throw new Error("User doesnt exist");
           } else if (res.status === 200 && res.data) {
             return res.data; // return user data if verified
           } else {

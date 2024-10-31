@@ -127,7 +127,12 @@ export default function Swipe() {
           <div className="w-[700px] h-[600px] overflow-hidden mt-4 animate-fade-in relative">
             <div className="flex items-center justify-center mt-4 animate-fade-up flex-col">
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-pink-500 via-red-500 to-pink-500 text-white rounded p-4 shadow-lg animate-heartbeat">
-                You found a match {currentProfile.name}
+                {/* You found a match {currentProfile.name} */}
+                You have a match
+              </h1>
+              <h1 className="scroll-m-20 mt-4  text-muted-foreground text-sm tracking-tight  bg-gradient-to-r from-pink-500 via-red-500 to-pink-500 text-white rounded p-4 shadow-lg animate-heartbeat">
+                {/* You found a match {currentProfile.name} */}
+                Check the matches section to connect with the profile.
               </h1>
               <div className="flex p-4 mt-8">
                 <div className="relative group">

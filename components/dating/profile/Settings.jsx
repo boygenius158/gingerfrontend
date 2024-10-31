@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import {
@@ -12,17 +10,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import toast from "react-hot-toast";
+import { Label } from "@/components/ui/label";
 
 export default function Settings() {
   const { data: session } = useSession();
   const [toggleStatus, setToggleStatus] = useState(true);
   const [isEditing, setIsEditing] = useState(true);
   const [age, setAge] = useState(20);
-  const [profileVisibility, setProfileVisibility] = useState(true);
+  const [profileVisibility, setProfileVisibility] = useState(false);
   const [gender, setGender] = useState("male");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [accountExist, setAccountExist] = useState(true);
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
 
   const handleSliderChange = (value) => {
     setAge(value[0]); // Assuming value is an array with one number
@@ -55,6 +56,22 @@ export default function Settings() {
     }
   }
 
+  const fetchProfileComplete = useCallback(async () => {
+    const response = await instance.post(
+      "/api/user/profile-completion-status",
+      {
+        userId: session?.id,
+      }
+    );
+
+    setIsProfileComplete(response.data.isProfileComplete);
+  }, [session]);
+
+  useEffect(() => {
+    if (!session) return;
+    fetchProfileComplete();
+  }, [session, fetchProfileComplete]);
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -74,7 +91,6 @@ export default function Settings() {
         }
       } catch (error) {
         setAccountExist(false);
-
         console.error("Error fetching settings:", error);
         setError("Failed to load settings.");
       } finally {
@@ -105,6 +121,16 @@ export default function Settings() {
       </div>
     );
   }
+
+  const handleProfileVisibilityToggle = () => {
+    if (!isProfileComplete) {
+      toast.error(
+        "You must complete your profile before turning on visibility."
+      );
+    } else {
+      setProfileVisibility((prev) => !prev);
+    }
+  };
 
   return (
     <div className="w-[400px] h-screen border rounded-md flex flex-col bg-gray-800">
@@ -152,12 +178,18 @@ export default function Settings() {
       </div>
       <div className="border-b mt-4"></div>
       <div className="flex justify-between p-4">
-        <div>Profile Visibility</div>
+        <div className="flex flex-col">
+          <div>Profile Visibility</div>
+          <div className="text-sm text-muted-foreground">
+            turn visibility on to show your profile to others and see their
+            profiles
+          </div>
+        </div>
         <div>
           <Switch
             disabled={isEditing}
             checked={profileVisibility}
-            onClick={() => setProfileVisibility((prev) => !prev)}
+            onClick={handleProfileVisibilityToggle}
           />
         </div>
       </div>

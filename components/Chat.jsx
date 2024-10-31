@@ -399,24 +399,7 @@ export default function Chat({ recipient }) {
             </div>
             <div className="flex gap-4  ">
               <div className="flex items-center justify-center"></div>
-              {/* <div className="flex items-center justify-center cursor-pointer">
-                <span onClick={setCallNotification} className="">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    className="size-6 text-purple-700 hover:scale-125 transition-transform 300"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
-                    />
-                  </svg>
-                </span>
-              </div> */}
+
               <div className="flex items-center justify-center mr-3">
                 <HiOutlineDotsVertical className="h-5 cursor-pointer text-purple-700" />
               </div>
@@ -425,7 +408,7 @@ export default function Chat({ recipient }) {
         </div>
 
         <ScrollArea
-          className="h-96 border p-4 space-y-2 border-gray-800"
+          className="h-[450px] border p-4 space-y-2 border-gray-800"
           onScroll={handleScroll}
         >
           {messages.map((msg, index) => {
@@ -467,12 +450,6 @@ export default function Chat({ recipient }) {
                       />
                     </>
                   ) : (
-                    // <ReactPlayer
-                    //   url={msg.message}
-                    //   controls={true}
-                    //   width="100%"
-                    //   height="50px"
-                    // />
                     <span>{msg.message}</span>
                   )}
                 </div>
@@ -494,7 +471,7 @@ export default function Chat({ recipient }) {
             <div className="bg-black p-3 border border-gray-700  flex items-center space-x-3">
               <div
                 onClick={handleAudioStart}
-                className="text-purple-700 inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-purple-700 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
+                className="text-purple-700  inline-flex items-center justify-center w-12 h-12 bg-purple-700   rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -502,7 +479,7 @@ export default function Chat({ recipient }) {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="size-6 text-white"
                 >
                   <path
                     stroke-linecap="round"
@@ -513,7 +490,7 @@ export default function Chat({ recipient }) {
               </div>
               <div
                 onClick={() => setIsOpen(true)}
-                className="text-purple-600  inline-flex items-center justify-center w-12 h-12 bg-gray-200 border border-gray-300 rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
+                className="text-purple-600  inline-flex items-center justify-center w-12 h-12 bg-purple-700  rounded-lg cursor-pointer transition-colors duration-300 hover:bg-gray-300 hover:border-gray-400"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -521,7 +498,7 @@ export default function Chat({ recipient }) {
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  className="w-6 h-6 text-purple-700"
+                  className="w-6 h-6 text-white"
                 >
                   <path
                     stroke-linecap="round"
@@ -605,11 +582,22 @@ export default function Chat({ recipient }) {
               overlayClassName="fixed inset-0 bg-black bg-opacity-50"
               ariaHideApp={false}
             >
-              <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-gray-300">
+              <div className="relative  rounded-lg shadow-lg p-6 w-full max-w-lg flex flex-col items-center bg-black text-white border border-gray-300">
                 <h2 className="text-xl font-semibold mb-2">Send Image</h2>
-                <p className="mb-2 text-muted-foreground">
-                  click here to select images.
-                </p>
+
+                {imageFileUrls ? (
+                  <div>
+                    <p className="mb-2 text-muted-foreground">
+                      Tap on the image to remove selection.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="mb-2 text-muted-foreground">
+                      Click here to select images.
+                    </p>
+                  </div>
+                )}
                 {imageFileUrls ? (
                   <div className="flex items-center justify-center bg-red-600">
                     {/* <div className="grid grid-cols-2 gap-4"> */}

@@ -210,9 +210,9 @@ export default function ProfileImages() {
         <Button
           onClick={() => setIsOpen(true)}
           disabled={!isEditing}
-          className="w-full"
+          className="w-full bg-purple-700"
         >
-          <Upload className="mr-2 h-4 w-4  bg-purple-700" />
+          <Upload className="mr-2 h-4 w-4  " />
           Upload Images
         </Button>
       </CardFooter>

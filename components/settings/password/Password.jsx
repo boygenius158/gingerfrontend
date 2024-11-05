@@ -35,6 +35,11 @@ const validate = (values, hasPassword) => {
     errors.newPassword = "New password must be at least 6 characters";
   }
 
+  if (values.currentPassword === values.newPassword) {
+    errors.newPassword =
+      "There doesnt seem to be a change in the new password.";
+  }
+
   return errors;
 };
 
@@ -67,7 +72,12 @@ export default function Password() {
   }, [session, fetchPassword]);
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    
     try {
+      // if(values.currentPassword === values.newPassword){
+      //   toast.error('Password appears to be same.')
+      //   return
+      // }
       const response = await instance.post("/api/user/update-password", {
         ...values,
         id: session?.id,
@@ -88,7 +98,6 @@ export default function Password() {
   };
 
   console.log(showPassword);
-  
 
   return (
     <div>
@@ -116,7 +125,9 @@ export default function Password() {
                       <Field
                         id="currentPassword"
                         name="currentPassword"
-                        type={showPassword.currentPassword ? "text" : "password"}
+                        type={
+                          showPassword.currentPassword ? "text" : "password"
+                        }
                         as={Input}
                       />
                       <div

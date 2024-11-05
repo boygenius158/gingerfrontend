@@ -69,9 +69,11 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
   }
   function toggleStatusChange(newStatus) {
     setStatus(newStatus);
-  }
+  } 
   console.log(post);
-  console.log(likes);
+  console.log(session.id !== post.userId);
+  console.log(session.id , post.userId); 
+
 
   return (
     <div>
@@ -126,7 +128,7 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
         </div>
 
         <div className="flex gap-4 cursor-pointer">
-          {session.id !== post.userId && (
+          {session.id !== post.userId && post?.userId && (
             <div
               onClick={handleSavePost}
               className="flex items-center px-4 py-2 hover:bg-gray-300 rounded-md "

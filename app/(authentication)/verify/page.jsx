@@ -5,32 +5,56 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import instance from "@/axiosInstance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert } from "@/components/ui/alert";
+import { toast } from "react-hot-toast"; // Import toast
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const pathname = usePathname(); // Get the current path
   const router = useRouter();
-  const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    const value = e.target.value;
+    setPassword(value);
+    
+    // Validate password
+    validatePassword(value);
   };
-  console.log(pathname);
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasNumber = /\d/;
+    const hasSpecialChar = /[!@#$%^&*]/;
+
+    if (password.length < minLength) {
+      setPasswordValidation("Password must be at least 8 characters long.");
+    } else if (!hasNumber.test(password)) {
+      setPasswordValidation("Password must contain at least one number.");
+    } else if (!hasSpecialChar.test(password)) {
+      setPasswordValidation("Password must contain at least one special character.");
+    } else {
+      setPasswordValidation(""); // Clear validation message if all conditions are met
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = searchParams.get("token");
-    setError(""); // Reset any previous errors
     setLoading(true);
 
     if (!token) {
-      setMessage("No token provided.");
+      toast.error("No token provided.");
+      setLoading(false);
+      return;
+    }
+
+    if (passwordValidation) {
+      toast.error("Please correct the password errors before submitting.");
       setLoading(false);
       return;
     }
@@ -42,13 +66,13 @@ function ResetPasswordForm() {
       });
 
       if (response.status === 200) {
-        setMessage("Your password has been reset successfully.");
+        toast.success("Your password has been reset successfully.");
         router.push("/login");
       } else {
-        setMessage(response.data.message || "Failed to reset your password.");
+        toast.error(response.data.message || "Failed to reset your password.");
       }
     } catch (error) {
-      setError("An error occurred while resetting your password.");
+      toast.error("An error occurred while resetting your password.");
       console.error(error.response || error.message);
     } finally {
       setLoading(false);
@@ -63,25 +87,29 @@ function ResetPasswordForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+            <div className="relative mb-4">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={handlePasswordChange}
                 placeholder="Enter new password"
                 disabled={loading}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            {passwordValidation && (
+              <div className="mb-4 text-red-500">{passwordValidation}</div>
+            )}
+            <Button type="submit" className="w-full" disabled={loading || passwordValidation}>
               {loading ? "Processing..." : "Reset Password"}
             </Button>
           </form>
-          {message && <Alert className="mt-4">{message}</Alert>}
-          {error && (
-            <Alert className="mt-4" variant="destructive">
-              {error}
-            </Alert>
-          )}
         </CardContent>
       </Card>
     </div>

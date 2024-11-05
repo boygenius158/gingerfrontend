@@ -95,13 +95,13 @@ const OptionsModal = ({ isOpen = false, onChangeOptionsModal, id }) => {
           {/* </React.Fragment> */}
           {/* ))} */}
           <Separator />
-          <Button
+          {/* <Button
             variant="ghost"
             className="w-full justify-start font-normal hover:bg-accent hover:text-accent-foreground"
             onClick={() => onChangeOptionsModal()}
           >
             Cancel
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>

@@ -30,6 +30,7 @@ import toast, { ToastBar } from "react-hot-toast";
 import LikeSection from "@/components/LikeSection";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import { useSocket } from "@/app/lib/SocketContext";
+import Link from "next/link";
 
 export default function Page({ params }) {
   const { data: session } = useSession();
@@ -120,8 +121,8 @@ export default function Page({ params }) {
 
       console.log(response.data.result.userId, session.id);
       // setBookmarked(response.data.result.userId.savedPosts.includes(id));
-      // console.log(response.data.result.userId.savedPosts,id);  
-      
+      // console.log(response.data.result.userId.savedPosts,id);
+
       setLikes(response.data.result.likes.length);
       setHasLiked(response.data.result.likes.includes(session?.id));
       console.log(response.data.result.likes.includes(session?.id));
@@ -285,7 +286,12 @@ export default function Page({ params }) {
                 {post?.userId?.username?.[0] || "?"}
               </AvatarFallback>
             </Avatar>
-            <span className="font-semibold">{post?.userId?.username}</span>
+            <Link
+              href={`/u/${post?.userId?.username}`}
+              className="font-semibold"
+            >
+              {post?.userId?.username}
+            </Link>
           </div>
           <Button
             onClick={handleSavePost}
@@ -296,7 +302,7 @@ export default function Page({ params }) {
             {/* <AlertDialog>
               <AlertDialogTrigger asChild> */}
             {/* <MoreVertical className="h-5 w-5" /> */}
-            
+
             {bookmarked ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

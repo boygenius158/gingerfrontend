@@ -11,11 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import axios from "axios";
 import instance from "@/axiosInstance";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { EyeIcon, EyeOffIcon } from "lucide-react"; // Use LucideReact icons
 
 // Custom validation function
 const validate = (values, hasPassword) => {
@@ -41,8 +41,18 @@ const validate = (values, hasPassword) => {
 export default function Password() {
   const { data: session } = useSession();
   const [hasPassword, setHasPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    currentPassword: false,
+    newPassword: false,
+  });
 
-  // Fetch if the user has a password set
+  const toggleShowPassword = (field) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
+  };
+
   const fetchPassword = useCallback(async () => {
     if (session) {
       const response = await instance.post("/api/user/has-password", {
@@ -65,7 +75,7 @@ export default function Password() {
       if (response.data.success) {
         toast.success("Password changed successfully!");
       } else {
-        toast.error("your old password seem to be incorrect");
+        toast.error("Your old password seems to be incorrect");
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -76,6 +86,9 @@ export default function Password() {
       setSubmitting(false);
     }
   };
+
+  console.log(showPassword);
+  
 
   return (
     <div>
@@ -99,12 +112,24 @@ export default function Password() {
                 {hasPassword && (
                   <div className="space-y-1">
                     <Label htmlFor="currentPassword">Current password</Label>
-                    <Field
-                      id="currentPassword"
-                      name="currentPassword"
-                      type="password"
-                      as={Input}
-                    />
+                    <div className="relative">
+                      <Field
+                        id="currentPassword"
+                        name="currentPassword"
+                        type={showPassword.currentPassword ? "text" : "password"}
+                        as={Input}
+                      />
+                      <div
+                        className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                        onClick={() => toggleShowPassword("currentPassword")}
+                      >
+                        {showPassword.currentPassword ? (
+                          <EyeOffIcon className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <EyeIcon className="w-5 h-5 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
                     <ErrorMessage
                       name="currentPassword"
                       component="div"
@@ -114,13 +139,25 @@ export default function Password() {
                 )}
                 <div className="space-y-1">
                   <Label htmlFor="newPassword">New password</Label>
-                  <Field
-                    className="text-black"
-                    id="newPassword"
-                    name="newPassword"
-                    type="password"
-                    as={Input}
-                  />
+                  <div className="relative">
+                    <Field
+                      className="text-black"
+                      id="newPassword"
+                      name="newPassword"
+                      type={showPassword.newPassword ? "text" : "password"}
+                      as={Input}
+                    />
+                    <div
+                      className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
+                      onClick={() => toggleShowPassword("newPassword")}
+                    >
+                      {showPassword.newPassword ? (
+                        <EyeOffIcon className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <EyeIcon className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
+                  </div>
                   <ErrorMessage
                     name="newPassword"
                     component="div"
@@ -144,7 +181,6 @@ export default function Password() {
                       <Link
                         href="/forgotpassword"
                         className="text-purple-700 hover:underline"
-                        // type="submit" className="bg-purple-700" disabled={isSubmitting}
                       >
                         Forgot password
                       </Link>

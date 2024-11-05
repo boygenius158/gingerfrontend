@@ -72,8 +72,27 @@ export default function Username() {
     setUsername(value);
   };
 
-  const handleNameChange = (e) => setName(e.target.value);
-  const handleBioChange = (e) => setBio(e.target.value);
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    if (value.length > 20) {
+      toast.error("Name cannot exceed 20 characters.");
+      setDisabled(true);
+    } else {
+      setName(value);
+      setDisabled(false);
+    }
+  };
+
+  const handleBioChange = (e) => {
+    const value = e.target.value;
+    if (value.length > 30) {
+      toast.error("Bio cannot exceed 30 characters.");
+      setDisabled(true);
+    } else {
+      setBio(value);
+      setDisabled(false);
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {

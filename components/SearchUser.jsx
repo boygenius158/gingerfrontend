@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -58,7 +58,7 @@ export default function SearchUser({ handleClose }) {
             placeholder="Search..."
             className="w-full text-black"
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" disabled={!searchTerm.trim()} className="w-full">
             Search
           </Button>
         </form>
@@ -74,12 +74,17 @@ export default function SearchUser({ handleClose }) {
                   className="flex items-center space-x-4 py-2 cursor-pointer hover:bg-accent rounded-md px-2"
                 >
                   <Avatar>
-                    <AvatarImage src={search.profilePicture} alt={search.username} />
+                    <AvatarImage
+                      src={search.profilePicture}
+                      alt={search.username}
+                    />
                     <AvatarFallback>{search.username[0]}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium">{search.username}</p>
-                    <p className="text-sm text-muted-foreground capitalize">{search.name}</p>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {search.name}
+                    </p>
                   </div>
                 </div>
               ))}

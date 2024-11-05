@@ -146,7 +146,7 @@ export default function Swipe() {
                     />
                   )}
                 </div>
-
+                {/* 
                 {currentProfile?.images?.length > 0 && (
                   <div className="relative group ml-6">
                     <Image
@@ -162,7 +162,7 @@ export default function Swipe() {
                       }'s profile image`}
                     />
                   </div>
-                )}
+                )} */}
               </div>
               <div className="flex mt-4 gap-1">
                 <Button

@@ -233,7 +233,7 @@ export default function CommentSectionPost({ post }) {
         ))}
       </ScrollArea>
       {/* <button onClick={()=>setHidePostComment(!hidePostComment)}>div</button> */}
-      {session &&
+      {session && session.username !== post?.userDetails?.username &&
         // session.username !== post.userDetails.username &&
         !hidePostComment && (
           <form onSubmit={handleCommentSubmit} className="space-y-4 ">

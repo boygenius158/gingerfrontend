@@ -33,7 +33,12 @@ export const authOptions = {
             throw new Error(
               "Your account is unverified. Please verify your email."
             );
-          } else if (res.status === 401) {
+          }else if (res.data === "blocked") {
+            throw new Error(
+              "blocked. "
+            );
+          }
+           else if (res.status === 401) {
             console.log("ss");
             
             throw new Error("User doesnt exist");

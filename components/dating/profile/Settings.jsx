@@ -57,14 +57,26 @@ export default function Settings() {
   }
 
   const fetchProfileComplete = useCallback(async () => {
-    const response = await instance.post(
-      "/api/user/profile-completion-status",
-      {
-        userId: session?.id,
-      }
-    );
+    // Check if session or userId is available
+    if (!session?.id) {
+      console.error("User ID is required to fetch profile completion status.");
+      setIsProfileComplete(false); // Set profile as incomplete or handle as needed
+      return;
+    }
 
-    setIsProfileComplete(response.data.isProfileComplete);
+    try {
+      const response = await instance.post(
+        "/api/user/profile-completion-status",
+        {
+          userId: session.id,
+        }
+      );
+
+      setIsProfileComplete(response.data.isProfileComplete);
+    } catch (error) {
+      console.error("Error fetching profile completion status:", error);
+      // Optionally set profile as incomplete or handle error display in the UI
+    }
   }, [session]);
 
   useEffect(() => {

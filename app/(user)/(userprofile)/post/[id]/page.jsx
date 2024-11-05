@@ -84,7 +84,11 @@ export default function Page({ params }) {
       const response = await instance.post("/api/user/is-post-saved", {
         userId: session?.id,
       });
-      console.log(response.data.user.savedPosts.includes(id));
+      // console.log(response.data.user);
+
+      // console.log(response.data.user.savedPosts);
+
+      // console.log(response.data.user.savedPosts.includes(id));
       setBookmarked(response.data.user.savedPosts.includes(id));
     }
     fetchSavedDetails();
@@ -536,7 +540,9 @@ export default function Page({ params }) {
                 className="cursor-pointer text-4xl mt-4 hover:scale-125 transition-transform duration-200 ease-out"
               />
             )}
-            <div className="mt-2" onClick={() => setStatus(true)}>
+            <div className="mt-2"
+            //  onClick={() => setStatus(true)}
+             >
               {likes > 0 && (
                 <p className="text-gray-500 ">
                   {likes} {likes === 1 ? "like" : "likes"}
@@ -545,9 +551,11 @@ export default function Page({ params }) {
             </div>
           </div>
           <form action="" onSubmit={handleCommentSubmit}>
-            <Button className="bg-purple-700 mt-4" type="submit">
-              Post Comment
-            </Button>
+            {post?.userId?.username !== session?.username && (
+              <Button className="bg-purple-700 mt-4" type="submit">
+                Post Comment
+              </Button>
+            )}
           </form>
         </CardFooter>
       </Card>

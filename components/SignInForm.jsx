@@ -21,7 +21,7 @@ export default function SignInForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const res = await signIn("credentials", {
         email,
@@ -29,14 +29,17 @@ export default function SignInForm() {
         redirect: false,
       });
       console.log("Sign-in Response:", res);
-  
+
       if (res.error) {
         // setError(res.error); // Display error message to the user
         if (res.error.includes("unverified")) {
           router.push("/verify-account"); // Redirect if account is unverified
         }
-        if(res.error.includes("Request failed with status code 401")){
-          toast.error("User doesnt exist.")
+        if (res.error.includes("blocked")) {
+          toast.error("User is blocked.");
+        }
+        if (res.error.includes("Request failed with status code 401")) {
+          toast.error("User doesnt exist.");
         }
       } else if (res.ok) {
         router.replace("/u/home"); // Redirect to home if sign-in is successful
@@ -46,7 +49,6 @@ export default function SignInForm() {
       setError("An unexpected error occurred. Please try again.");
     }
   };
-  
 
   return (
     <div className="py-16 bg-black">

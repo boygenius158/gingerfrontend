@@ -173,7 +173,7 @@ export default function Profile({ username }) {
             <span>
               {!isSameUser && (
                 <button
-                  className="border border-gray-700 b rounded py-1 px-2 mt-2 lg:mt-0 hover:bg-gray-200 hover:text-purple-800"
+                  className="border border-gray-700 b rounded py-1 px-2 mt-2 lg:mt-0 bg-blue-600 text-white hover:bg-gray-200 hover:text-purple-800"
                   onClick={handleFollow}
                 >
                   {isFollowing ? "Following" : "Follow"}

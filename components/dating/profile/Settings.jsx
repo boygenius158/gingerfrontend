@@ -40,7 +40,6 @@ export default function Settings() {
     if (state) {
       try {
         const data = {
-          profileVisibility,
           maximumAge: age,
           interestedGender: gender,
           userId: session?.id,
@@ -56,33 +55,33 @@ export default function Settings() {
     }
   }
 
-  const fetchProfileComplete = useCallback(async () => {
-    // Check if session or userId is available
-    if (!session?.id) {
-      console.error("User ID is required to fetch profile completion status.");
-      setIsProfileComplete(false); // Set profile as incomplete or handle as needed
-      return;
-    }
+  // const fetchProfileComplete = useCallback(async () => {
+  //   // Check if session or userId is available
+  //   if (!session?.id) {
+  //     console.error("User ID is required to fetch profile completion status.");
+  //     setIsProfileComplete(false); // Set profile as incomplete or handle as needed
+  //     return;
+  //   }
 
-    try {
-      const response = await instance.post(
-        "/api/user/profile-completion-status",
-        {
-          userId: session.id,
-        }
-      );
+  //   try {
+  //     const response = await instance.post(
+  //       "/api/user/profile-completion-status",
+  //       {
+  //         userId: session.id,
+  //       }
+  //     );
 
-      setIsProfileComplete(response.data.isProfileComplete);
-    } catch (error) {
-      console.error("Error fetching profile completion status:", error);
-      // Optionally set profile as incomplete or handle error display in the UI
-    }
-  }, [session]);
+  //     setIsProfileComplete(response.data.isProfileComplete);
+  //   } catch (error) {
+  //     console.error("Error fetching profile completion status:", error);
+  //     // Optionally set profile as incomplete or handle error display in the UI
+  //   }
+  // }, [session]);
 
-  useEffect(() => {
-    if (!session) return;
-    fetchProfileComplete();
-  }, [session, fetchProfileComplete]);
+  // useEffect(() => {
+  //   if (!session) return;
+  //   fetchProfileComplete();
+  // }, [session, fetchProfileComplete]);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -134,18 +133,10 @@ export default function Settings() {
     );
   }
 
-  const handleProfileVisibilityToggle = () => {
-    if (!isProfileComplete) {
-      toast.error(
-        "You must complete your profile before turning on visibility."
-      );
-    } else {
-      setProfileVisibility((prev) => !prev);
-    }
-  };
+  
 
   return (
-    <div className="w-[400px] h-screen border rounded-md flex flex-col bg-gray-800">
+    <div className="w-[400px] h-[280px] border rounded-md flex flex-col bg-black  border-gray-500">
       <div className="p-2">
         <Switch
           onClick={() => toggleSave(!toggleStatus)}
@@ -188,24 +179,8 @@ export default function Settings() {
           </Select>
         </div>
       </div>
-      <div className="border-b mt-4"></div>
-      <div className="flex justify-between p-4">
-        <div className="flex flex-col">
-          <div>Profile Visibility</div>
-          <div className="text-sm text-muted-foreground">
-            turn visibility on to show your profile to others and see their
-            profiles
-          </div>
-        </div>
-        <div>
-          <Switch
-            disabled={isEditing}
-            checked={profileVisibility}
-            onClick={handleProfileVisibilityToggle}
-          />
-        </div>
-      </div>
-      <div className="border-b mt-4"></div>
+      {/* <div className="border-b mt-4"></div> */}
+     
     </div>
   );
 }

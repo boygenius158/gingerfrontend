@@ -13,6 +13,7 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ProfileImages from "./profile/ProfileImages";
 import Settings from "./profile/Settings";
+import Visibility from "./profile/Visibility";
 
 export default function Profile() {
   const { data: session } = useSession();
@@ -105,10 +106,11 @@ export default function Profile() {
     <div className="sm:ml-8 lg:ml-0 min-h-screen bg-black text-white">
       <div className="flex justify-center items-center p-4">
         <Tabs defaultValue="profile-details" className="w-full max-w-3xl">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile-details">Profile Details</TabsTrigger>
             <TabsTrigger value="profile-image">Profile Images</TabsTrigger>
             <TabsTrigger value="Filter">Settings</TabsTrigger>
+            <TabsTrigger value="Status">Status</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile-details">
@@ -193,6 +195,11 @@ export default function Profile() {
           <TabsContent value="Filter">
             <div className="flex items-center justify-center">
               <Settings />
+            </div>
+          </TabsContent>
+          <TabsContent value="Status">
+            <div className="flex items-center justify-center">
+              <Visibility/>
             </div>
           </TabsContent>
         </Tabs>

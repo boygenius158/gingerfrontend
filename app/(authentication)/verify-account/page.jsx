@@ -138,7 +138,7 @@ export default function GenerateOTP() {
                   </Button>
                 )}
                 <p className="text-sm text-center">
-                  Resend OTP in{" "}
+                  Resend OTP {" "}
                   {resendTimer > 0 ? (
                     `${resendTimer}s`
                   ) : (

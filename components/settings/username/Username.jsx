@@ -97,7 +97,12 @@ export default function Username() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any existing errors
+    setError(""); // Clear any existing error
+    if (!username.trim()) {
+      toast.error("username is empty");
+      return;
+    }
+
     try {
       const response = await instance.post("/api/user/update-user", {
         id: session?.id,

@@ -21,7 +21,7 @@ export default function LandingPage() {
             </h1>
           </Link>
           <p className="text-white text-2xl md:text-4xl max-w-xl mt-6 text-center">
-            the new social media app .
+            the new social media app 
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
             <Link href="/login">

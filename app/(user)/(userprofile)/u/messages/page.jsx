@@ -25,11 +25,9 @@ export default function Page() {
 
   useEffect(() => {
     const fetchList = async () => {
-      if (!session?.id) return;
-
+      
       try {
         const { data } = await instance.post("/api/user/fetchChatList", {
-          userId: session.id,
         });
         setList(data.uniqueUsers);
       } catch (error) {
@@ -39,7 +37,7 @@ export default function Page() {
 
     fetchList();
     // Empty dependency array ensures this runs once on component mount
-  }, [session?.id]);
+  }, []);
 
   // Handle user selection
   function handleUser(user) {

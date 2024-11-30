@@ -42,7 +42,6 @@ export default function Settings() {
         const data = {
           maximumAge: age,
           interestedGender: gender,
-          userId: session?.id,
         };
 
         // Make an API request to your backend
@@ -89,8 +88,7 @@ export default function Settings() {
         if (!session) {
           return;
         }
-        const response = await instance.post("/api/user/settings", {
-          userId: session?.id,
+        const response = await instance.get("/api/user/settings", {
         });
         console.log(response);
 

@@ -52,7 +52,6 @@ export default function Page({ params }) {
     try {
       await instance.post("/api/user/likepost", {
         postId: post._id,
-        originalUser: session.id,
       });
       console.log("clicked");
       if (!hasLiked) {
@@ -204,7 +203,6 @@ export default function Page({ params }) {
     console.log("save post");
     const res = await instance.post("/api/user/savePost", {
       postId: post._id,
-      userId: session.id,
     });
   }
   // Avoid rendering certain elements until session is loaded on the client-side

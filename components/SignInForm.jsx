@@ -41,6 +41,9 @@ export default function SignInForm() {
         if (res.error.includes("Request failed with status code 401")) {
           toast.error("User doesnt exist.");
         }
+        if (res.error.includes("Request failed with status code 500")) {
+          toast.error("password incorrect.");
+        }
       } else if (res.ok) {
         router.replace("/u/home"); // Redirect to home if sign-in is successful
       }

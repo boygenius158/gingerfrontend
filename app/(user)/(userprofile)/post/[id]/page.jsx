@@ -91,14 +91,13 @@ export default function Page({ params }) {
       // console.log(response.data.user.savedPosts.includes(id));
       setBookmarked(response.data.user.savedPosts.includes(id));
     }
-    fetchSavedDetails();
+    fetchSavedDetails(); 
   }, [session, id]);
 
   async function likePost() {
     try {
       await instance.post("/api/user/likepost", {
         postId: post._id,
-        originalUser: session.id,
       });
       console.log("clicked");
       if (!hasLiked) {
@@ -126,7 +125,6 @@ export default function Page({ params }) {
       // Submit the reply to the backend
       const res = await instance.post("/api/user/user-posted-reply", {
         content: reply,
-        userId: session?.id,
         postId: post._id,
         parentId: commentId,
       });
@@ -265,7 +263,6 @@ export default function Page({ params }) {
     console.log("save post");
     const res = await instance.post("/api/user/savePost", {
       postId: post._id,
-      userId: session.id,
     });
     if (!bookmarked) {
       toast.success("Saved");

@@ -59,17 +59,21 @@ export default function Password() {
   };
 
   const fetchPassword = useCallback(async () => {
-    if (session) {
+    try {
       const response = await instance.post("/api/user/has-password", {
-        id: session?.id,
+        // Uncomment and provide the ID if needed
+        // id: session?.id,
       });
       setHasPassword(response.data.hasPassword);
+    } catch (error) {
+      console.error("Error fetching password:", error);
     }
-  }, [session]);
-
+  }, []); // Dependency array of useCallback
+  
   useEffect(() => {
     fetchPassword();
-  }, [session, fetchPassword]);
+  }, [fetchPassword]); // Dependency array of useEffect
+  
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     

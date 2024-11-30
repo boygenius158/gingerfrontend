@@ -32,7 +32,7 @@ const OptionsModal = ({ isOpen = false, onChangeOptionsModal, id }) => {
     e.preventDefault();
     const response = await instance.post("/api/user/reportPost", {
       postId: id,
-      victimUser: session.id,
+      // victimUser: session.id,
     });
     setIsReported(true);
 
@@ -48,7 +48,6 @@ const OptionsModal = ({ isOpen = false, onChangeOptionsModal, id }) => {
     if (session) {
       const response = await instance.post("/api/user/post-already-reported", {
         postId: id,
-        victimUser: session?.id,
       });
       console.log(response);
       setIsReported(response.data.alreadyReported);

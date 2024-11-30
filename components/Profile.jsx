@@ -61,9 +61,9 @@ export default function Profile({ username }) {
         },
       });
       console.log(res);
-      const response = await instance.post("/api/user/uploadProfile", {
+      const response = await instance.put("/api/user/uploadProfile", {
         url: res.url,
-        userId: session?.id,
+        // userId: session?.id,
       });
       setUploadedImageUrl(res.url);
 
@@ -88,6 +88,7 @@ export default function Profile({ username }) {
   }
 
   const isSameUser = session?.user?.email === user?.email;
+console.log(user);
 
   function handleModalClose() {
     setIsOpen(false);
@@ -106,8 +107,7 @@ export default function Profile({ username }) {
 
     try {
       const res = await instance.post("/api/user/followprofile", {
-        followUser: user.email,
-        orginalUser: session?.user?.email,
+        followUser: user._id,
       });
 
       console.log(res);

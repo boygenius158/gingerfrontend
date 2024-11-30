@@ -24,7 +24,7 @@ function CheckoutForm() {
       // Create a payment intent
       const {
         data: { clientSecret },
-      } = await axios.post(`${apiUrl}/api/create-payment-intent`, {
+      } = await instance.post('/api/create-payment-intent', {
         amount: 1000,
         userId: session?.id,
       });

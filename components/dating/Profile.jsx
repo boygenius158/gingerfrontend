@@ -31,8 +31,8 @@ export default function Profile() {
     const fetchProfile = async () => {
       if (session?.id) {
         try {
-          const response = await instance.post("/api/user/dating-tab1-getdetails", {
-            userId: session.id,
+          const response = await instance.get("/api/user/dating-tab1-getdetails", {
+            // userId: session.id,
           });
           setFormData(response.data.formData);
         } catch (error) {

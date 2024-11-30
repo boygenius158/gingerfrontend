@@ -34,7 +34,6 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
     try {
       await instance.post("/api/user/likepost", {
         postId: post._id,
-        originalUser: session.id,
       });
       console.log("clicked");
 
@@ -61,7 +60,6 @@ export default function LikeSection({ post, isSaved, HandleCommentVisible }) {
     console.log("save post");
     const res = await instance.post("/api/user/savePost", {
       postId: post._id,
-      userId: session.id,
     });
     if (!bookmarked) {
       toast.success("Saved");

@@ -56,8 +56,8 @@ export default function Notification() {
     if (!session?.id) return; // Ensure that session.id is defined before making the request
 
     try {
-      const response = await instance.post("/api/media/fetch-notifications", {
-        userId: session.id,
+      const response = await instance.get("/api/media/fetch-notifications", {
+        // userId: session.id,
       });
       console.log(response);
       setNotifications(response.data.notifications);

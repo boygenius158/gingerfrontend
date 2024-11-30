@@ -31,7 +31,7 @@ export default function Username() {
           const response = await instance.post(
             "/api/user/fetch-name-username",
             {
-              id: session?.id,
+              // id: session?.id,
             }
           );
           console.log(response);
@@ -104,8 +104,7 @@ export default function Username() {
     }
 
     try {
-      const response = await instance.post("/api/user/update-user", {
-        id: session?.id,
+      const response = await instance.put("/api/user/update-user", {
         name,
         username,
         bio,

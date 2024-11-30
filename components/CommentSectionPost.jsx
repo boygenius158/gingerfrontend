@@ -38,7 +38,7 @@ export default function CommentSectionPost({ post }) {
       // Submit the new comment to the backend
       const res = await instance.post("/api/user/user-posted-comment", {
         content: newComment,
-        userId: session?.id,
+        // userId: session?.id,
         postId: post._id,
       });
 
@@ -118,8 +118,10 @@ export default function CommentSectionPost({ post }) {
     const response = await instance.post("/api/user/delete-comment", {
       commentId,
     });
+    console.log(response);
+    
     if (response.status === 200) {
-      toast("The comment was deleted");
+      toast.success("The comment was deleted");
     }
   }
 

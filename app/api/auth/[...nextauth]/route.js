@@ -94,7 +94,7 @@ export const authOptions = {
         try {
           const res = await instance.post("/api/user/custom-registration", {
             email: user.email,
-            password: user.password,
+            password: user.password, 
           });
           console.log(res.data);
 

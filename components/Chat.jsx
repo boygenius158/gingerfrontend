@@ -226,7 +226,6 @@ export default function Chat({ recipient }) {
         console.log("hi");
 
         const response = await instance.post("/api/user/fetchHistoricalData", {
-          senderId: session.id,
           receiverId: recipient._id,
         });
 
@@ -245,24 +244,7 @@ export default function Chat({ recipient }) {
     fetchHistoricalData();
   }, [fetchHistoricalData]);
 
-  const updateReadStatus = useCallback(async () => {
-    if (session) {
-      try {
-        await instance.post("/api/user/updateReadStatus", {
-          sender: session?.id,
-          recipient: recipient?._id,
-        });
-      } catch (error) {
-        console.error("Error updating read status:", error);
-      }
-    }
-  }, [session, recipient]);
-
-  useEffect(() => {
-    if (reachedBottom) {
-      updateReadStatus();
-    }
-  }, [reachedBottom, updateReadStatus]);
+  
 
   useEffect(() => {
     if (socket) {

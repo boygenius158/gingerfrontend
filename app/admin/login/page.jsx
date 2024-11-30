@@ -64,6 +64,9 @@ export default function Page() {
         if (res.error === "AccessDenied") {
           toast.error("AccessDenied");
         }
+        if(res.error === 'Request failed with status code 500'){
+          toast.error('password incorrect')
+        }
         if (res.ok) {
           toast.success("Welcome");
 

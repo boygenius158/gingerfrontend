@@ -36,8 +36,8 @@ export default function Swipe() {
       if (!session?.id) return;
 
       try {
-        const response = await instance.post("/api/user/swipe-profiles", {
-          userId: session.id,
+        const response = await instance.get("/api/user/swipe-profiles", {
+          // userId: session.id,
         });
 
         if (response.data) {

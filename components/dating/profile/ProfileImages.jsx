@@ -51,7 +51,7 @@ export default function ProfileImages() {
       try {
         const response = await instance.post("/api/user/dating-tab2", {
           url: uploadUrls,
-          userId: session?.id,
+          // userId: session?.id,
         });
 
         if (response) {

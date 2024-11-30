@@ -63,11 +63,10 @@ export default function Post({ post, isSaved, loading }) {
   const handleAlreadyReported = useCallback(async () => {
     const response = await instance.post("/api/user/post-already-reported", {
       postId: post._id,
-      victimUser: session.id,
     });
     console.log(response);
     setIsReported(response.data.alreadyReported);
-  }, [post._id, session.id]);
+  }, [post._id]);
 
   useEffect(() => {
     handleAlreadyReported();

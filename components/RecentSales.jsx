@@ -37,7 +37,7 @@ export default function RecentSales() {
                       height={36}
                       className="rounded-full object-cover"
                     />
-                    <AvatarFallback>{sale.username[0]}</AvatarFallback>
+                    {/* <AvatarFallback>{sale.username[0]}</AvatarFallback> */}
                   </Avatar>
                   <div className="grid gap-1">
                     <p className="text-sm font-medium leading-none">{sale.username}</p>

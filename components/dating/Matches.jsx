@@ -20,8 +20,8 @@ export default function Matches() {
   const fetchMatches = useCallback(async () => {
     if (session?.id) {
       try {
-        const response = await instance.post("/api/user/fetch-matches", {
-          userId: session.id,
+        const response = await instance.get("/api/user/fetch-matches", {
+          // userId: session.id,
         });
         if (response) {
           console.log(response);

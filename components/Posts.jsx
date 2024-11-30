@@ -36,7 +36,7 @@ export default function Posts() {
         setOffset(limit);
         setHasMore(response.data.feed.length > 0);
         setLoading2(false);
-      } catch (error) {
+      } catch (error) { 
         console.error("Failed to fetch posts", error);
       } finally {
         setLoading(false); // Set loading to false after fetching
@@ -55,7 +55,6 @@ export default function Posts() {
     try {
       if (status === "authenticated" && session?.user?.email) {
         const response = await instance.post("/api/user/fetchfeed", {
-          email: session.user.email,
           offset: offset,
           limit,
         });

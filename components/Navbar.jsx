@@ -101,37 +101,21 @@ export default function Navbar() {
     setCaption("");
   }
   useEffect(() => {
-    const controller = new AbortController(); // Create an AbortController instance
-    const { signal } = controller; // Extract the signal from the controller
-
     async function fetchData() {
       try {
-        if (status === "authenticated") {
-          const response = await instance.post("/api/user/miniProfile", {
-            id: session?.id,
-            signal, // Pass the signal to the fetch request
-          });
-          console.log(response);
-
-          if (!signal.aborted) {
-            // Check if the request was not aborted
-            setUser(response.data.user); // Update the state only if the component is still mounted
-          }
-        }
+        const response = await instance.post("/api/user/miniProfile");
+        console.log(response);
+  
+        // Update the state with the response data
+        setUser(response.data.user);
       } catch (error) {
-        if (!signal.aborted) {
-          console.error("Error fetching profile details:", error);
-        }
+        console.error("Error fetching profile details:", error);
       }
     }
-
+  
     fetchData();
-
-    return () => {
-      controller.abort(); // Abort the fetch request if the component is unmounted
-    };
-  }, [status, session?.id]);
-
+  }, []); // Empty dependency array to run only on mount
+  
   const saveFileDatabase = async (uploadUrls) => {
     console.log(uploadUrls);
   };
@@ -303,7 +287,7 @@ export default function Navbar() {
                     />
                   ) : (
                     <Image
-                      src={user?.profilePicture || "/path/to/default-image.jpg"} // Fallback image if no profile picture
+                      src={user?.profilePicture || "https://i.pinimg.com/736x/53/6c/63/536c6323d439596e766f055498e775e4.jpg"} // Fallback image if no profile picture
                       alt={user?.name}
                       width={60}
                       height={60}
